@@ -1,11 +1,30 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import ViewMainPage from "@/views/ViewMainPage.vue";
+import ViewNPatientsByVariant from "@/views/ViewNPatientsByVariant.vue";
+import ViewEssentiality from "@/views/ViewEssentiality.vue";
+
+import service from "@/services";
 
 const routes = [
   {
     path: "/",
-    component: ViewMainPage,
+    name: "patients-by-variant",
+    component: ViewNPatientsByVariant,
+  },
+  {
+    path: "/essentiality",
+    name: "essentiality",
+    component: ViewEssentiality,
+    props: true,
+    async beforeEnter(to, from) {
+      const essentialityData = await service.getEssentialityProfiles(to.query);
+      if (essentialityData) {
+        to.params.data = essentialityData;
+        to.params.query = to.query;
+        return true;
+      }
+      return false;
+    },
   },
 ];
 

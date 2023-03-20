@@ -41,4 +41,8 @@ export default {
 .logo-iorio {
   height: 5.5rem;
 }
+
+.header__link {
+  color: white;
+}
 </style>
