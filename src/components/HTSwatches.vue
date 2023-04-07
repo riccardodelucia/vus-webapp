@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5>{{ title }}</h5>
-    <div class="swatch" v-for="label in color.domain()" :key="label">
+    <div v-for="label in color.domain()" :key="label" class="swatch">
       <div
         class="swatch__color"
         :style="{ backgroundColor: color(label) }"
@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "Swatches",
+  name: "HTSwatches",
   props: {
     title: {
       type: String,

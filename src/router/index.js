@@ -1,37 +1,36 @@
-import { createRouter, createWebHistory } from "vue-router";
-import { AxiosError } from "axios";
+import { createRouter, createWebHistory } from 'vue-router';
+import { AxiosError } from 'axios';
 
-import ViewVariants from "@/views/ViewVariants.vue";
-import ViewEssentiality from "@/views/ViewEssentiality.vue";
+import ViewVariants from '@/views/ViewVariants.vue';
+import ViewEssentiality from '@/views/ViewEssentiality.vue';
 
-import VariantsMultichart from "../components/heatmap/VariantsMultichart.vue";
+import VariantsMultichart from '../components/heatmap/VariantsMultichart.vue';
 
-import service from "@/services";
+import service from '@/services';
 
-import { sendErrorNotification } from "@/notifications";
+import { sendErrorNotification } from '@/notifications';
 
 const routes = [
   {
-    path: "/",
-    name: "variants",
+    path: '/',
+    name: 'variants',
     component: ViewVariants,
     children: [
       {
-        path: "gene/:id",
-        name: "gene",
+        path: 'gene/:id',
+        name: 'gene',
         component: VariantsMultichart,
         props: true,
       },
     ],
   },
   {
-    path: "/essentiality",
-    name: "essentiality",
+    path: '/essentiality',
+    name: 'essentiality',
     component: ViewEssentiality,
     props: true,
-    async beforeEnter(to, from) {
+    async beforeEnter(to) {
       try {
-        debugger;
         const { data: essentialityData } =
           await service.getCellLineEssentialityProfiles(to.query);
         if (!essentialityData) {
@@ -48,7 +47,7 @@ const routes = [
             ? error.message
             : error;
         sendErrorNotification({
-          title: "Cannot retrieve data",
+          title: 'Cannot retrieve data',
           message: message,
         });
         return false;

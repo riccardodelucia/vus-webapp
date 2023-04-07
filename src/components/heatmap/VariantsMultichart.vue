@@ -1,8 +1,8 @@
 <template>
   <div class="charts-container margin-top">
     <div v-if="ready" class="legends">
-      <Swatches title="Polyphen" :color="polyphenColor"></Swatches>
-      <Swatches title="SIFT" :color="siftColor"></Swatches>
+      <HTSwatches title="Polyphen" :color="polyphenColor"></HTSwatches>
+      <HTSwatches title="SIFT" :color="siftColor"></HTSwatches>
 
       <HTLegendColor
         :margins="legendChart.margins"
@@ -12,25 +12,25 @@
         title="log(#patients)"
       ></HTLegendColor>
     </div>
-    <Heatmap
+    <VariantsHeatmap
       v-if="ready"
-      :geneId="id"
+      :gene-id="id"
       :heatmap="heatmap"
-      :annotationsHeatmap="annotationsHeatmap"
+      :annotations-heatmap="annotationsHeatmap"
       :variants="variants"
       :tissues="tissues"
       :color="heatmapColor"
-      :siftColor="siftColor"
-      :polyphenColor="polyphenColor"
-    ></Heatmap>
+      :sift-color="siftColor"
+      :polyphen-color="polyphenColor"
+    ></VariantsHeatmap>
   </div>
 </template>
 
 <script>
-import Heatmap from "@/components/heatmap/Heatmap.vue";
+import VariantsHeatmap from '@/components/heatmap/VariantsHeatmap.vue';
 
-import HTLegendColor from "@/components/heatmap/HTLegendColor.vue";
-import Swatches from "@/components/Swatches.vue";
+import HTLegendColor from '@/components/heatmap/HTLegendColor.vue';
+import HTSwatches from '@/components/HTSwatches.vue';
 
 import {
   scaleSequentialLog,
@@ -39,16 +39,16 @@ import {
   interpolateOranges,
   color,
   schemeSpectral,
-} from "d3";
+} from 'd3';
 
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect } from 'vue';
 
-import { sendErrorNotification } from "@/notifications";
+import { sendErrorNotification } from '@/notifications';
 
-import service from "@/services";
-import { AxiosError } from "axios";
+import service from '@/services';
+import { AxiosError } from 'axios';
 
-const AGGREGATED = "AGGREGATED DAM";
+const AGGREGATED = 'AGGREGATED DAM';
 
 function fillHeatmap({ data, variants, tissues }) {
   // this method expands data over the entire heatmap.
@@ -97,7 +97,7 @@ function fillAnnotationsHeatmap({ variants, annotations }) {
   const emptyHeatmap = Array(variants.length).fill();
 
   const annotationsHeatmap = emptyHeatmap.map((_, i) => {
-    return { variantId: variants[i], sift: "", polyphen: "" };
+    return { variantId: variants[i], sift: '', polyphen: '' };
   });
 
   annotations.forEach((item) => {
@@ -108,11 +108,11 @@ function fillAnnotationsHeatmap({ variants, annotations }) {
 }
 
 export default {
-  name: "VariantsMultichart",
+  name: 'VariantsMultichart',
+  components: { VariantsHeatmap, HTLegendColor, HTSwatches },
   props: {
     id: { type: String, required: true },
   },
-  components: { Heatmap, HTLegendColor, Swatches },
   setup(props) {
     const ready = ref(false);
 
@@ -137,23 +137,23 @@ export default {
 
     const interpolator = (t) => {
       if (t === -Infinity) {
-        return color("#eee");
+        return color('#eee');
       } else {
         return interpolateOranges(t);
       }
     };
 
     // hardcoded labels allow to collect and order all attributes
-    const polyphen = ["probably_damaging", "possibly_damaging", "benign"];
+    const polyphen = ['probably_damaging', 'possibly_damaging', 'benign'];
     const polyphenColor = scaleOrdinal()
       .domain(polyphen)
       .range(schemeSpectral[3]);
 
     const sift = [
-      "deleterious",
-      "deleterious_low_confidence",
-      "tolerated_low_confidence",
-      "tolerated",
+      'deleterious',
+      'deleterious_low_confidence',
+      'tolerated_low_confidence',
+      'tolerated',
     ];
     const siftColor = scaleOrdinal().domain(sift).range(schemeSpectral[4]);
 
@@ -196,7 +196,7 @@ export default {
             : error;
 
         sendErrorNotification({
-          title: "Cannot retrieve data",
+          title: 'Cannot retrieve data',
           message,
         });
       }

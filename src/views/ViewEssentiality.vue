@@ -41,7 +41,7 @@
           <li><b>Cancer Type:</b> {{ query.tissueName }}</li>
           <li><b>Variant:</b> {{ query.variantId }}</li>
         </ul>
-        <Swatches title="DAM" :color="damColor"></Swatches>
+        <HTSwatches title="DAM" :color="damColor"></HTSwatches>
         <button
           class="btn btn--secondary btn--sm btn--full-width margin-top"
           @click="onClick"
@@ -55,12 +55,12 @@
 </template>
 
 <script>
-import AppLayout from "@/layouts/AppLayout.vue";
-import Swatches from "@/components/Swatches.vue";
+import AppLayout from '@/layouts/AppLayout.vue';
+import HTSwatches from '@/components/HTSwatches.vue';
 
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 
-import { ref } from "vue";
+import { ref } from 'vue';
 
 import {
   select,
@@ -70,20 +70,21 @@ import {
   scaleLinear,
   scaleOrdinal,
   extent,
-} from "d3";
+} from 'd3';
 
 import {
   getInnerChartSizes,
   makeReactiveAxis,
-} from "@computational-biology-web-unit/ht-vue";
+} from '@computational-biology-web-unit/ht-vue';
 export default {
+  components: { AppLayout, HTSwatches },
   props: {
     data: { type: Array, required: true },
     query: {
       type: Object,
+      required: true,
     },
   },
-  components: { AppLayout, Swatches },
   setup(props) {
     const axisCellLines = ref(null);
 
@@ -122,9 +123,9 @@ export default {
     makeReactiveAxis(() => {
       select(axisCellLines.value)
         .call(axisBottom(xScale))
-        .selectAll(".tick text")
-        .attr("transform", "translate(-12, 8) rotate(-60) ")
-        .style("text-anchor", "end");
+        .selectAll('.tick text')
+        .attr('transform', 'translate(-12, 8) rotate(-60) ')
+        .style('text-anchor', 'end');
     });
 
     const yDomain = extent(
@@ -138,8 +139,8 @@ export default {
     });
 
     const damColor = scaleOrdinal()
-      .domain(["Essential", "Non-essential"])
-      .range(["red", "black"]);
+      .domain(['Essential', 'Non-essential'])
+      .range(['red', 'black']);
 
     return {
       onClick,

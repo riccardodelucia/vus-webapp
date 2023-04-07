@@ -8,7 +8,8 @@
     <g :transform="`translate(${margins.left}, ${margins.top})`">
       <g ref="axisAnnotations"></g>
       <rect
-        v-for="datum in annotationsHeatmap"
+        v-for="(datum, idx) in annotationsHeatmap"
+        :key="idx"
         :x="xScaleAnnotations('sift')"
         :y="yScale(datum.variantId)"
         :width="xScaleAnnotations.bandwidth()"
@@ -16,7 +17,8 @@
         :fill="datum.sift ? siftColor(datum.sift) : 'transparent'"
       ></rect>
       <rect
-        v-for="datum in annotationsHeatmap"
+        v-for="(datum, idx) in annotationsHeatmap"
+        :key="idx"
         :x="xScaleAnnotations('polyphen')"
         :y="yScale(datum.variantId)"
         :width="xScaleAnnotations.bandwidth()"
@@ -30,14 +32,15 @@
         </g>
         <g>
           <g
-            v-for="datum in heatmap"
+            v-for="(datum, idx) in heatmap"
+            :key="idx"
             :transform="`translate(${xScaleTissues(
               datum.tissueName
             )},  ${yScale(datum.variantId)})`"
+            class="heatmap-patients"
             @click="onClick(datum)"
             @mouseover="onMouseover"
             @mouseleave="onMouseleave($event, datum)"
-            class="heatmap-patients"
           >
             <rect
               :x="0"
@@ -63,17 +66,17 @@
 </template>
 
 <script>
-import { axisTop, axisRight, select, scaleBand } from "d3";
-import { ref } from "vue";
-import { makeReactiveAxis } from "@computational-biology-web-unit/ht-vue";
+import { axisTop, axisRight, select, scaleBand } from 'd3';
+import { ref } from 'vue';
+import { makeReactiveAxis } from '@computational-biology-web-unit/ht-vue';
 
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 
-const DOT_COLOR = "dodgerblue";
-const HOVER_COLOR = "rgb(0, 255, 38)";
+const DOT_COLOR = 'dodgerblue';
+const HOVER_COLOR = 'rgb(0, 255, 38)';
 
 export default {
-  name: "Heatmap",
+  name: 'VariantsHeatmap',
   props: {
     geneId: { type: String, required: true },
     heatmap: {
@@ -142,39 +145,39 @@ export default {
 
     const xScaleAnnotations = scaleBand()
       .range([0, annotationsWidth])
-      .domain(["sift", "polyphen"])
+      .domain(['sift', 'polyphen'])
       .padding(padding);
 
     makeReactiveAxis(() => {
       select(axisAnnotations.value)
         .call(axisTop(xScaleAnnotations).tickSize(0))
-        .selectAll(".tick text")
-        .attr("transform", "translate(2,0) rotate(-30) ")
-        .style("text-anchor", "start");
-      select(axisAnnotations.value).select(".domain").remove();
+        .selectAll('.tick text')
+        .attr('transform', 'translate(2,0) rotate(-30) ')
+        .style('text-anchor', 'start');
+      select(axisAnnotations.value).select('.domain').remove();
     });
 
     makeReactiveAxis(() => {
       select(axisTissues.value)
         .call(axisTop(xScaleTissues).tickSize(0))
-        .selectAll(".tick text")
-        .attr("transform", "translate(2,0) rotate(-30) ")
-        .style("text-anchor", "start");
-      select(axisTissues.value).select(".domain").remove();
+        .selectAll('.tick text')
+        .attr('transform', 'translate(2,0) rotate(-30) ')
+        .style('text-anchor', 'start');
+      select(axisTissues.value).select('.domain').remove();
     });
 
     makeReactiveAxis(() => {
       select(axisVariants.value).call(axisRight(yScale).tickSize(0));
-      select(axisVariants.value).select(".domain").remove();
+      select(axisVariants.value).select('.domain').remove();
     });
 
     const onClick = function (datum) {
       router.push({
-        name: "essentiality",
+        name: 'essentiality',
         query: {
           tissueName: datum.tissueName,
           variantId:
-            datum.variantId !== "AGGREGATED DAM" ? datum.variantId : "",
+            datum.variantId !== 'AGGREGATED DAM' ? datum.variantId : '',
           geneId: props.geneId,
         },
       });
@@ -182,14 +185,14 @@ export default {
 
     const onMouseover = function (e) {
       const s = select(e.target);
-      s.selectAll("circle").attr("fill", HOVER_COLOR);
-      s.selectAll("rect").attr("fill", HOVER_COLOR);
+      s.selectAll('circle').attr('fill', HOVER_COLOR);
+      s.selectAll('rect').attr('fill', HOVER_COLOR);
     };
 
     const onMouseleave = function (e, datum) {
       const s = select(e.target);
-      s.selectAll("circle").attr("fill", DOT_COLOR);
-      s.selectAll("rect").attr("fill", props.color(datum.nPatients));
+      s.selectAll('circle').attr('fill', DOT_COLOR);
+      s.selectAll('rect').attr('fill', props.color(datum.nPatients));
     };
 
     return {

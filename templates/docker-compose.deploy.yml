@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  vus_webapp:
+    image: "$CI_REGISTRY_IMAGE:$TAG"
+    ports:
+      - $PORT:80
+    command: nginx
+    env_file:
+      - .env
+    networks:
+      app_net:
+        ipv4_address: $IPV4_VUS_WEBAPP
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: $IPV4_SUBNET
+          gateway: $IPV4_GATEWAY
