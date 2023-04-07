@@ -22,10 +22,10 @@
             />
 
             <circle
-              v-for="(datum, idx) in sortedData"
+              v-for="(datum, idx) in data"
               :key="idx"
-              :cx="xScale(datum.modelName)"
-              :cy="yScale(datum.logFC)"
+              :cx="xScale(datum.cellLineName)"
+              :cy="yScale(datum.essentialityValue)"
               r="5"
               :fill="datum.presence ? 'red' : 'black'"
             />
@@ -38,8 +38,8 @@
       <div class="details">
         <h4>Details</h4>
         <ul>
-          <li><b>Cancer Type:</b> {{ query.cancerType }}</li>
-          <li><b>Variant:</b> {{ query.variant }}</li>
+          <li><b>Cancer Type:</b> {{ query.tissueName }}</li>
+          <li><b>Variant:</b> {{ query.variantId }}</li>
         </ul>
         <Swatches title="DAM" :color="damColor"></Swatches>
         <button
@@ -111,9 +111,7 @@ export default {
       router.go(-1);
     }
 
-    const sortedData = props.data.sort((a, b) => a.logFC - b.logFC);
-
-    const xDomain = sortedData.map(({ modelName }) => modelName);
+    const xDomain = props.data.map(({ cellLineName }) => cellLineName);
 
     const xScale = scalePoint()
       .domain(xDomain)
@@ -129,7 +127,9 @@ export default {
         .style("text-anchor", "end");
     });
 
-    const yDomain = extent(sortedData.map(({ logFC }) => logFC));
+    const yDomain = extent(
+      props.data.map(({ essentialityValue }) => essentialityValue)
+    );
 
     const yScale = scaleLinear().domain(yDomain).range([innerHeight, 0]).nice();
 
@@ -152,7 +152,6 @@ export default {
       axisLogFC,
       xScale,
       yScale,
-      sortedData,
       damColor,
     };
   },

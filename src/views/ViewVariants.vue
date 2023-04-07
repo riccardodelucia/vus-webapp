@@ -5,7 +5,7 @@
         <ht-search-bar v-model="gene" placeholder="Search gene"></ht-search-bar>
         <button class="btn btn--primary">Search</button>
       </form>
-      <HeatmapMultichart v-if="GStore.geneData"></HeatmapMultichart>
+      <router-view></router-view>
     </div>
   </AppLayout>
 </template>
@@ -15,31 +15,26 @@ import AppLayout from "../layouts/AppLayout.vue";
 
 import { ref } from "vue";
 
-import HeatmapMultichart from "../components/heatmap/HeatmapMultichart.vue";
-
-import service from "../services/index.js";
-import { inject } from "vue";
+import { useRouter } from "vue-router";
 
 export default {
-  name: "ViewNPatientsByVariant",
-  components: { AppLayout, HeatmapMultichart },
+  name: "ViewVariants",
+  components: { AppLayout },
   setup() {
     const gene = ref("");
-    const GStore = inject("GStore");
+    const router = useRouter();
 
     async function onSubmit() {
-      if (gene.value) {
-        const newData = await service.getMutationByGene(
-          gene.value.toUpperCase()
-        );
-        if (newData) GStore.geneData = newData;
-      }
+      gene.value &&
+        router.push({
+          name: "gene",
+          params: { id: gene.value },
+        });
     }
 
     return {
       onSubmit,
       gene,
-      GStore,
     };
   },
 };

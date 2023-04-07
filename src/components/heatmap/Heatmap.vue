@@ -1,112 +1,153 @@
 <template>
-  <div :style="{ height: sizes.height }">
-    <svg
-      preserveAspectRatio="xMinYMin meet"
-      :viewBox="[0, 0, width, sizes.height].join(' ')"
-      :width="width"
-      :height="sizes.height"
-    >
-      <g :transform="`translate(${sizes.margins.left}, ${sizes.margins.top})`">
-        <g>
-          <g ref="axisAnnotations"></g>
-          <rect
-            v-for="(datum, idx) in heatmap.annotations"
-            :key="idx"
-            :x="xScaleAnnotations(datum.annotationType)"
-            :y="yScale(datum.mutation)"
-            :width="xScaleAnnotations.bandwidth()"
-            :height="yScale.bandwidth()"
-            :fill="annotationsColor(datum)"
-          ></rect>
+  <svg
+    preserveAspectRatio="xMinYMin meet"
+    :viewBox="[0, 0, width, height].join(' ')"
+    :width="width"
+    :height="height"
+  >
+    <g :transform="`translate(${margins.left}, ${margins.top})`">
+      <g ref="axisAnnotations"></g>
+      <rect
+        v-for="datum in annotationsHeatmap"
+        :x="xScaleAnnotations('sift')"
+        :y="yScale(datum.variantId)"
+        :width="xScaleAnnotations.bandwidth()"
+        :height="yScale.bandwidth()"
+        :fill="datum.sift ? siftColor(datum.sift) : 'transparent'"
+      ></rect>
+      <rect
+        v-for="datum in annotationsHeatmap"
+        :x="xScaleAnnotations('polyphen')"
+        :y="yScale(datum.variantId)"
+        :width="xScaleAnnotations.bandwidth()"
+        :height="yScale.bandwidth()"
+        :fill="datum.polyphen ? polyphenColor(datum.polyphen) : 'transparent'"
+      ></rect>
+      <g :transform="`translate(${annotationsWidth + gap}, 0)`">
+        <g ref="axisTissues"></g>
+        <g :transform="`translate(${heatmapWidth}, 0)`">
+          <g ref="axisVariants"></g>
         </g>
-        <g
-          :transform="`translate(${
-            sizes.annotationsHeatmapWidth + sizes.heatmapsGap
-          }, 0)`"
-        >
-          <g ref="axisTissues"></g>
-          <g :transform="`translate(${sizes.patientsHeatmapWidth}, 0)`">
-            <g ref="axisMutations"></g>
-          </g>
-          <g>
+        <g>
+          <g
+            v-for="datum in heatmap"
+            :transform="`translate(${xScaleTissues(
+              datum.tissueName
+            )},  ${yScale(datum.variantId)})`"
+            @click="onClick(datum)"
+            @mouseover="onMouseover"
+            @mouseleave="onMouseleave($event, datum)"
+            class="heatmap-patients"
+          >
             <rect
-              v-for="(datum, idx) in heatmap.patients"
-              :key="idx"
-              :x="xScaleTissues(datum.x)"
-              :y="yScale(datum.y)"
+              :x="0"
+              :y="0"
               :width="xScaleTissues.bandwidth()"
               :height="yScale.bandwidth()"
-              :fill="patientsHeatmapColor(datum.value)"
-              class="heatmap-patients"
-              @mouseover="onMouseover($event, datum)"
-              @mouseleave="onMouseleave($event, datum)"
-              @click="onClick(datum)"
+              :fill="color(datum.nPatients)"
+              pointer-events="none"
             ></rect>
+            <circle
+              v-if="datum.dam"
+              :cx="xScaleTissues.bandwidth() / 2"
+              :cy="yScale.bandwidth() / 2"
+              r="5"
+              :fill="DOT_COLOR"
+              pointer-events="none"
+            />
           </g>
         </g>
       </g>
-    </svg>
-  </div>
+    </g>
+  </svg>
 </template>
 
 <script>
-import { axisTop, axisRight, select } from "d3";
-import { ref, computed } from "vue";
+import { axisTop, axisRight, select, scaleBand } from "d3";
+import { ref } from "vue";
 import { makeReactiveAxis } from "@computational-biology-web-unit/ht-vue";
 
 import { useRouter } from "vue-router";
 
+const DOT_COLOR = "dodgerblue";
+const HOVER_COLOR = "rgb(0, 255, 38)";
+
 export default {
   name: "Heatmap",
   props: {
-    sizes: {
-      type: Object,
-      required: true,
-    },
+    geneId: { type: String, required: true },
     heatmap: {
-      type: Object,
+      type: Array,
       required: true,
     },
-    yScale: {
+    annotationsHeatmap: {
+      type: Array,
+      required: true,
+    },
+    variants: {
+      type: Array,
+      required: true,
+    },
+    tissues: {
+      type: Array,
+      required: true,
+    },
+    color: {
       type: Function,
       required: true,
     },
-    xScaleTissues: {
+    polyphenColor: {
       type: Function,
       required: true,
     },
-    xScaleAnnotations: {
-      type: Function,
-      required: true,
-    },
-    patientsHeatmapColor: {
-      type: Function,
-      required: true,
-    },
-    annotationsColor: {
+    siftColor: {
       type: Function,
       required: true,
     },
   },
   setup(props) {
-    const axisTissues = ref(null);
     const axisAnnotations = ref(null);
-    const axisMutations = ref(null);
-
-    const width = computed(
-      () =>
-        props.sizes.margins.left +
-        props.sizes.annotationsHeatmapWidth +
-        props.sizes.heatmapsGap +
-        props.sizes.patientsHeatmapWidth +
-        props.sizes.margins.right
-    );
+    const axisTissues = ref(null);
+    const axisVariants = ref(null);
 
     const router = useRouter();
 
+    const padding = 0.05;
+
+    const margins = { left: 0, right: 180, top: 120, bottom: 0 };
+
+    const gap = 10;
+    const heatmapWidth = 900;
+
+    const innerHeight = 30 * props.variants.length;
+    const height = margins.top + innerHeight + margins.bottom;
+
+    // Make Scales
+    const yScale = scaleBand()
+      .range([0, innerHeight])
+      .domain(props.variants)
+      .padding(padding);
+
+    const xScaleTissues = scaleBand()
+      .range([0, heatmapWidth])
+      .domain(props.tissues)
+      .padding(padding);
+
+    // use same tile width on annotations
+    const annotationsWidth = 2 * xScaleTissues.bandwidth() + padding;
+
+    // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
+    const width =
+      margins.left + annotationsWidth + gap + heatmapWidth + margins.right;
+
+    const xScaleAnnotations = scaleBand()
+      .range([0, annotationsWidth])
+      .domain(["sift", "polyphen"])
+      .padding(padding);
+
     makeReactiveAxis(() => {
       select(axisAnnotations.value)
-        .call(axisTop(props.xScaleAnnotations).tickSize(0))
+        .call(axisTop(xScaleAnnotations).tickSize(0))
         .selectAll(".tick text")
         .attr("transform", "translate(2,0) rotate(-30) ")
         .style("text-anchor", "start");
@@ -115,7 +156,7 @@ export default {
 
     makeReactiveAxis(() => {
       select(axisTissues.value)
-        .call(axisTop(props.xScaleTissues).tickSize(0))
+        .call(axisTop(xScaleTissues).tickSize(0))
         .selectAll(".tick text")
         .attr("transform", "translate(2,0) rotate(-30) ")
         .style("text-anchor", "start");
@@ -123,32 +164,51 @@ export default {
     });
 
     makeReactiveAxis(() => {
-      select(axisMutations.value).call(axisRight(props.yScale).tickSize(0));
-      select(axisMutations.value).select(".domain").remove();
+      select(axisVariants.value).call(axisRight(yScale).tickSize(0));
+      select(axisVariants.value).select(".domain").remove();
     });
-
-    const onMouseover = function (e, datum) {
-      datum.value !== 0 && select(e.target).attr("fill", "blue");
-    };
-    const onMouseleave = function (e, datum) {
-      select(e.target).attr("fill", props.patientsHeatmapColor(datum.value));
-    };
 
     const onClick = function (datum) {
       router.push({
         name: "essentiality",
-        query: { cancerType: datum.x, variant: datum.y },
+        query: {
+          tissueName: datum.tissueName,
+          variantId:
+            datum.variantId !== "AGGREGATED DAM" ? datum.variantId : "",
+          geneId: props.geneId,
+        },
       });
+    };
+
+    const onMouseover = function (e) {
+      const s = select(e.target);
+      s.selectAll("circle").attr("fill", HOVER_COLOR);
+      s.selectAll("rect").attr("fill", HOVER_COLOR);
+    };
+
+    const onMouseleave = function (e, datum) {
+      const s = select(e.target);
+      s.selectAll("circle").attr("fill", DOT_COLOR);
+      s.selectAll("rect").attr("fill", props.color(datum.nPatients));
     };
 
     return {
       width,
-      axisAnnotations,
-      axisMutations,
+      annotationsWidth,
+      gap,
+      heatmapWidth,
+      height,
+      margins,
+      axisVariants,
       axisTissues,
+      axisAnnotations,
+      xScaleTissues,
+      xScaleAnnotations,
+      yScale,
+      onClick,
       onMouseover,
       onMouseleave,
-      onClick,
+      DOT_COLOR,
     };
   },
 };
@@ -157,5 +217,7 @@ export default {
 <style lang="scss" scoped="true">
 .heatmap-patients {
   cursor: pointer;
+
+  pointer-events: bounding-box;
 }
 </style>

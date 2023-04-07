@@ -1,15 +1,28 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { AxiosError } from "axios";
 
-import ViewNPatientsByVariant from "@/views/ViewNPatientsByVariant.vue";
+import ViewVariants from "@/views/ViewVariants.vue";
 import ViewEssentiality from "@/views/ViewEssentiality.vue";
 
+import VariantsMultichart from "../components/heatmap/VariantsMultichart.vue";
+
 import service from "@/services";
+
+import { sendErrorNotification } from "@/notifications";
 
 const routes = [
   {
     path: "/",
-    name: "patients-by-variant",
-    component: ViewNPatientsByVariant,
+    name: "variants",
+    component: ViewVariants,
+    children: [
+      {
+        path: "gene/:id",
+        name: "gene",
+        component: VariantsMultichart,
+        props: true,
+      },
+    ],
   },
   {
     path: "/essentiality",
@@ -17,13 +30,29 @@ const routes = [
     component: ViewEssentiality,
     props: true,
     async beforeEnter(to, from) {
-      const essentialityData = await service.getEssentialityProfiles(to.query);
-      if (essentialityData) {
+      try {
+        debugger;
+        const { data: essentialityData } =
+          await service.getCellLineEssentialityProfiles(to.query);
+        if (!essentialityData) {
+          throw new Error(`Unable to retrieve data`);
+        }
         to.params.data = essentialityData;
         to.params.query = to.query;
         return true;
+      } catch (error) {
+        const message =
+          error instanceof AxiosError
+            ? error.response.data.detail
+            : error.message
+            ? error.message
+            : error;
+        sendErrorNotification({
+          title: "Cannot retrieve data",
+          message: message,
+        });
+        return false;
       }
-      return false;
     },
   },
 ];

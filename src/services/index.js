@@ -1,7 +1,7 @@
 import getEnv from "../utils/env.js";
-const urlBackend = getEnv("VITE_URL_BACKEND");
+import { interceptorCamelize } from "@computational-biology-web-unit/ht-vue";
 
-import { sendErrorNotification } from "../notifications";
+const urlBackend = getEnv("VITE_URL_BACKEND");
 
 import axios from "axios";
 
@@ -9,39 +9,28 @@ const instance = axios.create({
   baseURL: urlBackend,
 });
 
+instance.interceptors.response.use(interceptorCamelize);
+
 export default {
-  getMutationByGene(id) {
-    return instance
-      .get("mutationsByGene/", {
-        params: { id },
-      })
-      .then((res) => {
-        if (!res.data[0])
-          throw new Error(`No results available for gene: ${id}`);
-        return res.data[0];
-      })
-      .catch((error) => {
-        sendErrorNotification({
-          title: "Cannot retrieve data",
-          message: error.message || error,
-        });
-      });
+  getVariants(gene) {
+    return instance.get(`variants/${gene}`);
   },
-  getEssentialityProfiles(query) {
-    return instance
-      .get("essentiality/", {
-        params: query,
-      })
-      .then((res) => {
-        if (!res.data || res.data.length === 0)
-          throw new Error(`No results available for this query`);
-        return res.data;
-      })
-      .catch((error) => {
-        sendErrorNotification({
-          title: "Cannot retrieve data",
-          message: error.message || error,
-        });
-      });
+  getTissues() {
+    return instance.get("tissues");
+  },
+  getVariantsData(gene) {
+    return instance.get(`variants-data/${gene}`);
+  },
+  getAnnotations(gene) {
+    return instance.get(`annotations/${gene}`);
+  },
+  getCellLineEssentialityProfiles(query) {
+    const camelToSnakeCase = (str) =>
+      str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+    const snakeQuery = {};
+    Object.entries(query).forEach(([key, value]) => {
+      snakeQuery[camelToSnakeCase(key)] = value;
+    });
+    return instance.get(`cell-line-essentiality`, { params: snakeQuery });
   },
 };
