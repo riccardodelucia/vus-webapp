@@ -13,11 +13,11 @@
 
 <script>
 export default {
-  name: "HTSwatches",
+  name: 'HTSwatches',
   props: {
     title: {
       type: String,
-      default: "",
+      default: '',
     },
     color: {
       type: Function,
