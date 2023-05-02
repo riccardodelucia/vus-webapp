@@ -75,7 +75,7 @@ import {
 import {
   getInnerChartSizes,
   makeReactiveAxis,
-} from '@computational-biology-web-unit/ht-vue';
+} from '@computational-biology-sw-web-dev-unit/ht-vue';
 export default {
   components: { AppLayout, HTSwatches },
   props: {

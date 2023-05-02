@@ -68,7 +68,7 @@
 <script>
 import { axisTop, axisRight, select, scaleBand } from 'd3';
 import { ref } from 'vue';
-import { makeReactiveAxis } from '@computational-biology-web-unit/ht-vue';
+import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { useRouter } from 'vue-router';
 
