@@ -42,7 +42,7 @@ const routes = [
       } catch (error) {
         const message =
           error instanceof AxiosError
-            ? error.response.data.detail
+            ? error.response?.data.detail
             : error.message
             ? error.message
             : error;

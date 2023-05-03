@@ -19,6 +19,7 @@
     "postcss-comment": "^2.0.0",
     "postcss-import": "^15.1.0",
     "postcss-nested": "^6.0.0",
+    "qs": "^6.11.1",
     "uuid": "^9.0.0",
     "vue": "^3.2.41",
     "vue-feather": "^2.0.0",

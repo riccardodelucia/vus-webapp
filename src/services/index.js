@@ -1,12 +1,17 @@
-import getEnv from "../utils/env.js";
-import { interceptorCamelize } from "@computational-biology-sw-web-dev-unit/ht-vue";
+import getEnv from '../utils/env.js';
+import { interceptorCamelize } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
-const urlBackend = getEnv("VITE_URL_BACKEND");
+const urlBackend = getEnv('VITE_URL_BACKEND');
 
-import axios from "axios";
+import axios from 'axios';
+
+import Qs from 'qs';
 
 const instance = axios.create({
   baseURL: urlBackend,
+  paramsSerializer: {
+    serialize: (params) => Qs.stringify(params, { arrayFormat: 'repeat' }),
+  },
 });
 
 instance.interceptors.response.use(interceptorCamelize);
@@ -16,7 +21,7 @@ export default {
     return instance.get(`variants/${gene}`);
   },
   getTissues() {
-    return instance.get("tissues");
+    return instance.get('tissues');
   },
   getVariantsData(gene) {
     return instance.get(`variants-data/${gene}`);
@@ -31,6 +36,8 @@ export default {
     Object.entries(query).forEach(([key, value]) => {
       snakeQuery[camelToSnakeCase(key)] = value;
     });
-    return instance.get(`cell-line-essentiality`, { params: snakeQuery });
+    return instance.get(`cell-line-essentiality`, {
+      params: { ...snakeQuery },
+    });
   },
 };

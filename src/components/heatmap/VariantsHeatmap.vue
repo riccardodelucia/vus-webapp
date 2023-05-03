@@ -210,7 +210,7 @@ export default {
         name: 'essentiality',
         query: {
           tissueName: datum.tissueName,
-          variantId: datum.variantId,
+          variants: [datum.variantId],
           geneId: props.geneId,
         },
       });
