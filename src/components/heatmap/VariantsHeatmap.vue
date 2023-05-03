@@ -7,7 +7,10 @@
   >
     <g :transform="`translate(${margins.left}, ${margins.top})`">
       <g>
-        <text :transform="`translate(${annotationWidth / 2},0) rotate(-30)`">
+        <text
+          :transform="`translate(${annotationWidth / 2},0) rotate(-30)`"
+          style="font-weight: bold"
+        >
           sift
         </text>
         <rect
@@ -17,11 +20,14 @@
           :y="yScale(datum.variantId)"
           :width="annotationWidth"
           :height="yScale.bandwidth()"
-          :fill="siftColor(datum?.sift) || 'transparent'"
+          :fill="siftColor(datum?.sift)"
         ></rect>
       </g>
       <g :transform="`translate(${annotationWidth + 1}, 0)`">
-        <text :transform="`translate(${annotationWidth / 2},0) rotate(-30)`">
+        <text
+          :transform="`translate(${annotationWidth / 2},0) rotate(-30)`"
+          style="font-weight: bold"
+        >
           polyphen
         </text>
         <rect
@@ -31,7 +37,7 @@
           :y="yScale(datum.variantId)"
           :width="annotationWidth"
           :height="yScale.bandwidth()"
-          :fill="polyphenColor(datum.polyphen) || 'transparent'"
+          :fill="polyphenColor(datum.polyphen)"
         ></rect>
       </g>
 

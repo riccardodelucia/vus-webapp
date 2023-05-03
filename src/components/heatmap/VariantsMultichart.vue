@@ -147,7 +147,8 @@ export default {
     const polyphen = ['probably_damaging', 'possibly_damaging', 'benign'];
     const polyphenColor = scaleOrdinal()
       .domain(polyphen)
-      .range(schemeSpectral[3]);
+      .range(schemeSpectral[3])
+      .unknown('transparent');
 
     const sift = [
       'deleterious',
@@ -155,7 +156,10 @@ export default {
       'tolerated_low_confidence',
       'tolerated',
     ];
-    const siftColor = scaleOrdinal().domain(sift).range(schemeSpectral[4]);
+    const siftColor = scaleOrdinal()
+      .domain(sift)
+      .range(schemeSpectral[4])
+      .unknown('transparent');
 
     watchEffect(async () => {
       ready.value = false;
