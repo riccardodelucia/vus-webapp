@@ -17,6 +17,7 @@
       :gene-id="id"
       :heatmap="heatmap"
       :annotations-heatmap="annotationsHeatmap"
+      :aggregated-dam="aggregatedDam"
       :variants="variants"
       :tissues="tissues"
       :color="heatmapColor"
@@ -48,8 +49,6 @@ import { sendErrorNotification } from '@/notifications';
 import service from '@/services';
 import { AxiosError } from 'axios';
 
-const AGGREGATED = 'AGGREGATED DAM';
-
 function fillHeatmap({ data, variants, tissues }) {
   // this method expands data over the entire heatmap.
 
@@ -76,17 +75,6 @@ function fillHeatmap({ data, variants, tissues }) {
     heatmap[j][i] = item;
   });
 
-  // compute summation of column cells with dam=1
-  // note: the summation cell leaves dam=0 to avoid showing the dot in the corresponding heatmap cell on te chart
-  heatmap.forEach((column) => {
-    const i = column.map(({ variantId }) => variantId).indexOf(AGGREGATED);
-    const sum = column.reduce((acc, item) => {
-      if (item.dam) return acc + item.nPatients;
-      return acc;
-    }, 0);
-    column[i] = { ...column[i], nPatients: sum };
-  });
-
   // return the flattened one dimensional heatmap array.
   // dealing with one dimensional arrays and positioning according to scale values
   // is much easier than working with bidimensional grid positioning according to indexes
@@ -105,6 +93,17 @@ function fillAnnotationsHeatmap({ variants, annotations }) {
     annotationsHeatmap[i] = item;
   });
   return annotationsHeatmap.flat();
+}
+
+function fillAggregatedDam({ data, tissues }) {
+  return tissues.map((tissue) => {
+    const column = data.filter((item) => item.tissueName === tissue);
+    const sum = column.reduce((acc, item) => {
+      if (item.dam) return acc + item.nPatients;
+      return acc;
+    }, 0);
+    return { tissueName: tissue, nPatients: sum };
+  });
 }
 
 export default {
@@ -131,6 +130,7 @@ export default {
     const tissues = ref(null);
 
     const heatmap = ref(null);
+    const aggregatedDam = ref(null);
     const annotationsHeatmap = ref(null);
 
     const heatmapColor = ref(null);
@@ -165,7 +165,6 @@ export default {
       ready.value = false;
       try {
         const { data: v } = await service.getVariants(props.id);
-        v.unshift(AGGREGATED);
 
         variants.value = v;
 
@@ -179,6 +178,8 @@ export default {
           variants: v,
           tissues: t,
         });
+
+        aggregatedDam.value = fillAggregatedDam({ data: d, tissues: t });
 
         annotationsHeatmap.value = fillAnnotationsHeatmap({
           variants: v,
@@ -212,6 +213,7 @@ export default {
       heatmapColor,
       heatmap,
       annotationsHeatmap,
+      aggregatedDam,
       variants,
       tissues,
       siftColor,

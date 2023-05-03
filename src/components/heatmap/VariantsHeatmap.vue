@@ -8,7 +8,7 @@
     <g :transform="`translate(${margins.left}, ${margins.top})`">
       <g>
         <text
-          :transform="`translate(${annotationWidth / 2},0) rotate(-30)`"
+          :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
           style="font-weight: bold"
         >
           sift
@@ -25,7 +25,7 @@
       </g>
       <g :transform="`translate(${annotationWidth + 1}, 0)`">
         <text
-          :transform="`translate(${annotationWidth / 2},0) rotate(-30)`"
+          :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
           style="font-weight: bold"
         >
           polyphen
@@ -41,7 +41,7 @@
         ></rect>
       </g>
 
-      <g :transform="`translate(${2 * annotationWidth + gap}, 0)`">
+      <g :transform="`translate(${2 * annotationWidth + horizontalGap}, 0)`">
         <g ref="axisTissues"></g>
         <g :transform="`translate(${heatmapWidth}, 0)`">
           <g ref="axisVariants"></g>
@@ -76,6 +76,27 @@
             />
           </g>
         </g>
+
+        <g :transform="`translate(0, ${heatmapHeight + verticalGap})`">
+          <rect
+            v-for="(datum, idx) in aggregatedDam"
+            :key="idx"
+            :x="xScaleTissues(datum.tissueName)"
+            :y="0"
+            :width="xScaleTissues.bandwidth()"
+            :height="yScale.bandwidth()"
+            :fill="color(datum.nPatients)"
+            pointer-events="none"
+          ></rect>
+          <text
+            :transform="`translate(${heatmapWidth + 2}, ${
+              yScale.bandwidth() / 2 + 4
+            })`"
+            style="font-weight: bold"
+          >
+            Aggregated DAM
+          </text>
+        </g>
       </g>
     </g>
   </svg>
@@ -103,6 +124,7 @@ export default {
       type: Array,
       required: true,
     },
+    aggregatedDam: { type: Array, required: true },
     variants: {
       type: Array,
       required: true,
@@ -134,15 +156,22 @@ export default {
 
     const margins = { left: 0, right: 180, top: 120, bottom: 0 };
 
-    const gap = 10;
+    const horizontalGap = 10;
+    const verticalGap = 10;
+    const heatmapTileHeight = 30;
     const heatmapWidth = 900;
 
-    const innerHeight = 30 * props.variants.length;
-    const height = margins.top + innerHeight + margins.bottom;
+    const heatmapHeight = heatmapTileHeight * props.variants.length;
+    const height =
+      margins.top +
+      heatmapHeight +
+      margins.bottom +
+      verticalGap +
+      heatmapTileHeight;
 
     // Make Scales
     const yScale = scaleBand()
-      .range([0, innerHeight])
+      .range([0, heatmapHeight])
       .domain(props.variants)
       .padding(padding);
 
@@ -156,7 +185,11 @@ export default {
 
     // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
     const width =
-      margins.left + 2 * annotationWidth + gap + heatmapWidth + margins.right;
+      margins.left +
+      2 * annotationWidth +
+      horizontalGap +
+      heatmapWidth +
+      margins.right;
 
     makeReactiveAxis(() => {
       select(axisTissues.value)
@@ -177,8 +210,7 @@ export default {
         name: 'essentiality',
         query: {
           tissueName: datum.tissueName,
-          variantId:
-            datum.variantId !== 'AGGREGATED DAM' ? datum.variantId : '',
+          variantId: datum.variantId,
           geneId: props.geneId,
         },
       });
@@ -199,8 +231,10 @@ export default {
     return {
       width,
       annotationWidth,
-      gap,
+      horizontalGap,
+      verticalGap,
       heatmapWidth,
+      heatmapHeight,
       height,
       margins,
       axisVariants,
