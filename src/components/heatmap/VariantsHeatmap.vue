@@ -6,26 +6,36 @@
     :height="height"
   >
     <g :transform="`translate(${margins.left}, ${margins.top})`">
-      <g ref="axisAnnotations"></g>
-      <rect
-        v-for="(datum, idx) in annotationsHeatmap"
-        :key="idx"
-        :x="xScaleAnnotations('sift')"
-        :y="yScale(datum.variantId)"
-        :width="xScaleAnnotations.bandwidth()"
-        :height="yScale.bandwidth()"
-        :fill="datum.sift ? siftColor(datum.sift) : 'transparent'"
-      ></rect>
-      <rect
-        v-for="(datum, idx) in annotationsHeatmap"
-        :key="idx"
-        :x="xScaleAnnotations('polyphen')"
-        :y="yScale(datum.variantId)"
-        :width="xScaleAnnotations.bandwidth()"
-        :height="yScale.bandwidth()"
-        :fill="datum.polyphen ? polyphenColor(datum.polyphen) : 'transparent'"
-      ></rect>
-      <g :transform="`translate(${annotationsWidth + gap}, 0)`">
+      <g>
+        <text :transform="`translate(${annotationWidth / 2},0) rotate(-30)`">
+          sift
+        </text>
+        <rect
+          v-for="(datum, idx) in annotationsHeatmap"
+          :key="idx"
+          :x="0"
+          :y="yScale(datum.variantId)"
+          :width="annotationWidth"
+          :height="yScale.bandwidth()"
+          :fill="siftColor(datum?.sift) || 'transparent'"
+        ></rect>
+      </g>
+      <g :transform="`translate(${annotationWidth + 1}, 0)`">
+        <text :transform="`translate(${annotationWidth / 2},0) rotate(-30)`">
+          polyphen
+        </text>
+        <rect
+          v-for="(datum, idx) in annotationsHeatmap"
+          :key="idx"
+          :x="0"
+          :y="yScale(datum.variantId)"
+          :width="annotationWidth"
+          :height="yScale.bandwidth()"
+          :fill="polyphenColor(datum.polyphen) || 'transparent'"
+        ></rect>
+      </g>
+
+      <g :transform="`translate(${2 * annotationWidth + gap}, 0)`">
         <g ref="axisTissues"></g>
         <g :transform="`translate(${heatmapWidth}, 0)`">
           <g ref="axisVariants"></g>
@@ -109,7 +119,6 @@ export default {
     },
   },
   setup(props) {
-    const axisAnnotations = ref(null);
     const axisTissues = ref(null);
     const axisVariants = ref(null);
 
@@ -137,25 +146,11 @@ export default {
       .padding(padding);
 
     // use same tile width on annotations
-    const annotationsWidth = 2 * xScaleTissues.bandwidth() + padding;
+    const annotationWidth = xScaleTissues.bandwidth();
 
     // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
     const width =
-      margins.left + annotationsWidth + gap + heatmapWidth + margins.right;
-
-    const xScaleAnnotations = scaleBand()
-      .range([0, annotationsWidth])
-      .domain(['sift', 'polyphen'])
-      .padding(padding);
-
-    makeReactiveAxis(() => {
-      select(axisAnnotations.value)
-        .call(axisTop(xScaleAnnotations).tickSize(0))
-        .selectAll('.tick text')
-        .attr('transform', 'translate(2,0) rotate(-30) ')
-        .style('text-anchor', 'start');
-      select(axisAnnotations.value).select('.domain').remove();
-    });
+      margins.left + 2 * annotationWidth + gap + heatmapWidth + margins.right;
 
     makeReactiveAxis(() => {
       select(axisTissues.value)
@@ -197,16 +192,14 @@ export default {
 
     return {
       width,
-      annotationsWidth,
+      annotationWidth,
       gap,
       heatmapWidth,
       height,
       margins,
       axisVariants,
       axisTissues,
-      axisAnnotations,
       xScaleTissues,
-      xScaleAnnotations,
       yScale,
       onClick,
       onMouseover,
