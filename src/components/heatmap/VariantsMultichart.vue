@@ -1,9 +1,8 @@
 <template>
-  <div class="charts-container margin-top">
-    <div v-if="ready" class="legends">
+  <div v-if="ready" class="charts-container margin-top">
+    <div class="legends">
       <HTSwatches title="Polyphen" :color="polyphenColor"></HTSwatches>
       <HTSwatches title="SIFT" :color="siftColor"></HTSwatches>
-
       <HTLegendColor
         :margins="legendChart.margins"
         :width="legendChart.width"

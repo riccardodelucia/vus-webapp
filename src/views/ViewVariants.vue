@@ -11,23 +11,24 @@
 </template>
 
 <script>
-import AppLayout from "../layouts/AppLayout.vue";
+import AppLayout from '../layouts/AppLayout.vue';
 
-import { ref } from "vue";
+import { ref } from 'vue';
 
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 
 export default {
-  name: "ViewVariants",
+  name: 'ViewVariants',
   components: { AppLayout },
-  setup() {
-    const gene = ref("");
+  props: { id: { type: String, default: '' } },
+  setup(props) {
+    const gene = ref(props.id);
     const router = useRouter();
 
     async function onSubmit() {
       gene.value &&
         router.push({
-          name: "gene",
+          name: 'gene',
           params: { id: gene.value },
         });
     }
