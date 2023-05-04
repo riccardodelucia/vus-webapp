@@ -101,7 +101,8 @@ function fillAggregatedDam({ data, tissues }) {
       if (item.dam) return acc + item.nPatients;
       return acc;
     }, 0);
-    return { tissueName: tissue, nPatients: sum };
+    const dam = column.map((item) => item.dam).includes(1);
+    return { tissueName: tissue, nPatients: sum, dam };
   });
 }
 

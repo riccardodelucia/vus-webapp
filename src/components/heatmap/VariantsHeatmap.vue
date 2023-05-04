@@ -55,8 +55,6 @@
             )},  ${yScale(datum.variantId)})`"
             class="heatmap-patients"
             @click="onClick(datum)"
-            @mouseover="onMouseover"
-            @mouseleave="onMouseleave($event, datum)"
           >
             <rect
               :x="0"
@@ -71,23 +69,38 @@
               :cx="xScaleTissues.bandwidth() / 2"
               :cy="yScale.bandwidth() / 2"
               r="5"
-              :fill="DOT_COLOR"
+              fill="dodgerblue"
               pointer-events="none"
             />
           </g>
         </g>
 
         <g :transform="`translate(0, ${heatmapHeight + verticalGap})`">
-          <rect
+          <g
             v-for="(datum, idx) in aggregatedDam"
             :key="idx"
-            :x="xScaleTissues(datum.tissueName)"
-            :y="0"
-            :width="xScaleTissues.bandwidth()"
-            :height="yScale.bandwidth()"
-            :fill="color(datum.nPatients)"
-            pointer-events="none"
-          ></rect>
+            class="heatmap-patients"
+            :transform="`translate(${xScaleTissues(datum.tissueName)},  0)`"
+            @click="onClickAggregated(datum)"
+          >
+            <rect
+              :x="0"
+              :y="0"
+              :width="xScaleTissues.bandwidth()"
+              :height="yScale.bandwidth()"
+              :fill="color(datum.nPatients)"
+              pointer-events="none"
+            ></rect>
+            <circle
+              v-if="datum.dam"
+              :cx="xScaleTissues.bandwidth() / 2"
+              :cy="yScale.bandwidth() / 2"
+              r="5"
+              fill="dodgerblue"
+              pointer-events="none"
+            />
+          </g>
+
           <text
             :transform="`translate(${heatmapWidth + 2}, ${
               yScale.bandwidth() / 2 + 4
@@ -108,9 +121,6 @@ import { ref } from 'vue';
 import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { useRouter } from 'vue-router';
-
-const DOT_COLOR = 'dodgerblue';
-const HOVER_COLOR = 'rgb(0, 255, 38)';
 
 export default {
   name: 'VariantsHeatmap',
@@ -216,16 +226,16 @@ export default {
       });
     };
 
-    const onMouseover = function (e) {
-      const s = select(e.target);
-      s.selectAll('circle').attr('fill', HOVER_COLOR);
-      s.selectAll('rect').attr('fill', HOVER_COLOR);
-    };
-
-    const onMouseleave = function (e, datum) {
-      const s = select(e.target);
-      s.selectAll('circle').attr('fill', DOT_COLOR);
-      s.selectAll('rect').attr('fill', props.color(datum.nPatients));
+    const onClickAggregated = function (datum) {
+      debugger;
+      router.push({
+        name: 'essentiality',
+        query: {
+          tissueName: datum.tissueName,
+          variants: [datum.variantId],
+          geneId: props.geneId,
+        },
+      });
     };
 
     return {
@@ -242,9 +252,7 @@ export default {
       xScaleTissues,
       yScale,
       onClick,
-      onMouseover,
-      onMouseleave,
-      DOT_COLOR,
+      onClickAggregated,
     };
   },
 };
@@ -253,7 +261,12 @@ export default {
 <style lang="scss" scoped="true">
 .heatmap-patients {
   cursor: pointer;
-
   pointer-events: bounding-box;
+
+  &:hover {
+    * {
+      fill: rgb(0, 255, 38);
+    }
+  }
 }
 </style>
