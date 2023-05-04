@@ -9,6 +9,9 @@
       >
         <g :transform="`translate(${margins.left}, ${margins.top})`">
           <g ref="axisLogFC"></g>
+          <text :x="4" :y="4" style="font-weight: bold">
+            logFC(essentiality)
+          </text>
           <g>
             <line
               :x1="0"
@@ -32,6 +35,9 @@
           </g>
           <g :transform="`translate(0, ${innerHeight})`">
             <g ref="axisCellLines"></g>
+            <text :x="innerWidth / 2" :y="-4" style="font-weight: bold">
+              Cell Lines
+            </text>
           </g>
         </g>
       </svg>
