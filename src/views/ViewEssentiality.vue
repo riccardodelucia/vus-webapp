@@ -41,7 +41,7 @@
           <li><b>Cancer Type:</b> {{ query.tissueName }}</li>
           <li><b>Variant:</b> {{ query.variantId }}</li>
         </ul>
-        <HTSwatches title="DAM" :color="damColor"></HTSwatches>
+        <HTSwatches title="Mutation Status" :color="mutationColor"></HTSwatches>
         <button
           class="btn btn--secondary btn--sm btn--full-width margin-top"
           @click="onClick"
@@ -138,8 +138,8 @@ export default {
       select(axisLogFC.value).call(axisLeft(yScale));
     });
 
-    const damColor = scaleOrdinal()
-      .domain(['Essential', 'Non-essential'])
+    const mutationColor = scaleOrdinal()
+      .domain(['Mutated', 'Not mutated'])
       .range(['red', 'black']);
 
     return {
@@ -153,7 +153,7 @@ export default {
       axisLogFC,
       xScale,
       yScale,
-      damColor,
+      mutationColor,
     };
   },
 };
