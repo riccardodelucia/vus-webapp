@@ -190,15 +190,13 @@ export default {
           extent(heatmap.value.map(({ nPatients }) => nPatients + 1))
         );
 
-        // Heamap must be loaded only when all data is available
+        // Heatmap must be loaded only when all data is available
         ready.value = true;
       } catch (error) {
-        const message =
-          error instanceof AxiosError
-            ? error.response.data.detail
-            : error.message
-            ? error.message
-            : error;
+        let message = 'Unknown Error';
+        if (error instanceof AxiosError) {
+          message = error.message;
+        }
 
         sendErrorNotification({
           title: 'Cannot retrieve data',

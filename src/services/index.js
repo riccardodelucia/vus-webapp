@@ -12,6 +12,7 @@ const instance = axios.create({
   paramsSerializer: {
     serialize: (params) => Qs.stringify(params, { arrayFormat: 'repeat' }),
   },
+  //timeout: 10000,
 });
 
 instance.interceptors.response.use(interceptorCamelize);
