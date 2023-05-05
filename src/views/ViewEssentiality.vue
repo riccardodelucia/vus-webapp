@@ -30,7 +30,7 @@
               :cx="xScale(datum.cellLineName)"
               :cy="yScale(datum.essentialityValue)"
               r="5"
-              :fill="datum.presence ? 'red' : 'black'"
+              :fill="datum.mutation ? 'red' : 'black'"
             />
           </g>
           <g :transform="`translate(0, ${innerHeight})`">
@@ -45,7 +45,7 @@
         <h4>Details</h4>
         <ul>
           <li><b>Cancer Type:</b> {{ query.tissueName }}</li>
-          <li><b>Variant:</b> {{ query.variantId }}</li>
+          <li><b>Variant:</b> {{ query.variants }}</li>
         </ul>
         <HTSwatches title="Mutation Status" :color="mutationColor"></HTSwatches>
         <button

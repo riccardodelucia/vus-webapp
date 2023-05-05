@@ -81,7 +81,7 @@
             :key="idx"
             class="heatmap-patients"
             :transform="`translate(${xScaleTissues(datum.tissueName)},  0)`"
-            @click="onClickAggregated(datum)"
+            @click="onClick(datum)"
           >
             <rect
               :x="0"
@@ -215,29 +215,16 @@ export default {
       select(axisVariants.value).select('.domain').remove();
     });
 
-    const onClick = function (datum) {
+    const onClick = function ({ tissueName, variantId }) {
       router.push({
         name: 'essentiality',
         query: {
-          tissueName: datum.tissueName,
-          variants: [datum.variantId],
+          tissueName,
+          variantId,
           geneId: props.geneId,
         },
       });
     };
-
-    const onClickAggregated = function (datum) {
-      debugger;
-      router.push({
-        name: 'essentiality',
-        query: {
-          tissueName: datum.tissueName,
-          variants: [datum.variantId],
-          geneId: props.geneId,
-        },
-      });
-    };
-
     return {
       width,
       annotationWidth,
@@ -252,7 +239,6 @@ export default {
       xScaleTissues,
       yScale,
       onClick,
-      onClickAggregated,
     };
   },
 };

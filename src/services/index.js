@@ -5,14 +5,9 @@ const urlBackend = getEnv('VITE_URL_BACKEND');
 
 import axios from 'axios';
 
-import Qs from 'qs';
-
 const instance = axios.create({
   baseURL: urlBackend,
-  paramsSerializer: {
-    serialize: (params) => Qs.stringify(params, { arrayFormat: 'repeat' }),
-  },
-  //timeout: 10000,
+  timeout: 10000,
 });
 
 instance.interceptors.response.use(interceptorCamelize);
@@ -30,15 +25,13 @@ export default {
   getAnnotations(gene) {
     return instance.get(`annotations/${gene}`);
   },
-  getCellLineEssentialityProfiles(query) {
-    const camelToSnakeCase = (str) =>
-      str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-    const snakeQuery = {};
-    Object.entries(query).forEach(([key, value]) => {
-      snakeQuery[camelToSnakeCase(key)] = value;
-    });
+  getCellLineEssentialityProfiles({ tissueName, variantId, geneId }) {
     return instance.get(`cell-line-essentiality`, {
-      params: { ...snakeQuery },
+      params: {
+        tissue_name: tissueName,
+        variant_id: variantId,
+        gene_id: geneId,
+      },
     });
   },
 };
