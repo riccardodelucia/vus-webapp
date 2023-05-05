@@ -37,7 +37,8 @@ const routes = [
           throw new Error(`Unable to retrieve data`);
         }
         to.params.data = essentialityData;
-        to.params.query = to.query;
+        to.params.tissueName = to.query.tissueName;
+        to.params.variantId = to.query.variantId;
         return true;
       } catch (error) {
         let message = 'Unknown Error';

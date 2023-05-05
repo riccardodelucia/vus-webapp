@@ -1,6 +1,22 @@
 <template>
   <AppLayout>
     <div class="container card essentiality-chart">
+      <div class="details">
+        <h4>Details</h4>
+        <ul>
+          <li><b>Cancer Type:</b> {{ tissueName }}</li>
+          <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
+          <li v-else><b>All variants</b></li>
+        </ul>
+        <HTSwatches title="Mutation Status" :color="mutationColor"></HTSwatches>
+        <button
+          class="btn btn--secondary btn--sm btn--full-width margin-top"
+          @click="onClick"
+        >
+          <vue-feather type="arrow-left"></vue-feather>
+          Back to Gene Heatmap
+        </button>
+      </div>
       <svg
         preserveAspectRatio="xMinYMin meet"
         :viewBox="[0, 0, width, height].join(' ')"
@@ -41,21 +57,6 @@
           </g>
         </g>
       </svg>
-      <div class="details">
-        <h4>Details</h4>
-        <ul>
-          <li><b>Cancer Type:</b> {{ query.tissueName }}</li>
-          <li><b>Variant:</b> {{ query.variants }}</li>
-        </ul>
-        <HTSwatches title="Mutation Status" :color="mutationColor"></HTSwatches>
-        <button
-          class="btn btn--secondary btn--sm btn--full-width margin-top"
-          @click="onClick"
-        >
-          <vue-feather type="arrow-left"></vue-feather>
-          Back to Gene Heatmap
-        </button>
-      </div>
     </div>
   </AppLayout>
 </template>
@@ -86,8 +87,12 @@ export default {
   components: { AppLayout, HTSwatches },
   props: {
     data: { type: Array, required: true },
-    query: {
-      type: Object,
+    tissueName: {
+      type: String,
+      required: true,
+    },
+    variantId: {
+      type: String,
       required: true,
     },
   },
