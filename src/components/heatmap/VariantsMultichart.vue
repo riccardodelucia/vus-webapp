@@ -1,6 +1,11 @@
 <template>
   <div v-if="ready" class="charts-container margin-top">
     <div class="legends">
+      <div>
+        <h5>DAM Status</h5>
+        <div class="dam-legend"></div>
+        <span class="text--sm">is DAM</span>
+      </div>
       <HTSwatches title="Polyphen" :color="polyphenColor"></HTSwatches>
       <HTSwatches title="SIFT" :color="siftColor"></HTSwatches>
       <HTLegendColor
@@ -229,5 +234,14 @@ export default {
 .charts-container {
   display: flex;
   gap: var(--space-md);
+}
+
+.dam-legend {
+  border-radius: 100%;
+  width: 10px;
+  height: 10px;
+  background-color: dodgerblue;
+  display: inline-block;
+  margin-right: var(--space-sm);
 }
 </style>
