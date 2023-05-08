@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import ViewVariants from '@/views/ViewVariants.vue';
 import ViewEssentiality from '@/views/ViewEssentiality.vue';
 
-import VariantsMultichart from '../components/heatmap/VariantsMultichart.vue';
+//
 
 import service from '@/services';
 
@@ -15,14 +15,7 @@ const routes = [
     path: '/',
     name: 'variants',
     component: ViewVariants,
-    children: [
-      {
-        path: 'gene/:id',
-        name: 'gene',
-        component: VariantsMultichart,
-        props: true,
-      },
-    ],
+    props: (route) => ({ geneId: route.query.geneId || '' }),
   },
   {
     path: '/essentiality',
