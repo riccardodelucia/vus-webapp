@@ -12,10 +12,10 @@ import { sendErrorNotification } from '@/notifications';
 
 const routes = [
   {
-    path: '/',
+    path: '/:geneId?',
     name: 'variants',
     component: ViewVariants,
-    props: (route) => ({ geneId: route.query.geneId || '' }),
+    props: true,
   },
   {
     path: '/essentiality',
@@ -29,9 +29,11 @@ const routes = [
         if (!essentialityData) {
           throw new Error(`Unable to retrieve data`);
         }
-        to.params.data = essentialityData;
+        to.params.data = essentialityData.data;
+        to.params.rankRatio = essentialityData.rankRatio;
         to.params.tissueName = to.query.tissueName;
         to.params.variantId = to.query.variantId;
+        to.params.geneId = to.query.geneId;
         return true;
       } catch (error) {
         let message = 'Unknown Error';
