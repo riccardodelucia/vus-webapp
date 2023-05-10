@@ -1,6 +1,24 @@
 <template>
   <AppLayout>
     <div class="container card essentiality-chart">
+      <div class="details">
+        <h4>Details</h4>
+        <ul>
+          <li><b>Gene:</b> {{ geneId }}</li>
+          <li><b>Cancer Type:</b> {{ tissueName }}</li>
+          <li><b>Rank Ratio:</b> {{ Number(rankRatio.toFixed(2)) }}</li>
+          <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
+          <li v-else><b>All variants</b></li>
+        </ul>
+        <HTSwatches title="Mutation Status" :color="mutationColor"></HTSwatches>
+        <button
+          class="btn btn--secondary btn--sm btn--full-width margin-top"
+          @click="onClick"
+        >
+          <vue-feather type="arrow-left"></vue-feather>
+          Back to Gene Heatmap
+        </button>
+      </div>
       <svg
         preserveAspectRatio="xMinYMin meet"
         :viewBox="[0, 0, width, height].join(' ')"
@@ -9,6 +27,9 @@
       >
         <g :transform="`translate(${margins.left}, ${margins.top})`">
           <g ref="axisLogFC"></g>
+          <text :x="4" :y="4" style="font-weight: bold">
+            logFC(essentiality)
+          </text>
           <g>
             <line
               :x1="0"
@@ -27,29 +48,17 @@
               :cx="xScale(datum.cellLineName)"
               :cy="yScale(datum.essentialityValue)"
               r="5"
-              :fill="datum.presence ? 'red' : 'black'"
+              :fill="datum.mutation ? 'red' : 'black'"
             />
           </g>
           <g :transform="`translate(0, ${innerHeight})`">
             <g ref="axisCellLines"></g>
+            <text :x="innerWidth / 2" :y="-4" style="font-weight: bold">
+              Cell Lines
+            </text>
           </g>
         </g>
       </svg>
-      <div class="details">
-        <h4>Details</h4>
-        <ul>
-          <li><b>Cancer Type:</b> {{ query.tissueName }}</li>
-          <li><b>Variant:</b> {{ query.variantId }}</li>
-        </ul>
-        <HTSwatches title="DAM" :color="damColor"></HTSwatches>
-        <button
-          class="btn btn--secondary btn--sm btn--full-width margin-top"
-          @click="onClick"
-        >
-          <vue-feather type="arrow-left"></vue-feather>
-          Back to Gene Heatmap
-        </button>
-      </div>
     </div>
   </AppLayout>
 </template>
@@ -80,8 +89,17 @@ export default {
   components: { AppLayout, HTSwatches },
   props: {
     data: { type: Array, required: true },
-    query: {
-      type: Object,
+    geneId: { type: String, required: true },
+    tissueName: {
+      type: String,
+      required: true,
+    },
+    variantId: {
+      type: String,
+      required: true,
+    },
+    rankRatio: {
+      type: Number,
       required: true,
     },
   },
@@ -138,8 +156,8 @@ export default {
       select(axisLogFC.value).call(axisLeft(yScale));
     });
 
-    const damColor = scaleOrdinal()
-      .domain(['Essential', 'Non-essential'])
+    const mutationColor = scaleOrdinal()
+      .domain(['Mutated', 'Not mutated'])
       .range(['red', 'black']);
 
     return {
@@ -153,7 +171,7 @@ export default {
       axisLogFC,
       xScale,
       yScale,
-      damColor,
+      mutationColor,
     };
   },
 };

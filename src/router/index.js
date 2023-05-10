@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import ViewVariants from '@/views/ViewVariants.vue';
 import ViewEssentiality from '@/views/ViewEssentiality.vue';
 
-import VariantsMultichart from '../components/heatmap/VariantsMultichart.vue';
+//
 
 import service from '@/services';
 
@@ -12,17 +12,10 @@ import { sendErrorNotification } from '@/notifications';
 
 const routes = [
   {
-    path: '/',
+    path: '/:geneId?',
     name: 'variants',
     component: ViewVariants,
-    children: [
-      {
-        path: 'gene/:id',
-        name: 'gene',
-        component: VariantsMultichart,
-        props: true,
-      },
-    ],
+    props: true,
   },
   {
     path: '/essentiality',
@@ -36,19 +29,20 @@ const routes = [
         if (!essentialityData) {
           throw new Error(`Unable to retrieve data`);
         }
-        to.params.data = essentialityData;
-        to.params.query = to.query;
+        to.params.data = essentialityData.data;
+        to.params.rankRatio = essentialityData.rankRatio;
+        to.params.tissueName = to.query.tissueName;
+        to.params.variantId = to.query.variantId;
+        to.params.geneId = to.query.geneId;
         return true;
       } catch (error) {
-        const message =
-          error instanceof AxiosError
-            ? error.response.data.detail
-            : error.message
-            ? error.message
-            : error;
+        let message = 'Unknown Error';
+        if (error instanceof AxiosError) {
+          message = error.message;
+        }
         sendErrorNotification({
           title: 'Cannot retrieve data',
-          message: message,
+          message,
         });
         return false;
       }
