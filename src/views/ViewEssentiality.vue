@@ -4,7 +4,9 @@
       <div class="details">
         <h4>Details</h4>
         <ul>
+          <li><b>Gene:</b> {{ geneId }}</li>
           <li><b>Cancer Type:</b> {{ tissueName }}</li>
+          <li><b>Rank Ratio:</b> {{ Number(rankRatio.toFixed(2)) }}</li>
           <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
           <li v-else><b>All variants</b></li>
         </ul>
@@ -87,12 +89,17 @@ export default {
   components: { AppLayout, HTSwatches },
   props: {
     data: { type: Array, required: true },
+    geneId: { type: String, required: true },
     tissueName: {
       type: String,
       required: true,
     },
     variantId: {
       type: String,
+      required: true,
+    },
+    rankRatio: {
+      type: Number,
       required: true,
     },
   },

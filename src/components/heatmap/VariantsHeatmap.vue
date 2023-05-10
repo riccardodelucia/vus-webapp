@@ -117,7 +117,7 @@
 
 <script>
 import { axisTop, axisRight, select, scaleBand } from 'd3';
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { useRouter } from 'vue-router';
@@ -125,24 +125,6 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'VariantsHeatmap',
   props: {
-    geneId: { type: String, required: true },
-    heatmap: {
-      type: Array,
-      required: true,
-    },
-    annotationsHeatmap: {
-      type: Array,
-      required: true,
-    },
-    aggregatedDam: { type: Array, required: true },
-    variants: {
-      type: Array,
-      required: true,
-    },
-    tissues: {
-      type: Array,
-      required: true,
-    },
     color: {
       type: Function,
       required: true,
@@ -156,7 +138,15 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  setup() {
+    const geneId = inject('geneId');
+    const variants = inject('variants');
+    const tissues = inject('tissues');
+
+    const heatmap = inject('heatmap');
+    const aggregatedDam = inject('aggregatedDam');
+    const annotationsHeatmap = inject('annotationsHeatmap');
+
     const axisTissues = ref(null);
     const axisVariants = ref(null);
 
@@ -171,7 +161,7 @@ export default {
     const heatmapTileHeight = 30;
     const heatmapWidth = 900;
 
-    const heatmapHeight = heatmapTileHeight * props.variants.length;
+    const heatmapHeight = heatmapTileHeight * variants.value.length;
     const height =
       margins.top +
       heatmapHeight +
@@ -182,12 +172,12 @@ export default {
     // Make Scales
     const yScale = scaleBand()
       .range([0, heatmapHeight])
-      .domain(props.variants)
+      .domain(variants.value)
       .padding(padding);
 
     const xScaleTissues = scaleBand()
       .range([0, heatmapWidth])
-      .domain(props.tissues)
+      .domain(tissues.value)
       .padding(padding);
 
     // use same tile width on annotations
@@ -221,7 +211,7 @@ export default {
         query: {
           tissueName,
           variantId,
-          geneId: props.geneId,
+          geneId: geneId,
         },
       });
     };
@@ -239,6 +229,9 @@ export default {
       xScaleTissues,
       yScale,
       onClick,
+      heatmap,
+      aggregatedDam,
+      annotationsHeatmap,
     };
   },
 };

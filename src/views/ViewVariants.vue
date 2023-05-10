@@ -102,6 +102,7 @@ export default {
 
     const heatmapColor = ref(null);
 
+    provide('geneId', props.geneId);
     provide('variants', variants);
     provide('tissues', tissues);
     provide('heatmap', heatmap);
@@ -118,11 +119,10 @@ export default {
     };
 
     async function onSubmit() {
-      gene.value &&
-        router.push({
-          name: 'variants',
-          query: { geneId: gene.value },
-        });
+      router.push({
+        name: 'variants',
+        params: { geneId: gene.value },
+      });
     }
 
     watchEffect(async () => {

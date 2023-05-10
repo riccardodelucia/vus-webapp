@@ -17,13 +17,6 @@
       ></HTLegendColor>
     </div>
     <VariantsHeatmap
-      v-if="ready"
-      :gene-id="geneId"
-      :heatmap="heatmap"
-      :annotations-heatmap="annotationsHeatmap"
-      :aggregated-dam="aggregatedDam"
-      :variants="variants"
-      :tissues="tissues"
       :color="heatmapColor"
       :sift-color="siftColor"
       :polyphen-color="polyphenColor"
@@ -44,12 +37,7 @@ import { inject } from 'vue';
 export default {
   name: 'VariantsMultichart',
   components: { VariantsHeatmap, HTLegendColor, HTSwatches },
-  props: {
-    geneId: { type: String, required: true },
-  },
   setup() {
-    debugger;
-
     const legendChart = {
       width: 105,
       height: 300,
@@ -60,13 +48,6 @@ export default {
         bottom: 10,
       },
     };
-
-    const variants = inject('variants');
-    const tissues = inject('tissues');
-
-    const heatmap = inject('heatmap');
-    const aggregatedDam = inject('aggregatedDam');
-    const annotationsHeatmap = inject('annotationsHeatmap');
 
     const heatmapColor = inject('heatmapColor');
 
@@ -91,11 +72,6 @@ export default {
     return {
       legendChart,
       heatmapColor,
-      heatmap,
-      annotationsHeatmap,
-      aggregatedDam,
-      variants,
-      tissues,
       siftColor,
       polyphenColor,
     };
