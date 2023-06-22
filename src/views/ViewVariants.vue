@@ -1,9 +1,9 @@
 <template>
   <AppLayout>
-    <div class="container card">
-      <form class="controls margin-bottom" @submit.prevent="onSubmit">
+    <div class="htd-card app-content">
+      <form class="controls htdu-marginbottom--md" @submit.prevent="onSubmit">
         <ht-search-bar v-model="gene" placeholder="Search gene"></ht-search-bar>
-        <button class="btn btn--primary">Search</button>
+        <button class="htd-btn htd-btn--primary button-search">Search</button>
       </form>
       <VariantsMultichart v-if="ready"></VariantsMultichart>
     </div>
@@ -119,6 +119,7 @@ export default {
     };
 
     async function onSubmit() {
+      debugger;
       router.push({
         name: 'variants',
         params: { geneId: gene.value },
@@ -181,13 +182,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
+/* .container {
   width: fit-content;
   margin: var(--space-md);
-}
+} */
 
 .controls {
   display: flex;
-  gap: var(--space-md);
+  gap: var(--size-3);
+  align-items: center;
 }
 </style>

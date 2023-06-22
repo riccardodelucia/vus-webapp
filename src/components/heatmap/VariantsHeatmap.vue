@@ -1,5 +1,7 @@
 <template>
   <svg
+    class="htd-chart"
+    overflow="hidden"
     preserveAspectRatio="xMinYMin meet"
     :viewBox="[0, 0, width, height].join(' ')"
     :width="width"
@@ -154,7 +156,7 @@ export default {
 
     const padding = 0.05;
 
-    const margins = { left: 0, right: 180, top: 120, bottom: 0 };
+    const margins = { left: 0, right: 180, top: 140, bottom: 0 };
 
     const horizontalGap = 10;
     const verticalGap = 10;

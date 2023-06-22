@@ -1,64 +1,70 @@
 <template>
   <AppLayout>
-    <div class="container card essentiality-chart">
-      <div class="details">
-        <h4>Details</h4>
-        <ul>
-          <li><b>Gene:</b> {{ geneId }}</li>
-          <li><b>Cancer Type:</b> {{ tissueName }}</li>
-          <li><b>Rank Ratio:</b> {{ Number(rankRatio.toFixed(2)) }}</li>
-          <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
-          <li v-else><b>All variants</b></li>
-        </ul>
-        <HTSwatches title="Mutation Status" :color="mutationColor"></HTSwatches>
-        <button
-          class="btn btn--secondary btn--sm btn--full-width margin-top"
-          @click="onClick"
+    <div class="htd-card app-content">
+      <div class="charts-container flex">
+        <div class="details">
+          <h2 class="title">Details</h2>
+          <ul>
+            <li><b>Gene:</b> {{ geneId }}</li>
+            <li><b>Cancer Type:</b> {{ tissueName }}</li>
+            <li><b>Rank Ratio:</b> {{ Number(rankRatio.toFixed(2)) }}</li>
+            <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
+            <li v-else><b>All variants</b></li>
+          </ul>
+          <HTSwatches
+            title="Mutation Status"
+            :color="mutationColor"
+          ></HTSwatches>
+          <button
+            class="htd-btn htd-btn--secondary htd-btn--sm"
+            @click="onClick"
+          >
+            <vue-feather type="arrow-left"></vue-feather>
+            Back to Gene Heatmap
+          </button>
+        </div>
+        <svg
+          class="htd-chart"
+          preserveAspectRatio="xMinYMin meet"
+          :viewBox="[0, 0, width, height].join(' ')"
+          :width="width"
+          :height="height"
         >
-          <vue-feather type="arrow-left"></vue-feather>
-          Back to Gene Heatmap
-        </button>
-      </div>
-      <svg
-        preserveAspectRatio="xMinYMin meet"
-        :viewBox="[0, 0, width, height].join(' ')"
-        :width="width"
-        :height="height"
-      >
-        <g :transform="`translate(${margins.left}, ${margins.top})`">
-          <g ref="axisLogFC"></g>
-          <text :x="4" :y="4" style="font-weight: bold">
-            logFC(essentiality)
-          </text>
-          <g>
-            <line
-              :x1="0"
-              :y1="yScale(-0.5)"
-              :x2="innerWidth"
-              :y2="yScale(-0.5)"
-              stroke="black"
-              stroke-width="2"
-              stroke-dasharray="4 4"
-              stroke-opacity="0.5"
-            />
-
-            <circle
-              v-for="(datum, idx) in data"
-              :key="idx"
-              :cx="xScale(datum.cellLineName)"
-              :cy="yScale(datum.essentialityValue)"
-              r="5"
-              :fill="datum.mutation ? 'red' : 'black'"
-            />
-          </g>
-          <g :transform="`translate(0, ${innerHeight})`">
-            <g ref="axisCellLines"></g>
-            <text :x="innerWidth / 2" :y="-4" style="font-weight: bold">
-              Cell Lines
+          <g :transform="`translate(${margins.left}, ${margins.top})`">
+            <g ref="axisLogFC"></g>
+            <text :x="4" :y="4" style="font-weight: bold">
+              logFC(essentiality)
             </text>
+            <g>
+              <line
+                :x1="0"
+                :y1="yScale(-0.5)"
+                :x2="innerWidth"
+                :y2="yScale(-0.5)"
+                stroke="black"
+                stroke-width="2"
+                stroke-dasharray="4 4"
+                stroke-opacity="0.5"
+              />
+
+              <circle
+                v-for="(datum, idx) in data"
+                :key="idx"
+                :cx="xScale(datum.cellLineName)"
+                :cy="yScale(datum.essentialityValue)"
+                r="5"
+                :fill="datum.mutation ? 'red' : 'black'"
+              />
+            </g>
+            <g :transform="`translate(0, ${innerHeight})`">
+              <g ref="axisCellLines"></g>
+              <text :x="innerWidth / 2" :y="-4" style="font-weight: bold">
+                Cell Lines
+              </text>
+            </g>
           </g>
-        </g>
-      </svg>
+        </svg>
+      </div>
     </div>
   </AppLayout>
 </template>
@@ -114,10 +120,10 @@ export default {
     const height = 700;
 
     const margins = {
-      top: 10,
+      top: 30,
       bottom: 100,
       left: 60,
-      right: 0,
+      right: 20,
     };
 
     const { innerWidth, innerHeight } = getInnerChartSizes(
@@ -182,8 +188,10 @@ export default {
   display: flex;
   gap: var(--space-md);
 }
-.details {
-  border: 1px solid var(--color-blue-darker);
-  padding: var(--space-sm);
+
+.title {
+  font-size: var(--font-size-4);
+  font-weight: var(--font-weight-5);
+  //color: inherit;
 }
 </style>

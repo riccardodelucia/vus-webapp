@@ -1,11 +1,12 @@
 <template>
   <svg
+    class="htd-chart htd-legend"
     :viewBox="[0, 0, width, height].join(' ')"
     :width="width"
     :height="height"
   >
     <g :transform="`translate(${margins.left}, ${margins.top})`">
-      <text class="legend__title" x="0" :y="-6" fill="currentColor">
+      <text class="htd-legend__title" x="0" :y="-6" fill="currentColor">
         {{ title }}
       </text>
       <g ref="legend"></g>
@@ -15,14 +16,14 @@
 </template>
 
 <script>
-import { renderLegend, makeAxis, renderAxis } from "./colorLegend.js";
-import { ref, watchEffect } from "vue";
+import { renderLegend, makeAxis, renderAxis } from './colorLegend.js';
+import { ref, watchEffect } from 'vue';
 
 export default {
-  name: "HTLegendColor",
+  name: 'HTLegendColor',
   props: {
     color: { type: Function, required: true },
-    title: { type: String, default: "" },
+    title: { type: String, default: '' },
     margins: {
       type: Object,
       default: () => ({
@@ -60,7 +61,7 @@ export default {
     const legend = ref(null);
     const axis = ref(null);
 
-    const orientation = props.width >= props.height ? "horizontal" : "vertical";
+    const orientation = props.width >= props.height ? 'horizontal' : 'vertical';
 
     watchEffect(() => {
       const axisData = makeAxis({
@@ -99,9 +100,11 @@ export default {
 };
 </script>
 
-<style>
-.legend__title {
-  font-size: 15px;
-  font-weight: bold;
+<style lang="scss">
+.htd-legend {
+  &__title {
+    font-size: 15px;
+    font-weight: bold;
+  }
 }
 </style>
