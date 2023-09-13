@@ -14,5 +14,9 @@
         "jest": true
       }
     }
-  ]
+  ],
+  "rules": {
+    "vue/no-unused-vars": "off",
+    "vue/first-attribute-linebreak": "off"
+  }
 }

@@ -1,109 +1,54 @@
 <template>
-  <template v-if="!smallScreen">
-    <div class="layout-grid">
-      <TheHeader class="layout-grid__header"></TheHeader>
-      <TheSidenav class="layout-grid__sidenav"></TheSidenav>
-      <div class="layout-grid__content">
-        <slot></slot>
-      </div>
-    </div>
-  </template>
-  <template v-else>
-    <div
-      v-if="sidenavVisible"
-      class="overlay"
-      @click="manageSidenav(false)"
-    ></div>
-    <div class="layout-flex">
-      <TheHeader
-        :show-menu-button="true"
-        @click="manageSidenav(true)"
-      ></TheHeader>
-      <div
-        class="layout-flex__sidenav"
-        :class="{ 'layout-flex__sidenav--visible': sidenavVisible }"
-      >
-        <TheSidenav></TheSidenav>
-      </div>
-      <div class="layout-flex__content"><slot></slot></div>
-    </div>
-  </template>
+  <ht-app-layout :show-user="false" :sidenav-object="sidenavObject">
+    <slot></slot>
+  </ht-app-layout>
 </template>
 
 <script>
-import { resizeListener } from "@computational-biology-sw-web-dev-unit/ht-vue";
-import { ref } from "vue";
-import TheHeader from "@/components/TheHeader.vue";
-import TheSidenav from "@/components/TheSidenav.vue";
-
 export default {
-  name: "AppLayout",
-  components: { TheHeader, TheSidenav },
-  props: {
-    sidenavObject: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
+  name: 'AppLayout',
+
   setup() {
-    const sidenavVisible = ref(false);
-    const smallScreen = ref(false);
-
-    resizeListener(() => {
-      smallScreen.value = window.innerWidth < 1100;
-    });
-
-    const manageSidenav = (value) => {
-      sidenavVisible.value = value;
+    const sidenavObject = {
+      title: 'VUS',
+      links: [{ id: 1, url: '/', label: 'Home', type: 'home' }],
     };
 
-    function onClick() {}
-
     return {
-      sidenavVisible,
-      manageSidenav,
-      smallScreen,
-      onClick,
+      sidenavObject,
     };
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.layout-grid {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: min-content 1fr;
-  grid-template-rows: min-content 1fr;
+<style lang="scss">
+.app-content {
+  margin: var(--size-4);
+  max-width: 100%;
+  width: fit-content;
+  overflow: scroll;
+}
 
-  &__header {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-  }
+.charts-container {
+  background-color: var(--surface-2-light);
+  color: var(--text-1-light);
+  padding: var(--size-2);
 
-  &__sidenav {
-    grid-column: 1 / 2;
-    grid-row: 1 / -1;
-  }
-
-  &__content {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
+  * {
+    color: inherit;
   }
 }
 
-.layout-flex {
-  &__sidenav {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    z-index: 100;
-    transform: translateX(-20rem);
+.flex {
+  display: flex;
+  gap: var(--space-md);
+}
 
-    &--visible {
-      transform: none;
-      transition: transform 0.2s ease-out;
-    }
+.details {
+  padding: var(--size-2);
+
+  & > *:not(:last-child) {
+    margin-bottom: var(--size-3);
   }
 }
 </style>
