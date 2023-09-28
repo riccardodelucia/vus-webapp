@@ -1,7 +1,6 @@
 <template>
   <svg
-    class="htd-chart"
-    overflow="hidden"
+    class="ht-chart"
     preserveAspectRatio="xMinYMin meet"
     :viewBox="[0, 0, width, height].join(' ')"
     :width="width"
@@ -11,7 +10,7 @@
       <g>
         <text
           :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
-          style="font-weight: bold"
+          class="ht-chart-title"
         >
           sift
         </text>
@@ -28,7 +27,7 @@
       <g :transform="`translate(${annotationWidth + 1}, 0)`">
         <text
           :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
-          style="font-weight: bold"
+          class="ht-chart-title"
         >
           polyphen
         </text>
@@ -71,7 +70,9 @@
               :cx="xScaleTissues.bandwidth() / 2"
               :cy="yScale.bandwidth() / 2"
               r="5"
-              fill="dodgerblue"
+              stroke="dodgerblue"
+              fill="transparent"
+              stroke-width="2px"
               pointer-events="none"
             />
           </g>
@@ -107,7 +108,7 @@
             :transform="`translate(${heatmapWidth + 2}, ${
               yScale.bandwidth() / 2 + 4
             })`"
-            style="font-weight: bold"
+            class="ht-chart-title"
           >
             Aggregated DAM
           </text>
@@ -163,7 +164,7 @@ export default {
     const heatmapTileHeight = 30;
     const heatmapWidth = 900;
 
-    const heatmapHeight = heatmapTileHeight * variants.value.length;
+    const heatmapHeight = heatmapTileHeight * variants.length;
     const height =
       margins.top +
       heatmapHeight +
@@ -174,12 +175,12 @@ export default {
     // Make Scales
     const yScale = scaleBand()
       .range([0, heatmapHeight])
-      .domain(variants.value)
+      .domain(variants)
       .padding(padding);
 
     const xScaleTissues = scaleBand()
       .range([0, heatmapWidth])
-      .domain(tissues.value)
+      .domain(tissues)
       .padding(padding);
 
     // use same tile width on annotations
@@ -213,7 +214,7 @@ export default {
         query: {
           tissueName,
           variantId,
-          geneId: geneId,
+          geneId,
         },
       });
     };
@@ -239,7 +240,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped="true">
+<style lang="postcss" scoped>
 .heatmap-patients {
   cursor: pointer;
   pointer-events: bounding-box;

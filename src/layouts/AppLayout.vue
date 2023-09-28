@@ -1,7 +1,12 @@
 <template>
-  <ht-app-layout :show-user="false" :sidenav-object="sidenavObject">
-    <slot></slot>
-  </ht-app-layout>
+  <ht-layout-app :sidenav-object="sidenavObject">
+    <template #header>
+      <ht-theme-switcher></ht-theme-switcher>
+    </template>
+    <div class="ht-container">
+      <slot></slot>
+    </div>
+  </ht-layout-app>
 </template>
 
 <script>
@@ -11,7 +16,10 @@ export default {
   setup() {
     const sidenavObject = {
       title: 'VUS',
-      links: [{ id: 1, url: '/', label: 'Home', type: 'home' }],
+      links: [
+        { id: 1, url: '/', label: 'Home', type: 'home' },
+        { id: 2, url: '/search', label: 'Search', type: 'search' },
+      ],
     };
 
     return {
@@ -21,34 +29,17 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="postcss">
 .app-content {
-  margin: var(--size-4);
-  max-width: 100%;
-  width: fit-content;
-  overflow: scroll;
+  width: max-content;
+  overflow-x: scroll;
+  box-shadow: var(--shadow-3);
 }
 
-.charts-container {
-  background-color: var(--surface-2-light);
-  color: var(--text-1-light);
-  padding: var(--size-2);
-
-  * {
-    color: inherit;
-  }
-}
-
-.flex {
+.back-link {
   display: flex;
-  gap: var(--space-md);
-}
-
-.details {
-  padding: var(--size-2);
-
-  & > *:not(:last-child) {
-    margin-bottom: var(--size-3);
-  }
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-2);
 }
 </style>

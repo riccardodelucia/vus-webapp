@@ -1,77 +1,83 @@
 <template>
   <AppLayout>
-    <div class="htd-card app-content">
-      <div class="charts-container flex">
-        <div class="details">
-          <h2 class="title">Details</h2>
-          <ul>
-            <li><b>Gene:</b> {{ geneId }}</li>
-            <li><b>Cancer Type:</b> {{ tissueName }}</li>
-            <li><b>Rank Ratio:</b> {{ Number(rankRatio.toFixed(2)) }}</li>
-            <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
-            <li v-else><b>All variants</b></li>
-          </ul>
-          <HTSwatches
-            title="Mutation Status"
-            :color="mutationColor"
-          ></HTSwatches>
-          <button
-            class="htd-btn htd-btn--secondary htd-btn--sm"
-            @click="onClick"
-          >
-            <vue-feather type="arrow-left"></vue-feather>
-            Back to Gene Heatmap
-          </button>
-        </div>
-        <svg
-          class="htd-chart"
-          preserveAspectRatio="xMinYMin meet"
-          :viewBox="[0, 0, width, height].join(' ')"
-          :width="width"
-          :height="height"
-        >
-          <g :transform="`translate(${margins.left}, ${margins.top})`">
-            <g ref="axisLogFC"></g>
-            <text :x="4" :y="4" style="font-weight: bold">
-              logFC(essentiality)
-            </text>
-            <g>
-              <line
-                :x1="0"
-                :y1="yScale(-0.5)"
-                :x2="innerWidth"
-                :y2="yScale(-0.5)"
-                stroke="black"
-                stroke-width="2"
-                stroke-dasharray="4 4"
-                stroke-opacity="0.5"
-              />
+    <div class="ht-card ht-container app-content ht-layout-stack">
+      <h2>Essentiality Profile</h2>
+      <router-link
+        class="ht-button back-link"
+        data-type="secondary"
+        :to="{ name: 'variants', params: { geneId } }"
+      >
+        <span class="back-link">
+          <vue-feather type="arrow-left"></vue-feather>
+          Variants
+        </span>
+      </router-link>
+      <ht-tab :tab-list="tabList">
+        <template #essentiality>
+          <div class="chart">
+            <div class="details">
+              <ul>
+                <li><b>Gene:</b> {{ geneId }}</li>
+                <li><b>Cancer Type:</b> {{ tissueName }}</li>
+                <li><b>Rank Ratio:</b> {{ Number(rankRatio.toFixed(2)) }}</li>
+                <li v-if="variantId"><b>Variant:</b> {{ variantId }}</li>
+                <li v-else><b>All variants</b></li>
+              </ul>
+              <ht-swatches
+                title="Mutation Status"
+                :color="mutationColor"
+              ></ht-swatches>
+            </div>
+            <svg
+              class="ht-chart"
+              preserveAspectRatio="xMinYMin meet"
+              :viewBox="[0, 0, width, height].join(' ')"
+              :width="width"
+              :height="height"
+            >
+              <g :transform="`translate(${margins.left}, ${margins.top})`">
+                <g ref="axisLogFC"></g>
+                <text :x="4" :y="4" style="font-weight: bold">
+                  logFC(essentiality)
+                </text>
+                <g>
+                  <line
+                    :x1="0"
+                    :y1="yScale(-0.5)"
+                    :x2="innerWidth"
+                    :y2="yScale(-0.5)"
+                    stroke="black"
+                    stroke-width="2"
+                    stroke-dasharray="4 4"
+                    stroke-opacity="0.5"
+                  />
 
-              <circle
-                v-for="(datum, idx) in data"
-                :key="idx"
-                :cx="xScale(datum.cellLineName)"
-                :cy="yScale(datum.essentialityValue)"
-                r="5"
-                :fill="datum.mutation ? 'red' : 'black'"
-              />
-            </g>
-            <g :transform="`translate(0, ${innerHeight})`">
-              <g ref="axisCellLines"></g>
-              <text :x="innerWidth / 2" :y="-4" style="font-weight: bold">
-                Cell Lines
-              </text>
-            </g>
-          </g>
-        </svg>
-      </div>
+                  <circle
+                    v-for="(datum, idx) in data"
+                    :key="idx"
+                    :cx="xScale(datum.cellLineName)"
+                    :cy="yScale(datum.essentialityValue)"
+                    r="5"
+                    :fill="datum.mutation ? 'red' : 'black'"
+                  />
+                </g>
+                <g :transform="`translate(0, ${innerHeight})`">
+                  <g ref="axisCellLines"></g>
+                  <text :x="innerWidth / 2" :y="-4" style="font-weight: bold">
+                    Cell Lines
+                  </text>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </template>
+      </ht-tab>
     </div>
   </AppLayout>
 </template>
 
 <script>
 import AppLayout from '@/layouts/AppLayout.vue';
-import HTSwatches from '@/components/HTSwatches.vue';
 
 import { useRouter } from 'vue-router';
 
@@ -92,7 +98,7 @@ import {
   makeReactiveAxis,
 } from '@computational-biology-sw-web-dev-unit/ht-vue';
 export default {
-  components: { AppLayout, HTSwatches },
+  components: { AppLayout },
   props: {
     data: { type: Array, required: true },
     geneId: { type: String, required: true },
@@ -166,6 +172,8 @@ export default {
       .domain(['Mutated', 'Not mutated'])
       .range(['red', 'black']);
 
+    const tabList = [{ panel: 'essentiality', label: 'Essentiality' }];
+
     return {
       onClick,
       width,
@@ -178,15 +186,29 @@ export default {
       xScale,
       yScale,
       mutationColor,
+      tabList,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.essentiality-chart {
-  display: flex;
-  gap: var(--space-md);
+.chart {
+  padding-block: var(--size-4);
+  padding-inline: var(--size-4);
+  display: grid;
+  grid-template-areas: 'details chart';
+  grid-template-columns: 1fr auto;
+  gap: var(--size-4);
+  align-items: start;
+}
+
+svg {
+  grid-area: chart;
+}
+
+.details {
+  grid-area: details;
 }
 
 .title {

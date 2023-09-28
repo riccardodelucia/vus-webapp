@@ -1,22 +1,22 @@
 <template>
-  <div class="charts-container flex">
+  <div class="variants-multichart-container">
     <div class="details">
-      <HTSwatches
+      <ht-swatches
         title="DAM Status"
         :color="damColor"
         shape="round"
-      ></HTSwatches>
-      <HTSwatches title="Polyphen" :color="polyphenColor"></HTSwatches>
-      <HTSwatches title="SIFT" :color="siftColor"></HTSwatches>
-      <HTLegendColor
+      ></ht-swatches>
+      <ht-swatches title="Polyphen" :color="polyphenColor"></ht-swatches>
+      <ht-swatches title="SIFT" :color="siftColor"></ht-swatches>
+      <ht-chart-legend-color
         :margins="legendChart.margins"
         :width="legendChart.width"
         :height="legendChart.height"
         :color="heatmapColor"
         title="log(#patients)"
-      ></HTLegendColor>
+      ></ht-chart-legend-color>
     </div>
-    <div class="heatmap-container">
+    <div class="variants">
       <VariantsHeatmap
         :color="heatmapColor"
         :sift-color="siftColor"
@@ -27,10 +27,7 @@
 </template>
 
 <script>
-import VariantsHeatmap from '@/components/heatmap/VariantsHeatmap.vue';
-
-import HTLegendColor from '@/components/heatmap/HTLegendColor.vue';
-import HTSwatches from '@/components/HTSwatches.vue';
+import VariantsHeatmap from '@/components/variants/VariantsHeatmap.vue';
 
 import { scaleOrdinal, schemeSpectral, schemeRdBu } from 'd3';
 
@@ -38,7 +35,7 @@ import { inject } from 'vue';
 
 export default {
   name: 'VariantsMultichart',
-  components: { VariantsHeatmap, HTLegendColor, HTSwatches },
+  components: { VariantsHeatmap },
   setup() {
     const legendChart = {
       width: 150,
@@ -88,9 +85,19 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.legends {
-  border: 1px solid var(--color-blue-darker);
-  padding: var(--space-sm);
+<style lang="postcss" scoped>
+.variants-multichart-container {
+  display: grid;
+  grid-template-areas: 'details heatmap';
+  grid-template-columns: repeat(2, auto);
+  grid-column-gap: var(--size-6);
+}
+
+.details {
+  grid-area: details;
+}
+
+.variants {
+  grid-area: heatmap;
 }
 </style>

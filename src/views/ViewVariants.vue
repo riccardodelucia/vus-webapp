@@ -1,27 +1,26 @@
 <template>
   <AppLayout>
-    <div class="htd-card app-content">
-      <form class="controls htdu-marginbottom--md" @submit.prevent="onSubmit">
-        <ht-search-bar v-model="gene" placeholder="Search gene"></ht-search-bar>
-        <button class="htd-btn htd-btn--primary button-search">Search</button>
-      </form>
-      <VariantsMultichart v-if="ready"></VariantsMultichart>
+    <div class="ht-card ht-container ht-layout-stack app-content">
+      <h2>Gene: {{ geneId.toUpperCase() }}</h2>
+      <router-link
+        class="ht-button"
+        :to="{ name: 'search' }"
+        data-type="secondary"
+      >
+        <span class="back-link"
+          ><vue-feather type="arrow-left"></vue-feather>Search</span
+        >
+      </router-link>
+      <VariantsChart></VariantsChart>
     </div>
   </AppLayout>
 </template>
 
 <script>
-import AppLayout from '../layouts/AppLayout.vue';
-import VariantsMultichart from '../components/heatmap/VariantsMultichart.vue';
-import { sendErrorNotification } from '@/notifications';
+import AppLayout from '@/layouts/AppLayout.vue';
+import VariantsChart from '@/components/variants/VariantsChart.vue';
 
-import { AxiosError } from 'axios';
-
-import { ref, provide, watchEffect } from 'vue';
-
-import service from '@/services';
-
-import { useRouter } from 'vue-router';
+import { provide } from 'vue';
 
 import { scaleSequentialLog, extent, interpolateOranges, color } from 'd3';
 
@@ -52,7 +51,7 @@ function fillHeatmap({ data, variants, tissues }) {
   });
 
   // return the flattened one dimensional heatmap array.
-  // dealing with one dimensional arrays and positioning according to scale values
+  // dealing with one dimensional arrays and positioning with D3 scale functions
   // is much easier than working with bidimensional grid positioning according to indexes
   return heatmap.flat();
 }
@@ -85,30 +84,20 @@ function fillAggregatedDam({ data, tissues }) {
 
 export default {
   name: 'ViewVariants',
-  components: { AppLayout, VariantsMultichart },
-  props: { geneId: { type: String, default: '' } },
+  components: { AppLayout, VariantsChart },
+  props: {
+    geneId: { type: String, required: true },
+    variants: { type: Array, required: true },
+    variantsData: { type: Array, required: true },
+    tissues: { type: Array, required: true },
+    annotations: { type: Array, required: true },
+  },
   setup(props) {
-    const gene = ref(props.geneId);
-    const router = useRouter();
-
-    const ready = ref(false);
-
-    const variants = ref(null);
-    const tissues = ref(null);
-
-    const heatmap = ref(null);
-    const aggregatedDam = ref(null);
-    const annotationsHeatmap = ref(null);
-
-    const heatmapColor = ref(null);
-
-    provide('geneId', props.geneId);
-    provide('variants', variants);
-    provide('tissues', tissues);
-    provide('heatmap', heatmap);
-    provide('aggregatedDam', aggregatedDam);
-    provide('annotationsHeatmap', annotationsHeatmap);
-    provide('heatmapColor', heatmapColor);
+    const heatmap = fillHeatmap({
+      data: props.variantsData,
+      variants: props.variants,
+      tissues: props.tissues,
+    });
 
     const interpolator = (t) => {
       if (t === -Infinity) {
@@ -118,78 +107,29 @@ export default {
       }
     };
 
-    async function onSubmit() {
-      debugger;
-      router.push({
-        name: 'variants',
-        params: { geneId: gene.value },
-      });
-    }
-
-    watchEffect(async () => {
-      if (props.geneId) {
-        ready.value = false;
-        try {
-          const { data: v } = await service.getVariants(props.geneId);
-
-          variants.value = v;
-
-          const { data: t } = await service.getTissues();
-          tissues.value = t;
-
-          const { data: d } = await service.getVariantsData(props.geneId);
-          const { data: a } = await service.getAnnotations(props.geneId);
-          heatmap.value = fillHeatmap({
-            data: d,
-            variants: v,
-            tissues: t,
-          });
-
-          aggregatedDam.value = fillAggregatedDam({ data: d, tissues: t });
-
-          annotationsHeatmap.value = fillAnnotationsHeatmap({
-            variants: v,
-            annotations: a,
-          });
-
-          heatmapColor.value = scaleSequentialLog(interpolator).domain(
-            extent(heatmap.value.map(({ nPatients }) => nPatients + 1))
-          );
-
-          // Heatmap must be loaded only when all data is available
-          ready.value = true;
-        } catch (error) {
-          let message = 'Unknown Error';
-          if (error instanceof AxiosError) {
-            message = error.message;
-          }
-
-          sendErrorNotification({
-            title: 'Cannot retrieve data',
-            message,
-          });
-        }
-      }
+    const aggregatedDam = fillAggregatedDam({
+      data: props.variantsData,
+      tissues: props.tissues,
     });
 
-    return {
-      onSubmit,
-      gene,
-      ready,
-    };
+    const annotationsHeatmap = fillAnnotationsHeatmap({
+      variants: props.variants,
+      annotations: props.annotations,
+    });
+
+    const heatmapColor = scaleSequentialLog(interpolator).domain(
+      extent(heatmap.map(({ nPatients }) => nPatients + 1))
+    );
+
+    provide('geneId', props.geneId);
+    provide('variants', props.variants);
+    provide('tissues', props.tissues);
+    provide('heatmap', heatmap);
+    provide('aggregatedDam', aggregatedDam);
+    provide('annotationsHeatmap', annotationsHeatmap);
+    provide('heatmapColor', heatmapColor);
+
+    return {};
   },
 };
 </script>
-
-<style lang="scss" scoped>
-/* .container {
-  width: fit-content;
-  margin: var(--space-md);
-} */
-
-.controls {
-  display: flex;
-  gap: var(--size-3);
-  align-items: center;
-}
-</style>

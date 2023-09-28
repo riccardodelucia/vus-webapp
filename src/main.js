@@ -1,16 +1,17 @@
-import { createApp } from "vue";
-import router from "./router";
+import { createApp } from 'vue';
+import router from './router';
 
-import { HTVue } from "@computational-biology-sw-web-dev-unit/ht-vue";
-import "@computational-biology-sw-web-dev-unit/ht-design/style.css";
+import { HTVue } from '@computational-biology-sw-web-dev-unit/ht-vue';
+import '@computational-biology-sw-web-dev-unit/ht-design/style.css';
+import '@computational-biology-sw-web-dev-unit/ht-vue/style.css';
 
-import VueFeather from "vue-feather";
+import VueFeather from 'vue-feather';
 
-import App from "./App.vue";
+import App from './App.vue';
 
-import GStore from "@/store";
+import GStore from '@/store';
 
-const app = createApp(App).use(HTVue).use(router).provide("GStore", GStore);
+const app = createApp(App).use(HTVue).use(router).provide('GStore', GStore);
 app.component(VueFeather.name, VueFeather);
 
-app.mount("#app");
+app.mount('#app');
