@@ -13,24 +13,47 @@ const instance = axios.create({
 instance.interceptors.response.use(interceptorCamelize);
 
 export default {
-  getVariants(gene) {
-    return instance.get(`variants/${gene}`);
-  },
-  getTissues() {
-    return instance.get('tissues');
-  },
   getVariantsData(gene) {
     return instance.get(`variants-data/${gene}`);
   },
-  getAnnotations(gene) {
-    return instance.get(`annotations/${gene}`);
+  getVariantsAggregatedData(gene) {
+    return instance.get(`variants-aggregated/${gene}`);
   },
-  getCellLineEssentialityProfiles({ tissueName, variantId, geneId }) {
-    return instance.get(`cell-line-essentiality`, {
+  getVariantsAnnotations(gene) {
+    return instance.get(`variants-annotations/${gene}`);
+  },
+  getCellLinesDataByVariant({ tissueName, variantId, geneId }) {
+    return instance.get(`cell-lines/by-variant`, {
       params: {
         tissue_name: tissueName,
         variant_id: variantId,
         gene_id: geneId,
+      },
+    });
+  },
+  getCellLinesDataAggregated({ tissueName, geneId }) {
+    return instance.get(`cell-lines/aggregated`, {
+      params: {
+        tissue_name: tissueName,
+        gene_id: geneId,
+      },
+    });
+  },
+  getDrugsTestedOnGene({ tissueName, geneId }) {
+    return instance.get(`drugs`, {
+      params: {
+        tissue_name: tissueName,
+        gene_id: geneId,
+      },
+    });
+  },
+  getDrugsSensitivities({ geneId, tissueName, drugGdscId, gdscVersion }) {
+    return instance.get(`drugs/sensitivities`, {
+      params: {
+        tissue_name: tissueName,
+        gene_id: geneId,
+        drug_gdsc_id: drugGdscId,
+        gdsc_version: gdscVersion,
       },
     });
   },

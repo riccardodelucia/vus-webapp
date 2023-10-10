@@ -11,93 +11,96 @@
           ><vue-feather type="arrow-left"></vue-feather>Search</span
         >
       </router-link>
-      <VariantsChart></VariantsChart>
+      <div class="variants-multichart-container">
+        <div class="details">
+          <ht-swatches
+            title="DAM Status"
+            :color="damColor"
+            shape="round"
+          ></ht-swatches>
+          <ht-swatches title="Polyphen" :color="polyphenColor"></ht-swatches>
+          <ht-swatches title="SIFT" :color="siftColor"></ht-swatches>
+          <ht-chart-legend-color
+            :margins="legendChart.margins"
+            :width="legendChart.width"
+            :height="legendChart.height"
+            :color="heatmapColor"
+            title="log(#patients)"
+          ></ht-chart-legend-color>
+        </div>
+        <div class="variants">
+          <VariantsHeatmap
+            :data="data"
+            :aggregated-data="aggregatedData"
+            :annotations="annotations"
+            :gene-id="geneId"
+            :color="heatmapColor"
+            :sift-color="siftColor"
+            :polyphen-color="polyphenColor"
+          ></VariantsHeatmap>
+        </div>
+      </div>
     </div>
   </AppLayout>
 </template>
 
 <script>
 import AppLayout from '@/layouts/AppLayout.vue';
-import VariantsChart from '@/components/variants/VariantsChart.vue';
+import VariantsHeatmap from '@/components/variants/VariantsHeatmap.vue';
 
-import { provide } from 'vue';
-
-import { scaleSequentialLog, extent, interpolateOranges, color } from 'd3';
-
-function fillHeatmap({ data, variants, tissues }) {
-  // this method expands data over the entire heatmap.
-
-  // preallocate the empty heatmap
-  const emptyHeatmap = Array(tissues.length)
-    .fill()
-    .map(() => Array(variants.length).fill());
-
-  const heatmap = emptyHeatmap.map((column, j) =>
-    column.map((_, i) => {
-      return {
-        variantId: variants[i],
-        tissueName: tissues[j],
-        nPatients: 0,
-        dam: 0,
-      };
-    })
-  );
-
-  // override heatmap cells that have actual content according to data
-  data.forEach((item) => {
-    const i = variants.indexOf(item.variantId);
-    const j = tissues.indexOf(item.tissueName);
-    heatmap[j][i] = item;
-  });
-
-  // return the flattened one dimensional heatmap array.
-  // dealing with one dimensional arrays and positioning with D3 scale functions
-  // is much easier than working with bidimensional grid positioning according to indexes
-  return heatmap.flat();
-}
-
-function fillAnnotationsHeatmap({ variants, annotations }) {
-  const emptyHeatmap = Array(variants.length).fill();
-
-  const annotationsHeatmap = emptyHeatmap.map((_, i) => {
-    return { variantId: variants[i], sift: '', polyphen: '' };
-  });
-
-  annotations.forEach((item) => {
-    const i = variants.indexOf(item.variantId);
-    annotationsHeatmap[i] = item;
-  });
-  return annotationsHeatmap.flat();
-}
-
-function fillAggregatedDam({ data, tissues }) {
-  return tissues.map((tissue) => {
-    const column = data.filter((item) => item.tissueName === tissue);
-    const sum = column.reduce((acc, item) => {
-      if (item.dam) return acc + item.nPatients;
-      return acc;
-    }, 0);
-    const dam = column.map((item) => item.dam).includes(1);
-    return { tissueName: tissue, nPatients: sum, dam };
-  });
-}
+import {
+  scaleOrdinal,
+  scaleSequentialLog,
+  schemeSpectral,
+  schemeRdBu,
+  interpolateOranges,
+  color,
+  extent,
+} from 'd3';
 
 export default {
   name: 'ViewVariants',
-  components: { AppLayout, VariantsChart },
+  components: { AppLayout, VariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
-    variants: { type: Array, required: true },
-    variantsData: { type: Array, required: true },
-    tissues: { type: Array, required: true },
+    data: { type: Array, required: true },
+    aggregatedData: { type: Array, required: true },
     annotations: { type: Array, required: true },
   },
   setup(props) {
-    const heatmap = fillHeatmap({
-      data: props.variantsData,
-      variants: props.variants,
-      tissues: props.tissues,
-    });
+    const legendChart = {
+      width: 150,
+      height: 300,
+      margins: {
+        left: 10,
+        right: 120,
+        top: 30,
+        bottom: 10,
+      },
+    };
+
+    // sift and polyphen labels are hardcoded to avoid cases where the current variant doesn't have info for all of the possible sift and polyphen values
+    const polyphen = ['probably_damaging', 'possibly_damaging', 'benign'];
+    const polyphenColor = scaleOrdinal()
+      .domain(polyphen)
+      .range(schemeSpectral[3])
+      .unknown('transparent');
+
+    const sift = [
+      'deleterious',
+      'deleterious_low_confidence',
+      'tolerated_low_confidence',
+      'tolerated',
+    ];
+    const siftColor = scaleOrdinal()
+      .domain(sift)
+      .range(schemeRdBu[4])
+      .unknown('transparent');
+
+    const damColor = scaleOrdinal()
+      .domain(['is DAM'])
+      .range(['dodgerblue'])
+      .unknown('transparent');
 
     const interpolator = (t) => {
       if (t === -Infinity) {
@@ -107,29 +110,28 @@ export default {
       }
     };
 
-    const aggregatedDam = fillAggregatedDam({
-      data: props.variantsData,
-      tissues: props.tissues,
-    });
-
-    const annotationsHeatmap = fillAnnotationsHeatmap({
-      variants: props.variants,
-      annotations: props.annotations,
-    });
-
     const heatmapColor = scaleSequentialLog(interpolator).domain(
-      extent(heatmap.map(({ nPatients }) => nPatients + 1))
+      extent(props.data.map(({ nPatients }) => nPatients + 1))
     );
 
-    provide('geneId', props.geneId);
-    provide('variants', props.variants);
-    provide('tissues', props.tissues);
-    provide('heatmap', heatmap);
-    provide('aggregatedDam', aggregatedDam);
-    provide('annotationsHeatmap', annotationsHeatmap);
-    provide('heatmapColor', heatmapColor);
-
-    return {};
+    return { legendChart, polyphenColor, siftColor, damColor, heatmapColor };
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.variants-multichart-container {
+  display: grid;
+  grid-template-areas: 'details heatmap';
+  grid-template-columns: repeat(2, auto);
+  grid-column-gap: var(--size-6);
+}
+
+.details {
+  grid-area: details;
+}
+
+.variants {
+  grid-area: heatmap;
+}
+</style>

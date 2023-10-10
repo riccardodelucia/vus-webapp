@@ -15,7 +15,7 @@
           sift
         </text>
         <rect
-          v-for="(datum, idx) in annotationsHeatmap"
+          v-for="(datum, idx) in annotations"
           :key="idx"
           :x="0"
           :y="yScale(datum.variantId)"
@@ -32,7 +32,7 @@
           polyphen
         </text>
         <rect
-          v-for="(datum, idx) in annotationsHeatmap"
+          v-for="(datum, idx) in annotations"
           :key="idx"
           :x="0"
           :y="yScale(datum.variantId)"
@@ -41,7 +41,6 @@
           :fill="polyphenColor(datum.polyphen)"
         ></rect>
       </g>
-
       <g :transform="`translate(${2 * annotationWidth + horizontalGap}, 0)`">
         <g ref="axisTissues"></g>
         <g :transform="`translate(${heatmapWidth}, 0)`">
@@ -49,7 +48,7 @@
         </g>
         <g>
           <g
-            v-for="(datum, idx) in heatmap"
+            v-for="(datum, idx) in data"
             :key="idx"
             :transform="`translate(${xScaleTissues(
               datum.tissueName
@@ -80,11 +79,11 @@
 
         <g :transform="`translate(0, ${heatmapHeight + verticalGap})`">
           <g
-            v-for="(datum, idx) in aggregatedDam"
+            v-for="(datum, idx) in aggregatedData"
             :key="idx"
             class="heatmap-patients"
             :transform="`translate(${xScaleTissues(datum.tissueName)},  0)`"
-            @click="onClick(datum)"
+            @click="onClickAggregated(datum)"
           >
             <rect
               :x="0"
@@ -95,7 +94,7 @@
               pointer-events="none"
             ></rect>
             <circle
-              v-if="datum.dam"
+              v-if="datum.dam > 0"
               :cx="xScaleTissues.bandwidth() / 2"
               :cy="yScale.bandwidth() / 2"
               r="5"
@@ -120,7 +119,7 @@
 
 <script>
 import { axisTop, axisRight, select, scaleBand } from 'd3';
-import { ref, inject } from 'vue';
+import { ref } from 'vue';
 import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { useRouter } from 'vue-router';
@@ -128,6 +127,7 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'VariantsHeatmap',
   props: {
+    geneId: { type: String, required: true },
     color: {
       type: Function,
       required: true,
@@ -140,21 +140,11 @@ export default {
       type: Function,
       required: true,
     },
+    data: { type: Array, required: true },
+    aggregatedData: { type: Array, required: true },
+    annotations: { type: Array, required: true },
   },
-  setup() {
-    const geneId = inject('geneId');
-    const variants = inject('variants');
-    const tissues = inject('tissues');
-
-    const heatmap = inject('heatmap');
-    const aggregatedDam = inject('aggregatedDam');
-    const annotationsHeatmap = inject('annotationsHeatmap');
-
-    const axisTissues = ref(null);
-    const axisVariants = ref(null);
-
-    const router = useRouter();
-
+  setup(props) {
     const padding = 0.05;
 
     const margins = { left: 0, right: 180, top: 140, bottom: 0 };
@@ -164,6 +154,13 @@ export default {
     const heatmapTileHeight = 30;
     const heatmapWidth = 900;
 
+    const variants = Array.from(
+      new Set(props.data.map(({ variantId }) => variantId))
+    );
+    const tissues = Array.from(
+      new Set(props.data.map(({ tissueName }) => tissueName))
+    );
+
     const heatmapHeight = heatmapTileHeight * variants.length;
     const height =
       margins.top +
@@ -171,6 +168,11 @@ export default {
       margins.bottom +
       verticalGap +
       heatmapTileHeight;
+
+    const axisTissues = ref(null);
+    const axisVariants = ref(null);
+
+    const router = useRouter();
 
     // Make Scales
     const yScale = scaleBand()
@@ -208,16 +210,28 @@ export default {
       select(axisVariants.value).select('.domain').remove();
     });
 
-    const onClick = function ({ tissueName, variantId }) {
+    const onClick = function ({ tissueName, variantId, dam }) {
       router.push({
-        name: 'essentiality',
+        name: 'cell-lines-by-variant',
         query: {
           tissueName,
           variantId,
-          geneId,
+          geneId: props.geneId,
+          dam: Boolean(dam),
         },
       });
     };
+
+    const onClickAggregated = function ({ tissueName }) {
+      router.push({
+        name: 'cell-lines-aggregated',
+        query: {
+          tissueName,
+          geneId: props.geneId,
+        },
+      });
+    };
+
     return {
       width,
       annotationWidth,
@@ -232,9 +246,7 @@ export default {
       xScaleTissues,
       yScale,
       onClick,
-      heatmap,
-      aggregatedDam,
-      annotationsHeatmap,
+      onClickAggregated,
     };
   },
 };
@@ -250,5 +262,8 @@ export default {
       fill: rgb(0, 255, 38);
     }
   }
+}
+svg {
+  padding: var(--size-2);
 }
 </style>
