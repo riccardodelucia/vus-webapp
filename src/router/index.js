@@ -12,6 +12,14 @@ import service from '@/services';
 
 import { sendErrorNotification } from '@/notifications';
 
+const processErrorMessage = (error) => {
+  let message = 'Unknown Error';
+  if (error instanceof AxiosError) {
+    message = error.message;
+  }
+  return message;
+};
+
 const routes = [
   {
     path: '/',
@@ -22,6 +30,21 @@ const routes = [
     path: '/search',
     name: 'search',
     component: ViewSearch,
+    props: true,
+    async beforeEnter(to) {
+      try {
+        const { data } = await service.getMostImportantVariants();
+        to.params.data = data;
+        return true;
+      } catch (error) {
+        const message = processErrorMessage(error);
+        sendErrorNotification({
+          title: 'Cannot retrieve data',
+          message,
+        });
+        return false;
+      }
+    },
   },
   {
     path: '/variants/:geneId',
@@ -44,11 +67,7 @@ const routes = [
 
         return true;
       } catch (error) {
-        let message = 'Unknown Error';
-        if (error instanceof AxiosError) {
-          message = error.message;
-        }
-
+        const message = processErrorMessage(error);
         sendErrorNotification({
           title: 'Cannot retrieve data',
           message,
@@ -78,10 +97,7 @@ const routes = [
 
         return true;
       } catch (error) {
-        let message = 'Unknown Error';
-        if (error instanceof AxiosError) {
-          message = error.message;
-        }
+        const message = processErrorMessage(error);
         sendErrorNotification({
           title: 'Cannot retrieve data',
           message,
@@ -114,10 +130,7 @@ const routes = [
 
         return true;
       } catch (error) {
-        let message = 'Unknown Error';
-        if (error instanceof AxiosError) {
-          message = error.message;
-        }
+        const message = processErrorMessage(error);
         sendErrorNotification({
           title: 'Cannot retrieve data',
           message,

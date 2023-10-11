@@ -57,4 +57,7 @@ export default {
       },
     });
   },
+  getMostImportantVariants() {
+    return instance.get(`variants/`);
+  },
 };
