@@ -1,6 +1,6 @@
 <template>
   <svg
-    class="ht-chart"
+    class="ht-chart chart"
     preserveAspectRatio="xMinYMin meet"
     :viewBox="[0, 0, width, height].join(' ')"
     :width="width"
@@ -23,9 +23,24 @@
             alignment-baseline="middle"
             font-size="10px"
             :transform="computeTextFlip(datum)"
+            :fill="datum.isDriver ? 'DeepPink' : 'black'"
           >
             {{ datum.variantId }}
           </text>
+          <circle
+            v-if="datum.polyphen === 'probably_damaging'"
+            cx="25"
+            cy="0"
+            r="4px"
+            fill="DeepPink"
+          ></circle>
+
+          <polygon
+            v-if="datum.sift === 'deleterious'"
+            points="0,8 5,0 -5,0"
+            fill="DeepPink"
+            transform="rotate(180) translate(-10, -4) "
+          ></polygon>
         </g>
         <path class="bar-orange" :d="drawOuterBarPlot(datum)"></path>
         <path class="bar-purple" :d="drawInnerBarPlot(datum)"></path>
@@ -35,10 +50,7 @@
 </template>
 
 <script>
-import {
-  getInnerChartSizes,
-  useTooltip,
-} from '@computational-biology-sw-web-dev-unit/ht-vue';
+import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { scaleBand, scaleRadial, arc, extent } from 'd3';
 
@@ -55,8 +67,8 @@ export default {
 
     const { showTooltip, hideTooltip } = useTooltip({ allowHTML: true });
 
-    const width = 1000;
-    const height = 1000;
+    const width = 700;
+    const height = 820;
 
     const margins = {
       left: 50,
@@ -65,15 +77,9 @@ export default {
       bottom: 50,
     };
 
-    const { innerWidth, innerHeight } = getInnerChartSizes(
-      width,
-      height,
-      margins
-    );
-
     const innerRadius = 200;
     const labelSpace = 60; // used to leave space for labels on the radial barplots
-    const outerRadius = Math.min(innerWidth, innerHeight) / 2 - labelSpace;
+    const outerRadius = Math.min(width, height) / 2 - labelSpace;
 
     const xAxis = scaleBand()
       .range([0, 2 * Math.PI]) // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
@@ -109,7 +115,7 @@ export default {
     const yDomainInner = extent(props.data.map(({ nTissues }) => nTissues));
 
     const yAxisInner = scaleRadial()
-      .range([innerRadius, 5])
+      .range([innerRadius, 70])
       .domain([0, yDomainInner[1]]);
 
     const drawInnerBarPlot = (datum) => {
@@ -161,8 +167,8 @@ export default {
         (xAxis(datum.variantId) + xAxis.bandwidth() / 2 + Math.PI) %
           (2 * Math.PI) <
         Math.PI
-          ? 'translate(5, 0) rotate(180)'
-          : 'translate(5, 0) rotate(0)';
+          ? 'translate(35, 0) rotate(180)'
+          : 'translate(35, 0) rotate(0)';
 
       return flip;
     };
@@ -176,8 +182,20 @@ export default {
       });
     };
 
-    const onMouseOver = function (event, { nPatients, nTissues }) {
-      const htmlString = `<ul style="list-style: none; margin: 0"><li>Number of Patients: ${nPatients}</li><li>Number of Tissues: ${nTissues}</li></ul>`;
+    const onMouseOver = function (
+      event,
+      { variantId, nPatients, nTissues, geneId, isDriver, sift, polyphen }
+    ) {
+      const htmlString = `
+      <ul style="list-style: none; margin: 0">
+        <li>Variant: ${variantId}</li>
+        <li>Gene: ${geneId}</li>
+        <li>Driver: ${Boolean(isDriver)}</li>
+        <li>SIFT: ${sift}</li>
+        <li>Polyphen: ${polyphen}</li>
+        <li>Number of Patients: ${nPatients}</li>
+        <li>Number of Tissues: ${nTissues}</li>
+      </ul>`;
 
       showTooltip(event, htmlString);
     };
@@ -190,8 +208,6 @@ export default {
       margins,
       width,
       height,
-      innerWidth,
-      innerHeight,
       drawOuterBarPlot,
       drawInnerBarPlot,
       computeTextAnchor,

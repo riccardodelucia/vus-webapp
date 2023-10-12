@@ -70,7 +70,7 @@
               :cy="yScale.bandwidth() / 2"
               r="5"
               stroke="dodgerblue"
-              fill="transparent"
+              fill="dodgerblue"
               stroke-width="2px"
               pointer-events="none"
             />
@@ -258,7 +258,7 @@ export default {
   pointer-events: bounding-box;
 
   &:hover {
-    * {
+    rect {
       fill: rgb(0, 255, 38);
     }
   }

@@ -18,43 +18,19 @@
       </router-link>
     </template>
     <template #chart>
-      <CellLinesChart
-        v-slot="slotProps"
+      <CellLinesEssentialityProfiles
         :sizes="sizes"
-        x-axis-label="Cell Lines"
-        :x-domain="xDomain"
-        :y-domain="yDomain"
-        y-axis-label="logFC(essentiality)"
+        :cell-lines-data="cellLinesData"
       >
-        <g>
-          <line
-            :x1="0"
-            :y1="slotProps.yScale(-0.5)"
-            :x2="sizes.innerWidth"
-            :y2="slotProps.yScale(-0.5)"
-            stroke="black"
-            stroke-width="2"
-            stroke-dasharray="4 4"
-            stroke-opacity="0.5"
-          />
-          <circle
-            v-for="(datum, idx) in cellLinesData"
-            :key="idx"
-            :cx="slotProps.xScale(datum.cellLineName)"
-            :cy="slotProps.yScale(datum.essentiality)"
-            r="5"
-            :fill="datum.mutation ? 'red' : 'black'"
-          />
-        </g>
-      </CellLinesChart>
+      </CellLinesEssentialityProfiles>
     </template>
   </CellLinesViewLayout>
 </template>
 
 <script>
 import CellLinesViewLayout from '@/layouts/CellLinesViewLayout.vue';
-import CellLinesChart from '@/components/CellLinesChart.vue';
 import CellLinesDetails from '@/components/CellLinesDetails.vue';
+import CellLinesEssentialityProfiles from '@/components/CellLinesEssentialityProfiles.vue';
 
 import { extent } from 'd3';
 
@@ -65,7 +41,7 @@ export default {
   components: {
     CellLinesViewLayout,
     CellLinesDetails,
-    CellLinesChart,
+    CellLinesEssentialityProfiles,
   },
   props: {
     cellLinesData: { type: Array, required: true },

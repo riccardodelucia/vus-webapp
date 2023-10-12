@@ -24,7 +24,7 @@
         :cx="slotProps.xScale(datum.cellLineName)"
         :cy="slotProps.yScale(datum.essentiality)"
         r="5"
-        :fill="datum.mutation ? 'red' : 'black'"
+        :fill="datum.mutation ? 'red' : 'blue'"
         @mouseover="onMouseOver($event, datum)"
         @mouseleave="onMouseLeave"
       />

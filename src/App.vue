@@ -44,4 +44,18 @@ export default {
     width: 100%;
   }
 }
+
+:global(.legend-title) {
+  font-size: var(--font-size-3);
+}
+
+:global(.legend li > *) {
+  margin-right: var(--size-3);
+}
+
+:global(.legend-symbol) {
+  display: inline-block;
+  width: 0.8rem;
+  aspect-ratio: 1;
+}
 </style>

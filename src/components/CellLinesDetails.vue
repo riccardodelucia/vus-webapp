@@ -1,24 +1,26 @@
 <template>
-  <div class="details">
-    <h3>Details</h3>
-    <ul>
-      <li><b>Gene:</b> {{ details.geneId.toUpperCase() }}</li>
-      <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
-      <li><b>Rank Ratio:</b> {{ Number(details.rankRatio.toFixed(2)) }}</li>
-      <template v-if="type === 'essentiality'">
-        <li v-if="details.variantId">
-          <b>Variant:</b> {{ details.variantId }} (is DAM: {{ details.dam }})
-        </li>
-        <li v-else><b>All variants</b></li></template
-      >
-      <template v-else>
-        <li><b>All variants</b></li>
-        <li>
-          <b>Drug: </b> {{ drug.drugName }}, GDSC {{ drug.gdscVersion }} (is
-          SAM: {{ Boolean(drug.sam) }})
-        </li>
-      </template>
-    </ul>
+  <div class="details ht-layout-stack">
+    <div>
+      <p class="legend-title">Details</p>
+      <ul class="ht-reset">
+        <li><b>Gene:</b> {{ details.geneId.toUpperCase() }}</li>
+        <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
+        <li><b>Rank Ratio:</b> {{ Number(details.rankRatio.toFixed(2)) }}</li>
+        <template v-if="type === 'essentiality'">
+          <li v-if="details.variantId">
+            <b>Variant:</b> {{ details.variantId }} (is DAM: {{ details.dam }})
+          </li>
+          <li v-else><b>All variants</b></li></template
+        >
+        <template v-else>
+          <li><b>All variants</b></li>
+          <li>
+            <b>Drug: </b> {{ drug.drugName }}, GDSC {{ drug.gdscVersion }} (is
+            SAM: {{ Boolean(drug.sam) }})
+          </li>
+        </template>
+      </ul>
+    </div>
     <MutationStatusLegend></MutationStatusLegend>
   </div>
 </template>
@@ -45,5 +47,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss" scoped></style>
