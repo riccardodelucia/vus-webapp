@@ -1,113 +1,120 @@
 <template>
-  <CellLinesViewLayout
-    :gene-id="geneId"
-    title="Cell Lines Information Aggregated"
+  <h2>Gene: {{ geneId.toUpperCase() }}</h2>
+  <router-link
+    :to="{ name: 'variants', params: { geneId } }"
+    class="ht-button back-link"
+    >&#8592; Back</router-link
   >
-    <template #details>
-      <router-link
-        class="ht-button back-link"
-        data-type="secondary"
-        :to="{ name: 'variants', params: { geneId: geneId } }"
-      >
-        <span class="back-link">
-          <vue-feather type="arrow-left"></vue-feather>
-          Variants
-        </span>
-      </router-link>
-      <CellLinesDetails
-        :details="
-          currentTab.panel === 'essentiality'
-            ? essentialityDetails
-            : sensitivityDetails
-        "
-        :type="currentTab.panel"
-        :drug="selectedDrug"
-      ></CellLinesDetails>
-      <ht-select
-        v-if="currentTab.panel === 'sensitivity'"
-        v-model="selectedDrug"
-        class="ht-formgroup"
-        label="Select Drug"
-        :options="drugList"
-      ></ht-select>
-    </template>
-    <template #chart>
-      <ht-tab :tab-list="tabList" @tab-selected="onTabSelected">
-        <template #essentiality>
-          <CellLinesEssentialityProfiles
-            :sizes="sizes"
-            :cell-lines-data="cellLinesData"
-          >
-          </CellLinesEssentialityProfiles>
-        </template>
-        <template v-if="drugListAvailable" #sensitivity>
-          <CellLinesSensitivityProfiles
-            :sizes="sizes"
-            :drug="selectedDrug"
-            :gene-id="geneId"
-            :tissue-name="tissueName"
-            @rank-ratio="onSensitivityRankRatio"
-          >
-          </CellLinesSensitivityProfiles>
-        </template>
-      </ht-tab>
-    </template>
-  </CellLinesViewLayout>
+  <div class="grid">
+    <EssentialityDetails
+      v-if="essentialityDetails && currentTab.panel === 'essentiality'"
+      class="details"
+      :details="essentialityDetails"
+    ></EssentialityDetails>
+    <SensitivityDetails
+      v-if="sensitivityDetails && currentTab.panel === 'sensitivity'"
+      class="details"
+      :details="essentialityDetails"
+      :drugs="drugs"
+      @update:model-value="onUpdate"
+    ></SensitivityDetails>
+
+    <ht-tab
+      v-if="cellLinesData"
+      class="chart"
+      :tab-list="tabList"
+      @tab-selected="onTabSelected"
+    >
+      <template #essentiality>
+        <EssentialityProfiles :sizes="sizes" :cell-lines-data="cellLinesData">
+        </EssentialityProfiles>
+      </template>
+      <template v-if="selectedDrug" #sensitivity>
+        <SensitivityProfiles
+          :sizes="sizes"
+          :drug="selectedDrug"
+          :gene-id="geneId"
+          :tissue-name="tissueName"
+          @rank-ratio="onSensitivityRankRatio"
+        >
+        </SensitivityProfiles>
+      </template>
+    </ht-tab>
+  </div>
 </template>
 
 <script>
-import CellLinesViewLayout from '@/layouts/CellLinesViewLayout.vue';
-
-import CellLinesEssentialityProfiles from '@/components/CellLinesEssentialityProfiles.vue';
-import CellLinesSensitivityProfiles from '@/components/CellLinesSensitivityProfiles.vue';
-import CellLinesDetails from '@/components/CellLinesDetails.vue';
+import EssentialityProfiles from '@/components/cell_lines/EssentialityProfiles.vue';
+import SensitivityProfiles from '@/components/cell_lines/SensitivityProfiles.vue';
+import EssentialityDetails from '@/components/cell_lines/EssentialityDetails.vue';
+import SensitivityDetails from '@/components/cell_lines/SensitivityDetails.vue';
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
-import { ref, reactive } from 'vue';
+import { ref, onBeforeMount } from 'vue';
+
+import service from '@/services';
+
+import { processErrorMessage } from '@/utils/errors.js';
 
 export default {
   name: 'ViewCellLinesAggregated',
   components: {
-    CellLinesViewLayout,
-    CellLinesEssentialityProfiles,
-    CellLinesSensitivityProfiles,
-    CellLinesDetails,
+    EssentialityProfiles,
+    SensitivityProfiles,
+    EssentialityDetails,
+    SensitivityDetails,
   },
   props: {
-    cellLinesData: { type: Array, required: true },
     geneId: { type: String, required: true },
     tissueName: { type: String, required: true },
-    rankRatio: { type: Number, required: true },
-    drugs: {
-      type: Array,
-      default: () => [],
-    },
   },
   setup(props) {
-    const drugList = props.drugs.map((item) => ({
-      ...item,
-      label: `${item.drugName}, GDSC v${item.gdscVersion}`,
-    }));
-
+    const cellLinesData = ref(null);
+    const rankRatio = ref(0);
+    const drugs = ref(null);
     const selectedDrug = ref(null);
-    let drugListAvailable = false;
+    const essentialityDetails = ref(null);
+    const sensitivityDetails = ref(null);
 
-    if (drugList.length > 0) {
-      selectedDrug.value = drugList[0];
-      drugListAvailable = true;
-    }
+    const tabList = ref([{ label: 'Essentiality', panel: 'essentiality' }]);
+    const currentTab = ref(tabList.value[0]);
 
-    const essentialityDetails = {
-      geneId: props.geneId,
-      rankRatio: props.rankRatio,
-      tissueName: props.tissueName,
-    };
+    onBeforeMount(async () => {
+      try {
+        const { data } = await service.getCellLinesDataAggregated(props);
 
-    const sensitivityDetails = reactive({
-      geneId: props.geneId,
-      rankRatio: 0,
-      tissueName: props.tissueName,
+        if (!data) {
+          throw new Error(`Unable to retrieve data`);
+        }
+
+        cellLinesData.value = data.cellLinesData;
+        rankRatio.value = data.rankRatio;
+
+        const { data: drugsData } = await service.getDrugsTestedOnGene(props);
+        if (drugsData.length > 0) {
+          drugs.value = drugsData.map((item) => ({
+            ...item,
+            label: `${item.drugName}, GDSC v${item.gdscVersion}`,
+          }));
+
+          tabList.value.push({ label: 'Sensitivity', panel: 'sensitivity' });
+
+          sensitivityDetails.value = {
+            geneId: props.geneId,
+            rankRatio: 0,
+            tissueName: props.tissueName,
+          };
+        }
+
+        essentialityDetails.value = {
+          geneId: props.geneId,
+          rankRatio: rankRatio.value,
+          tissueName: props.tissueName,
+        };
+      } catch (error) {
+        processErrorMessage(error);
+      }
     });
 
     const width = 1000;
@@ -128,34 +135,32 @@ export default {
 
     const sizes = { width, height, margins, innerWidth, innerHeight };
 
-    const tabList = [{ label: 'Essentiality', panel: 'essentiality' }];
-
-    const currentTab = ref(tabList[0]);
-
-    if (drugListAvailable)
-      tabList.push({ label: 'Sensitivity', panel: 'sensitivity' });
-
     const onTabSelected = function (idx) {
-      if (tabList[idx].panel === 'sensitivity') {
-        currentTab.value = tabList[1];
-      } else currentTab.value = tabList[0];
+      if (tabList.value[idx].panel === 'sensitivity') {
+        currentTab.value = tabList.value[1];
+      } else currentTab.value = tabList.value[0];
     };
 
     const onSensitivityRankRatio = (rankRatio) => {
-      sensitivityDetails.rankRatio = rankRatio;
+      sensitivityDetails.value.rankRatio = rankRatio;
+    };
+
+    const onUpdate = (value) => {
+      selectedDrug.value = value;
     };
 
     return {
       sizes,
       tabList,
       onTabSelected,
-      drugList,
+      drugs,
       selectedDrug,
-      drugListAvailable,
       onSensitivityRankRatio,
       essentialityDetails,
       sensitivityDetails,
       currentTab,
+      cellLinesData,
+      onUpdate,
     };
   },
 };

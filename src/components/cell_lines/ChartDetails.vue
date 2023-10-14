@@ -1,5 +1,5 @@
 <template>
-  <div class="details ht-layout-stack">
+  <div class="ht-layout-stack">
     <div>
       <p class="legend-title">Details</p>
       <ul class="ht-reset">
@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import MutationStatusLegend from '@/components/MutationStatusLegend.vue';
+import MutationStatusLegend from '@/components/cell_lines/MutationStatusLegend.vue';
 
 export default {
-  name: 'CellLinesDetails',
+  name: 'ChartDetails',
   components: { MutationStatusLegend },
   props: {
     details: {

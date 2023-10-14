@@ -1,131 +1,39 @@
 <template>
-  <AppLayout>
-    <div class="ht-card ht-container ht-layout-stack app-content">
-      <h2>Gene: {{ geneId.toUpperCase() }}</h2>
-      <router-link
-        class="ht-button"
-        :to="{ name: 'search' }"
-        data-type="secondary"
-      >
-        <span class="back-link"
-          ><vue-feather type="arrow-left"></vue-feather>Search</span
-        >
-      </router-link>
-      <div class="variants-multichart-container">
-        <div class="details ht-layout-stack">
-          <div class="legend">
-            <p class="legend-title">DAM Status</p>
-            <ul class="ht-reset">
-              <li>
-                <span
-                  class="legend-symbol round-symbol"
-                  style="background-color: dodgerblue"
-                ></span>
-                <span>mutated</span>
-              </li>
-            </ul>
-          </div>
-          <div class="legend">
-            <p class="legend-title">Polyphen</p>
-            <ul class="ht-reset">
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: polyphenColor('probably_damaging'),
-                  }"
-                ></span>
-                <span>Probably Damaging</span>
-              </li>
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: polyphenColor('possibly_damaging'),
-                  }"
-                ></span>
-                <span>Possibly Damaging</span>
-              </li>
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: polyphenColor('benign'),
-                  }"
-                ></span>
-                <span>Benign</span>
-              </li>
-            </ul>
-          </div>
-          <div class="legend">
-            <p class="legend-title">SIFT</p>
-            <ul class="ht-reset">
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: siftColor('deleterious'),
-                  }"
-                ></span>
-                <span>deleterious</span>
-              </li>
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: siftColor('deleterious_low_confidence'),
-                  }"
-                ></span>
-                <span>deleterious low confidence</span>
-              </li>
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: siftColor('tolerated_low_confidence'),
-                  }"
-                ></span>
-                <span>tolerated low confidence</span>
-              </li>
-              <li>
-                <span
-                  class="legend-symbol square-symbol"
-                  :style="{
-                    backgroundColor: siftColor('tolerated'),
-                  }"
-                ></span>
-                <span>tolerated</span>
-              </li>
-            </ul>
-          </div>
-
-          <ht-chart-legend-color
-            :margins="legendChart.margins"
-            :width="legendChart.width"
-            :height="legendChart.height"
-            :color="heatmapColor"
-            title="log(#patients)"
-          ></ht-chart-legend-color>
-        </div>
-        <div class="variants">
-          <VariantsHeatmap
-            :data="data"
-            :aggregated-data="aggregatedData"
-            :annotations="annotations"
-            :gene-id="geneId"
-            :color="heatmapColor"
-            :sift-color="siftColor"
-            :polyphen-color="polyphenColor"
-          ></VariantsHeatmap>
-        </div>
-      </div>
+  <h2>Gene: {{ geneId.toUpperCase() }}</h2>
+  <router-link :to="{ name: 'search' }" class="ht-button back-link"
+    >&#8592; Back</router-link
+  >
+  <div class="grid">
+    <ChartDetails
+      v-if="data"
+      class="details"
+      :legend-sizes="legendSizes"
+      :polyphen-color="polyphenColor"
+      :heatmap-color="heatmapColor"
+      :sift-color="siftColor"
+    >
+    </ChartDetails>
+    <div v-if="data" class="chart">
+      <VariantsHeatmap
+        :data="data"
+        :aggregated-data="aggregatedData"
+        :annotations="annotations"
+        :gene-id="geneId"
+        :color="heatmapColor"
+        :sift-color="siftColor"
+        :polyphen-color="polyphenColor"
+      ></VariantsHeatmap>
     </div>
-  </AppLayout>
+  </div>
 </template>
 
 <script>
-import AppLayout from '@/layouts/AppLayout.vue';
-import VariantsHeatmap from '@/components/VariantsHeatmap.vue';
+import VariantsHeatmap from '@/components/variants/VariantsHeatmap.vue';
+import ChartDetails from '@/components/variants/ChartDetails.vue';
+
+import { ref, onBeforeMount } from 'vue';
+
+import { processErrorMessage } from '@/utils/errors.js';
 
 import {
   scaleOrdinal,
@@ -137,17 +45,21 @@ import {
   extent,
 } from 'd3';
 
+import service from '@/services';
+
 export default {
   name: 'ViewVariants',
-  components: { AppLayout, VariantsHeatmap },
+  components: { ChartDetails, VariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
-    data: { type: Array, required: true },
-    aggregatedData: { type: Array, required: true },
-    annotations: { type: Array, required: true },
   },
   setup(props) {
-    const legendChart = {
+    const data = ref(null);
+    const aggregatedData = ref(null);
+    const annotations = ref(null);
+    const heatmapColor = ref(null);
+
+    const legendSizes = {
       width: 150,
       height: 300,
       margins: {
@@ -157,6 +69,36 @@ export default {
         bottom: 10,
       },
     };
+
+    onBeforeMount(async () => {
+      try {
+        const variantsData = await service.getVariantsData(props.geneId);
+        const aggregatedVariantsData = await service.getVariantsAggregatedData(
+          props.geneId
+        );
+        const annotationsData = await service.getVariantsAnnotations(
+          props.geneId
+        );
+
+        data.value = variantsData.data;
+        aggregatedData.value = aggregatedVariantsData.data;
+        annotations.value = annotationsData.data;
+
+        const interpolator = (t) => {
+          if (t === -Infinity) {
+            return color('#eee');
+          } else {
+            return interpolateOranges(t);
+          }
+        };
+
+        heatmapColor.value = scaleSequentialLog(interpolator).domain(
+          extent(data.value.map(({ nPatients }) => nPatients + 1))
+        );
+      } catch (error) {
+        processErrorMessage(error);
+      }
+    });
 
     // sift and polyphen labels are hardcoded to avoid cases where the current variant doesn't have info for all of the possible sift and polyphen values
     const polyphen = ['probably_damaging', 'possibly_damaging', 'benign'];
@@ -181,39 +123,21 @@ export default {
       .range(['dodgerblue'])
       .unknown('transparent');
 
-    const interpolator = (t) => {
-      if (t === -Infinity) {
-        return color('#eee');
-      } else {
-        return interpolateOranges(t);
-      }
+    return {
+      legendSizes,
+      polyphenColor,
+      siftColor,
+      damColor,
+      heatmapColor,
+      data,
+      aggregatedData,
+      annotations,
     };
-
-    const heatmapColor = scaleSequentialLog(interpolator).domain(
-      extent(props.data.map(({ nPatients }) => nPatients + 1))
-    );
-
-    return { legendChart, polyphenColor, siftColor, damColor, heatmapColor };
   },
 };
 </script>
 
 <style lang="postcss" scoped>
-.variants-multichart-container {
-  display: grid;
-  grid-template-areas: 'details heatmap';
-  grid-template-columns: repeat(2, auto);
-  grid-column-gap: var(--size-6);
-}
-
-.details {
-  grid-area: details;
-}
-
-.variants {
-  grid-area: heatmap;
-}
-
 .round-symbol {
   border-radius: var(--radius-round);
 }

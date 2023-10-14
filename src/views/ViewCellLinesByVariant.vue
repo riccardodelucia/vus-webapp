@@ -1,55 +1,54 @@
 <template>
-  <CellLinesViewLayout
-    :details="details"
-    :gene-id="geneId"
-    title="Cell Lines Information By Variant"
+  <h2>Gene: {{ geneId.toUpperCase() }}</h2>
+  <router-link
+    :to="{ name: 'variants', params: { geneId } }"
+    class="ht-button back-link"
+    >&#8592; Back</router-link
   >
-    <template #details>
-      <CellLinesDetails :details="details"></CellLinesDetails>
-      <router-link
-        class="ht-button back-link"
-        data-type="secondary"
-        :to="{ name: 'variants', params: { geneId: geneId } }"
-      >
-        <span class="back-link">
-          <vue-feather type="arrow-left"></vue-feather>
-          Variants
-        </span>
-      </router-link>
-    </template>
-    <template #chart>
-      <CellLinesEssentialityProfiles
-        :sizes="sizes"
-        :cell-lines-data="cellLinesData"
-      >
-      </CellLinesEssentialityProfiles>
-    </template>
-  </CellLinesViewLayout>
+  <div class="grid">
+    <EssentialityDetails
+      v-if="details"
+      class="details"
+      :details="details"
+    ></EssentialityDetails>
+    <EssentialityProfiles
+      v-if="cellLinesData"
+      class="chart"
+      :cell-lines-data="cellLinesData"
+      :sizes="sizes"
+      :tissue-name="tissueName"
+      :variant-id="variantId"
+      :dam="dam"
+    >
+    </EssentialityProfiles>
+  </div>
 </template>
 
 <script>
-import CellLinesViewLayout from '@/layouts/CellLinesViewLayout.vue';
-import CellLinesDetails from '@/components/CellLinesDetails.vue';
-import CellLinesEssentialityProfiles from '@/components/CellLinesEssentialityProfiles.vue';
-
-import { extent } from 'd3';
+import EssentialityDetails from '@/components/cell_lines/EssentialityDetails.vue';
+import EssentialityProfiles from '@/components/cell_lines/EssentialityProfiles.vue';
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
+
+import { onBeforeMount, ref } from 'vue';
+
+import service from '@/services';
+
+import { processErrorMessage } from '@/utils/errors.js';
+
+import { extent } from 'd3';
 
 export default {
   name: 'ViewCellLinesByVariant',
   components: {
-    CellLinesViewLayout,
-    CellLinesDetails,
-    CellLinesEssentialityProfiles,
+    EssentialityDetails,
+    EssentialityProfiles,
   },
   props: {
-    cellLinesData: { type: Array, required: true },
     geneId: { type: String, required: true },
-    rankRatio: { type: Number, required: true },
     tissueName: { type: String, required: true },
     variantId: { type: String, required: true },
-    dam: { type: Number, required: true },
+    dam: { type: String, required: true },
   },
   setup(props) {
     const width = 1000;
@@ -70,25 +69,51 @@ export default {
 
     const sizes = { width, height, margins, innerWidth, innerHeight };
 
-    const xDomain = props.cellLinesData.map(({ cellLineName }) => cellLineName);
+    const cellLinesData = ref(null);
+    const rankRatio = ref(0);
+    const xDomain = ref(null);
+    const yDomain = ref(null);
+    const details = ref(null);
 
-    const yDomain = extent(
-      props.cellLinesData.map(({ essentiality }) => essentiality)
-    );
+    onBeforeMount(async () => {
+      try {
+        const { data } = await service.getCellLinesDataByVariant({
+          tissueName: props.tissueName,
+          variantId: props.variantId,
+          geneId: props.geneId,
+        });
 
-    const details = {
-      geneId: props.geneId,
-      rankRatio: props.rankRatio,
-      tissueName: props.tissueName,
-      variantId: props.variantId,
-      dam: props.dam,
-    };
+        if (!data) {
+          throw new Error(`Unable to retrieve data`);
+        }
+
+        cellLinesData.value = data.cellLinesData;
+        rankRatio.value = data.rankRatio;
+
+        xDomain.value = cellLinesData.value.map(
+          ({ cellLineName }) => cellLineName
+        );
+
+        yDomain.value = extent(
+          cellLinesData.value.map(({ essentiality }) => essentiality)
+        );
+
+        details.value = {
+          geneId: props.geneId,
+          rankRatio: rankRatio.value,
+          tissueName: props.tissueName,
+          variantId: props.variantId,
+          dam: props.dam,
+        };
+      } catch (error) {
+        processErrorMessage(error);
+      }
+    });
 
     return {
       sizes,
-      xDomain,
-      yDomain,
       details,
+      cellLinesData,
     };
   },
 };

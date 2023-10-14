@@ -1,5 +1,6 @@
 <template>
   <svg
+    v-if="data"
     class="ht-chart chart"
     preserveAspectRatio="xMinYMin meet"
     :viewBox="[0, 0, width, height].join(' ')"
@@ -28,7 +29,7 @@
             {{ datum.variantId }}
           </text>
           <circle
-            v-if="datum.polyphen === 'probably_damaging'"
+            v-if="datum.polyphenDeleterious"
             cx="25"
             cy="0"
             r="4px"
@@ -36,7 +37,7 @@
           ></circle>
 
           <polygon
-            v-if="datum.sift === 'deleterious'"
+            v-if="datum.siftDeleterious"
             points="0,8 5,0 -5,0"
             fill="DeepPink"
             transform="rotate(180) translate(-10, -4) "
@@ -56,13 +57,25 @@ import { scaleBand, scaleRadial, arc, extent } from 'd3';
 
 import { useRouter } from 'vue-router';
 
+import { onBeforeMount, ref } from 'vue';
+
+import service from '@/services';
+
+import { sendErrorNotification } from '@/notifications';
+
+import { AxiosError } from 'axios';
+
+const processErrorMessage = (error) => {
+  let message = 'Unknown Error';
+  if (error instanceof AxiosError) {
+    message = error.message;
+  }
+  return message;
+};
+
 export default {
   name: 'CircularBarPlot',
-  props: {
-    data: { type: Array, required: true },
-  },
-
-  setup(props) {
+  setup() {
     const router = useRouter();
 
     const { showTooltip, hideTooltip } = useTooltip({ allowHTML: true });
@@ -81,49 +94,68 @@ export default {
     const labelSpace = 60; // used to leave space for labels on the radial barplots
     const outerRadius = Math.min(width, height) / 2 - labelSpace;
 
-    const xAxis = scaleBand()
-      .range([0, 2 * Math.PI]) // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
-      .domain(props.data.map(({ variantId }) => variantId));
+    const data = ref(null);
+    const xAxis = ref(null);
+    const yAxisOuter = ref(null);
+    const yAxisInner = ref(null);
 
-    //////////////////////////////////////////
-    // Outer Bar Plot
+    onBeforeMount(async () => {
+      try {
+        const { data: variantsData } = await service.getMostImportantVariants();
+        data.value = variantsData;
 
-    // Express nPatients in logScale. When nPatients = 1 -> log(nPatients) = 0
-    const yDomainOuter = extent(
-      props.data.map(({ nPatients }) => Math.log(nPatients))
-    );
+        xAxis.value = scaleBand()
+          .range([0, 2 * Math.PI]) // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
+          .domain(data.value.map(({ variantId }) => variantId));
 
-    // add 1 to compensate for next + 1 operation on outerRadius. This is needed to make sure bar with 1 patient have a non 0 height.
-    // by adding 1 to yDoamin[1] we guarantee that log(max(nPatients)) + 1 still is comprised in the domain.
-    const yAxisOuter = scaleRadial()
-      .range([innerRadius, outerRadius])
-      .domain([yDomainOuter[0], yDomainOuter[1] + 1]);
+        //////////////////////////////////////////
+        // Outer Bar Plot
+
+        // Express nPatients in logScale. When nPatients = 1 -> log(nPatients) = 0
+        const yDomainOuter = extent(
+          data.value.map(({ nPatients }) => Math.log(nPatients))
+        );
+
+        // add 1 to compensate for next + 1 operation on outerRadius. This is needed to make sure bar with 1 patient have a non 0 height.
+        // by adding 1 to yDoamin[1] we guarantee that log(max(nPatients)) + 1 still is comprised in the domain.
+        yAxisOuter.value = scaleRadial()
+          .range([innerRadius, outerRadius])
+          .domain([yDomainOuter[0], yDomainOuter[1] + 1]);
+
+        //////////////////////////////////////////
+        // Inner Bar Plot
+
+        const yDomainInner = extent(data.value.map(({ nTissues }) => nTissues));
+
+        yAxisInner.value = scaleRadial()
+          .range([innerRadius, 70])
+          .domain([0, yDomainInner[1]]);
+      } catch (error) {
+        const message = processErrorMessage(error);
+        sendErrorNotification({
+          title: 'Cannot retrieve data',
+          message,
+        });
+        return false;
+      }
+    });
 
     const drawOuterBarPlot = (datum) => {
       return arc()({
         innerRadius,
-        outerRadius: yAxisOuter(Math.log(datum.nPatients) + 1),
-        startAngle: xAxis(datum.variantId),
-        endAngle: xAxis(datum.variantId) + xAxis.bandwidth(),
+        outerRadius: yAxisOuter.value(Math.log(datum.nPatients) + 1),
+        startAngle: xAxis.value(datum.variantId),
+        endAngle: xAxis.value(datum.variantId) + xAxis.value.bandwidth(),
         padAngle: 0.005,
       });
     };
 
-    //////////////////////////////////////////
-    // Inner Bar Plot
-
-    const yDomainInner = extent(props.data.map(({ nTissues }) => nTissues));
-
-    const yAxisInner = scaleRadial()
-      .range([innerRadius, 70])
-      .domain([0, yDomainInner[1]]);
-
     const drawInnerBarPlot = (datum) => {
       return arc()({
         innerRadius,
-        outerRadius: yAxisInner(datum.nTissues),
-        startAngle: xAxis(datum.variantId),
-        endAngle: xAxis(datum.variantId) + xAxis.bandwidth(),
+        outerRadius: yAxisInner.value(datum.nTissues),
+        startAngle: xAxis.value(datum.variantId),
+        endAngle: xAxis.value(datum.variantId) + xAxis.value.bandwidth(),
         padAngle: 0.005,
       });
     };
@@ -138,7 +170,7 @@ export default {
     */
     const computeTextAnchor = (datum) => {
       const orientation =
-        (xAxis(datum.variantId) + xAxis.bandwidth() / 2 + Math.PI) %
+        (xAxis.value(datum.variantId) + xAxis.value.bandwidth() / 2 + Math.PI) %
           (2 * Math.PI) <
         Math.PI
           ? 'end'
@@ -149,8 +181,10 @@ export default {
     // rotate and translate text according to the corresponding bar
     const computeTextTransform = (datum) => {
       const rotation =
-        ((xAxis(datum.variantId) + xAxis.bandwidth() / 2) * 180) / Math.PI - 90;
-      const translation = yAxisOuter(Math.log(datum.nPatients) + 1);
+        ((xAxis.value(datum.variantId) + xAxis.value.bandwidth() / 2) * 180) /
+          Math.PI -
+        90;
+      const translation = yAxisOuter.value(Math.log(datum.nPatients) + 1);
 
       const transform = `rotate(${rotation}) translate(${translation}, 0)`;
 
@@ -164,7 +198,7 @@ export default {
     */
     const computeTextFlip = (datum) => {
       const flip =
-        (xAxis(datum.variantId) + xAxis.bandwidth() / 2 + Math.PI) %
+        (xAxis.value(datum.variantId) + xAxis.value.bandwidth() / 2 + Math.PI) %
           (2 * Math.PI) <
         Math.PI
           ? 'translate(35, 0) rotate(180)'
@@ -216,6 +250,7 @@ export default {
       onClick,
       onMouseOver,
       onMouseLeave,
+      data,
     };
   },
 };

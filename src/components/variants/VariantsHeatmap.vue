@@ -213,7 +213,7 @@ export default {
     const onClick = function ({ tissueName, variantId, dam }) {
       router.push({
         name: 'cell-lines-by-variant',
-        query: {
+        params: {
           tissueName,
           variantId,
           geneId: props.geneId,
@@ -225,7 +225,7 @@ export default {
     const onClickAggregated = function ({ tissueName }) {
       router.push({
         name: 'cell-lines-aggregated',
-        query: {
+        params: {
           tissueName,
           geneId: props.geneId,
         },
