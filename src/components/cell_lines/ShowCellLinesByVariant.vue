@@ -39,7 +39,7 @@ import { processErrorMessage } from '@/utils/errors.js';
 import { extent } from 'd3';
 
 export default {
-  name: 'ViewCellLinesByVariant',
+  name: 'ShowCellLinesByVariant',
   components: {
     EssentialityDetails,
     EssentialityProfiles,

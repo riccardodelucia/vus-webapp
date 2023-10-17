@@ -119,7 +119,7 @@
 
 <script>
 import { axisTop, axisRight, select, scaleBand } from 'd3';
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { useRouter } from 'vue-router';
@@ -154,60 +154,72 @@ export default {
     const heatmapTileHeight = 30;
     const heatmapWidth = 900;
 
-    const variants = Array.from(
-      new Set(props.data.map(({ variantId }) => variantId))
-    );
-    const tissues = Array.from(
-      new Set(props.data.map(({ tissueName }) => tissueName))
-    );
+    const variants = ref(null);
+    const tissues = ref(null);
+    const heatmapHeight = ref(0);
+    const height = ref(0);
+    const width = ref(0);
 
-    const heatmapHeight = heatmapTileHeight * variants.length;
-    const height =
-      margins.top +
-      heatmapHeight +
-      margins.bottom +
-      verticalGap +
-      heatmapTileHeight;
+    const annotationWidth = ref(0);
 
     const axisTissues = ref(null);
     const axisVariants = ref(null);
+    const yScale = ref(null);
+    const xScaleTissues = ref(null);
 
     const router = useRouter();
 
-    // Make Scales
-    const yScale = scaleBand()
-      .range([0, heatmapHeight])
-      .domain(variants)
-      .padding(padding);
+    watchEffect(async () => {
+      variants.value = Array.from(
+        new Set(props.data.map(({ variantId }) => variantId))
+      );
+      tissues.value = Array.from(
+        new Set(props.data.map(({ tissueName }) => tissueName))
+      );
 
-    const xScaleTissues = scaleBand()
-      .range([0, heatmapWidth])
-      .domain(tissues)
-      .padding(padding);
+      heatmapHeight.value = heatmapTileHeight * variants.value.length;
+      height.value =
+        margins.top +
+        heatmapHeight.value +
+        margins.bottom +
+        verticalGap +
+        heatmapTileHeight;
 
-    // use same tile width on annotations
-    const annotationWidth = xScaleTissues.bandwidth();
+      // Make Scales
+      yScale.value = scaleBand()
+        .range([0, heatmapHeight.value])
+        .domain(variants.value)
+        .padding(padding);
 
-    // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
-    const width =
-      margins.left +
-      2 * annotationWidth +
-      horizontalGap +
-      heatmapWidth +
-      margins.right;
+      xScaleTissues.value = scaleBand()
+        .range([0, heatmapWidth])
+        .domain(tissues.value)
+        .padding(padding);
 
-    makeReactiveAxis(() => {
-      select(axisTissues.value)
-        .call(axisTop(xScaleTissues).tickSize(0))
-        .selectAll('.tick text')
-        .attr('transform', 'translate(2,0) rotate(-30) ')
-        .style('text-anchor', 'start');
-      select(axisTissues.value).select('.domain').remove();
-    });
+      // use same tile width on annotations
+      annotationWidth.value = xScaleTissues.value.bandwidth();
 
-    makeReactiveAxis(() => {
-      select(axisVariants.value).call(axisRight(yScale).tickSize(0));
-      select(axisVariants.value).select('.domain').remove();
+      // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
+      width.value =
+        margins.left +
+        2 * annotationWidth.value +
+        horizontalGap +
+        heatmapWidth +
+        margins.right;
+
+      makeReactiveAxis(() => {
+        select(axisTissues.value)
+          .call(axisTop(xScaleTissues.value).tickSize(0))
+          .selectAll('.tick text')
+          .attr('transform', 'translate(2,0) rotate(-30) ')
+          .style('text-anchor', 'start');
+        select(axisTissues.value).select('.domain').remove();
+      });
+
+      makeReactiveAxis(() => {
+        select(axisVariants.value).call(axisRight(yScale.value).tickSize(0));
+        select(axisVariants.value).select('.domain').remove();
+      });
     });
 
     const onClick = function ({ tissueName, variantId, dam }) {

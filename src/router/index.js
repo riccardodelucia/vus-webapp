@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import ViewHome from '@/views/ViewHome.vue';
 import ViewApp from '@/views/ViewApp.vue';
-import ViewSearch from '@/views/ViewSearch.vue';
+import SearchVariants from '@/components/search/SearchVariants.vue';
 
-import ViewVariants from '@/views/ViewVariants.vue';
-import ViewCellLinesByVariant from '@/views/ViewCellLinesByVariant.vue';
-import ViewCellLinesAggregated from '@/views/ViewCellLinesAggregated.vue';
+import ShowVariants from '@/components/variants/ShowVariants.vue';
+import ShowCellLinesByVariant from '@/components/cell_lines/ShowCellLinesByVariant.vue';
+import ShowCellLinesAggregated from '@/components/cell_lines/ShowCellLinesAggregated.vue';
 
 const routes = [
   {
@@ -19,23 +19,23 @@ const routes = [
     component: ViewApp,
     props: true,
     children: [
-      { path: '', name: 'search', component: ViewSearch },
+      { path: '', name: 'search', component: SearchVariants },
       {
         path: ':geneId',
         name: 'variants',
         props: true,
-        component: ViewVariants,
+        component: ShowVariants,
       },
       {
         path: 'cell-lines-by-variant/:geneId/:variantId/:tissueName/:dam',
         name: 'cell-lines-by-variant',
-        component: ViewCellLinesByVariant,
+        component: ShowCellLinesByVariant,
         props: true,
       },
       {
         path: 'cell-lines-aggregated/:geneId/:tissueName',
         name: 'cell-lines-aggregated',
-        component: ViewCellLinesAggregated,
+        component: ShowCellLinesAggregated,
         props: true,
       },
     ],

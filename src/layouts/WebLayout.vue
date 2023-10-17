@@ -5,16 +5,9 @@
       <slot></slot>
     </main>
     <ht-footer>
-      <!-- <div class="footer-content">
-        <h2>CRISPRcleanR WebApp</h2>
-        <router-link class="footer-link" :to="{ name: 'termsAndConditions' }"
-          >Terms And Conditions</router-link
-        >
-        |
-        <router-link class="footer-link" :to="{ name: 'termsDataProcessing' }"
-          >Data Processing Policy</router-link
-        >
-      </div> -->
+      <div class="footer-content">
+        <h2>VUS Portal</h2>
+      </div>
     </ht-footer>
   </div>
 </template>

@@ -31,7 +31,7 @@
 import VariantsHeatmap from '@/components/variants/VariantsHeatmap.vue';
 import ChartDetails from '@/components/variants/ChartDetails.vue';
 
-import { ref, onBeforeMount } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 import { processErrorMessage } from '@/utils/errors.js';
 
@@ -48,7 +48,7 @@ import {
 import service from '@/services';
 
 export default {
-  name: 'ViewVariants',
+  name: 'ShowVariants',
   components: { ChartDetails, VariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
@@ -70,7 +70,7 @@ export default {
       },
     };
 
-    onBeforeMount(async () => {
+    watchEffect(async () => {
       try {
         const variantsData = await service.getVariantsData(props.geneId);
         const aggregatedVariantsData = await service.getVariantsAggregatedData(
