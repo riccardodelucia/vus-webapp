@@ -13,7 +13,7 @@
           :to="{ name: 'search' }"
           data-type="secondary"
         >
-          Search by Variant
+          Show Top Variants
         </router-link>
       </div>
 
