@@ -1,9 +1,6 @@
 <template>
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
-  <router-link :to="{ name: 'search' }" class="ht-button back-link"
-    >&#8592; Back</router-link
-  >
-  <div class="grid">
+  <div class="grid variants-grid">
     <ChartDetails
       v-if="data"
       class="details"
@@ -19,6 +16,7 @@
         :aggregated-data="aggregatedData"
         :annotations="annotations"
         :gene-id="geneId"
+        :variant-id="variantId"
         :color="heatmapColor"
         :sift-color="siftColor"
         :polyphen-color="polyphenColor"
@@ -52,6 +50,7 @@ export default {
   components: { ChartDetails, VariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
+    variantId: { type: String, default: '' },
   },
   setup(props) {
     const data = ref(null);

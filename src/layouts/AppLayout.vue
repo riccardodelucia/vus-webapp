@@ -65,8 +65,4 @@ export default {
 .chart {
   grid-column: 2/3;
 }
-
-.back-link {
-  --button-font-size: var(--font-size-0);
-}
 </style>

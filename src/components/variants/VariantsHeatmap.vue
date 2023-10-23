@@ -10,7 +10,7 @@
       <g>
         <text
           :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
-          class="ht-chart-title"
+          class="ht-chart-title bold"
         >
           sift
         </text>
@@ -27,7 +27,7 @@
       <g :transform="`translate(${annotationWidth + 1}, 0)`">
         <text
           :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
-          class="ht-chart-title"
+          class="ht-chart-title bold"
         >
           polyphen
         </text>
@@ -75,6 +75,18 @@
               pointer-events="none"
             />
           </g>
+          <g
+            v-if="variantId"
+            :transform="`translate(0,  ${yScale(variantId)})`"
+          >
+            <rect
+              class="variant-highlight"
+              x="0"
+              y="0"
+              :width="heatmapWidth"
+              :height="yScale.bandwidth()"
+            ></rect>
+          </g>
         </g>
 
         <g :transform="`translate(0, ${heatmapHeight + verticalGap})`">
@@ -107,7 +119,7 @@
             :transform="`translate(${heatmapWidth + 2}, ${
               yScale.bandwidth() / 2 + 4
             })`"
-            class="ht-chart-title"
+            class="ht-chart-title bold"
           >
             Aggregated DAM
           </text>
@@ -127,6 +139,7 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'VariantsHeatmap',
   props: {
+    variantId: { type: String, default: '' },
     geneId: { type: String, required: true },
     color: {
       type: Function,
@@ -212,12 +225,24 @@ export default {
           .call(axisTop(xScaleTissues.value).tickSize(0))
           .selectAll('.tick text')
           .attr('transform', 'translate(2,0) rotate(-30) ')
-          .style('text-anchor', 'start');
+          .style('text-anchor', 'start')
+          .style('font-size', '15px');
         select(axisTissues.value).select('.domain').remove();
       });
 
       makeReactiveAxis(() => {
-        select(axisVariants.value).call(axisRight(yScale.value).tickSize(0));
+        select(axisVariants.value)
+          .call(axisRight(yScale.value).tickSize(0))
+          .selectAll('.tick text')
+          .style('font-size', '15px');
+        select(axisVariants.value)
+          .selectAll('.tick text')
+          .each(function (d) {
+            console.log(d);
+            if (d === props.variantId) {
+              select(this).style('color', 'red');
+            }
+          });
         select(axisVariants.value).select('.domain').remove();
       });
     });
@@ -277,5 +302,15 @@ export default {
 }
 svg {
   padding: var(--size-2);
+}
+
+.bold {
+  font-weight: var(--font-weight-6);
+}
+
+.variant-highlight {
+  fill: none;
+  stroke-width: 2px;
+  stroke: red;
 }
 </style>

@@ -1,10 +1,5 @@
 <template>
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
-  <router-link
-    :to="{ name: 'variants', params: { geneId } }"
-    class="ht-button back-link"
-    >&#8592; Back</router-link
-  >
   <div class="grid">
     <EssentialityDetails
       v-if="details"
