@@ -15,6 +15,9 @@
         >
           Show Top Variants
         </router-link>
+        <button v-if="showBackButton" @click="router.go(-1)">
+          &#8592; Back
+        </button>
       </div>
 
       <router-view></router-view>
@@ -23,8 +26,8 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import AppLayout from '@/layouts/AppLayout.vue';
 
 export default {
@@ -33,6 +36,7 @@ export default {
   setup() {
     const gene = ref('');
     const router = useRouter();
+    const route = useRoute();
 
     function onSubmit() {
       router.push({
@@ -40,9 +44,15 @@ export default {
         params: { geneId: gene.value },
       });
     }
+    const showBackButton = computed(() => {
+      return route.fullPath !== '/app';
+    });
+
     return {
       gene,
       onSubmit,
+      router,
+      showBackButton,
     };
   },
 };
