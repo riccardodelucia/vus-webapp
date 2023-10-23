@@ -21,7 +21,7 @@ const routes = [
     children: [
       { path: '', name: 'search', component: SearchVariants },
       {
-        path: ':geneId',
+        path: ':geneId/:variantId?',
         name: 'variants',
         props: true,
         component: ShowVariants,

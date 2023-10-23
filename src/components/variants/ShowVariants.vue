@@ -17,6 +17,7 @@
         :aggregated-data="aggregatedData"
         :annotations="annotations"
         :gene-id="geneId"
+        :variant-id="variantId"
         :color="heatmapColor"
         :sift-color="siftColor"
         :polyphen-color="polyphenColor"
@@ -50,6 +51,7 @@ export default {
   components: { ChartDetails, VariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
+    variantId: { type: String, default: '' },
   },
   setup(props) {
     const data = ref(null);

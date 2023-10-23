@@ -202,10 +202,10 @@ export default {
 
     ///////////////////////////////////
     // listeners
-    const onClick = ({ geneId }) => {
+    const onClick = ({ variantId, geneId }) => {
       router.push({
         name: 'variants',
-        params: { geneId },
+        params: { geneId, variantId },
       });
     };
 

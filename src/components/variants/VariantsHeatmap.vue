@@ -75,6 +75,18 @@
               pointer-events="none"
             />
           </g>
+          <g
+            v-if="variantId"
+            :transform="`translate(0,  ${yScale(variantId)})`"
+          >
+            <rect
+              class="variant-highlight"
+              x="0"
+              y="0"
+              :width="heatmapWidth"
+              :height="yScale.bandwidth()"
+            ></rect>
+          </g>
         </g>
 
         <g :transform="`translate(0, ${heatmapHeight + verticalGap})`">
@@ -127,6 +139,7 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'VariantsHeatmap',
   props: {
+    variantId: { type: String, default: '' },
     geneId: { type: String, required: true },
     color: {
       type: Function,
@@ -222,6 +235,14 @@ export default {
           .call(axisRight(yScale.value).tickSize(0))
           .selectAll('.tick text')
           .style('font-size', '15px');
+        select(axisVariants.value)
+          .selectAll('.tick text')
+          .each(function (d) {
+            console.log(d);
+            if (d === props.variantId) {
+              select(this).style('color', 'red');
+            }
+          });
         select(axisVariants.value).select('.domain').remove();
       });
     });
@@ -285,5 +306,11 @@ svg {
 
 .bold {
   font-weight: var(--font-weight-6);
+}
+
+.variant-highlight {
+  fill: none;
+  stroke-width: 2px;
+  stroke: red;
 }
 </style>
