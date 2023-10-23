@@ -10,7 +10,7 @@
       <g>
         <text
           :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
-          class="ht-chart-title"
+          class="ht-chart-title bold"
         >
           sift
         </text>
@@ -27,7 +27,7 @@
       <g :transform="`translate(${annotationWidth + 1}, 0)`">
         <text
           :transform="`translate(${annotationWidth / 2},-4) rotate(-90)`"
-          class="ht-chart-title"
+          class="ht-chart-title bold"
         >
           polyphen
         </text>
@@ -107,7 +107,7 @@
             :transform="`translate(${heatmapWidth + 2}, ${
               yScale.bandwidth() / 2 + 4
             })`"
-            class="ht-chart-title"
+            class="ht-chart-title bold"
           >
             Aggregated DAM
           </text>
@@ -212,12 +212,16 @@ export default {
           .call(axisTop(xScaleTissues.value).tickSize(0))
           .selectAll('.tick text')
           .attr('transform', 'translate(2,0) rotate(-30) ')
-          .style('text-anchor', 'start');
+          .style('text-anchor', 'start')
+          .style('font-size', '15px');
         select(axisTissues.value).select('.domain').remove();
       });
 
       makeReactiveAxis(() => {
-        select(axisVariants.value).call(axisRight(yScale.value).tickSize(0));
+        select(axisVariants.value)
+          .call(axisRight(yScale.value).tickSize(0))
+          .selectAll('.tick text')
+          .style('font-size', '15px');
         select(axisVariants.value).select('.domain').remove();
       });
     });
@@ -277,5 +281,9 @@ export default {
 }
 svg {
   padding: var(--size-2);
+}
+
+.bold {
+  font-weight: var(--font-weight-6);
 }
 </style>
