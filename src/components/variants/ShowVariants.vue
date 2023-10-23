@@ -1,6 +1,5 @@
 <template>
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
-
   <div class="grid variants-grid">
     <ChartDetails
       v-if="data"

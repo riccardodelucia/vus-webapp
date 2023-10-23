@@ -43,6 +43,7 @@ export default {
         name: 'variants',
         params: { geneId: gene.value },
       });
+      gene.value = '';
     }
     const showBackButton = computed(() => {
       return route.fullPath !== '/app';
