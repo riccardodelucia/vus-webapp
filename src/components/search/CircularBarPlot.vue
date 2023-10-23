@@ -22,7 +22,7 @@
         >
           <text
             alignment-baseline="middle"
-            font-size="10px"
+            font-size="12px"
             :transform="computeTextFlip(datum)"
             :fill="datum.isDriver ? 'DeepPink' : 'black'"
           >
@@ -80,17 +80,10 @@ export default {
 
     const { showTooltip, hideTooltip } = useTooltip({ allowHTML: true });
 
-    const width = 700;
-    const height = 820;
+    const width = 800;
+    const height = 1000;
 
-    const margins = {
-      left: 50,
-      right: 50,
-      top: 50,
-      bottom: 50,
-    };
-
-    const innerRadius = 200;
+    const innerRadius = 250;
     const labelSpace = 60; // used to leave space for labels on the radial barplots
     const outerRadius = Math.min(width, height) / 2 - labelSpace;
 
@@ -239,7 +232,6 @@ export default {
     };
 
     return {
-      margins,
       width,
       height,
       drawOuterBarPlot,
