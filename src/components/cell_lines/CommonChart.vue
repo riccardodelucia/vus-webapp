@@ -51,7 +51,8 @@ export default {
         .call(axisBottom(xScale))
         .selectAll('.tick text')
         .attr('transform', 'translate(-12, 8) rotate(-60) ')
-        .style('text-anchor', 'end');
+        .style('text-anchor', 'end')
+        .style('font-size', '15px');
     });
 
     const yScale = scaleLinear()
@@ -60,7 +61,10 @@ export default {
       .nice();
 
     makeReactiveAxis(() => {
-      select(yAxis.value).call(axisLeft(yScale));
+      select(yAxis.value)
+        .call(axisLeft(yScale))
+        .selectAll('.tick text')
+        .style('font-size', '15px');
     });
 
     return {
