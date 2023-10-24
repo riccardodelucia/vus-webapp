@@ -5,7 +5,7 @@
     x-axis-label="Cell Lines"
     :x-domain="xDomain"
     :y-domain="yDomain"
-    y-axis-label="logFC(essentiality)"
+    y-axis-label="log(FC)"
   >
     <g>
       <line

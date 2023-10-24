@@ -46,7 +46,7 @@ export default {
     dam: { type: String, required: true },
   },
   setup(props) {
-    const width = 1000;
+    const width = 1100;
     const height = 700;
 
     const margins = {

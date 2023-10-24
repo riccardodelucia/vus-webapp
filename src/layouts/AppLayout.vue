@@ -57,6 +57,7 @@ export default {
   grid-template-columns: max-content 1fr;
   gap: var(--size-4);
   margin-top: var(--size-4);
+  overflow: scroll;
 }
 
 .details {

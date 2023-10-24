@@ -63,8 +63,10 @@ export default {
 .controls {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--size-3);
   margin-bottom: var(--size-5);
+  overflow-x: scroll;
 }
 
 h2 {
