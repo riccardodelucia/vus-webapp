@@ -8,11 +8,26 @@
   >
     <g :transform="`translate(${sizes.margins.left}, ${sizes.margins.top})`">
       <g ref="yAxis"></g>
-      <text :x="4" :y="4" style="font-weight: bold">{{ yAxisLabel }}</text>
+
+      <text
+        :x="0"
+        :y="0"
+        style="font-weight: bold"
+        text-anchor="middle"
+        :transform="`translate(20,${sizes.innerHeight / 2}) rotate(-90)`"
+      >
+        {{ yAxisLabel }}
+      </text>
+
       <slot :x-scale="xScale" :y-scale="yScale"></slot>
       <g :transform="`translate(0, ${sizes.innerHeight})`">
         <g ref="xAxis"></g>
-        <text :x="sizes.innerWidth / 2" :y="-4" style="font-weight: bold">
+        <text
+          :x="sizes.innerWidth / 2"
+          :y="-4"
+          style="font-weight: bold"
+          text-anchor="middle"
+        >
           {{ xAxisLabel }}
         </text>
       </g>
@@ -52,7 +67,7 @@ export default {
         .selectAll('.tick text')
         .attr('transform', 'translate(-12, 8) rotate(-60) ')
         .style('text-anchor', 'end')
-        .style('font-size', '15px');
+        .style('font-size', '12px');
     });
 
     const yScale = scaleLinear()
@@ -64,7 +79,7 @@ export default {
       select(yAxis.value)
         .call(axisLeft(yScale))
         .selectAll('.tick text')
-        .style('font-size', '15px');
+        .style('font-size', '12px');
     });
 
     return {
