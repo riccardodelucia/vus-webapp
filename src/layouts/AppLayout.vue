@@ -58,6 +58,10 @@ export default {
   gap: var(--size-4);
   margin-top: var(--size-4);
   overflow: scroll;
+
+  & > * {
+    min-width: 0;
+  }
 }
 
 .details {
