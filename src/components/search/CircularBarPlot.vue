@@ -211,15 +211,23 @@ export default {
 
     const onMouseOver = function (
       event,
-      { variantId, nPatients, nTissues, geneId, isDriver, sift, polyphen }
+      {
+        variantId,
+        nPatients,
+        nTissues,
+        geneId,
+        isDriver,
+        siftDeleterious,
+        polyphenDeleterious,
+      }
     ) {
       const htmlString = `
       <ul style="list-style: none; margin: 0">
         <li>Variant: ${variantId}</li>
         <li>Gene: ${geneId}</li>
         <li>Driver: ${Boolean(isDriver)}</li>
-        <li>SIFT: ${sift}</li>
-        <li>Polyphen: ${polyphen}</li>
+        <li>Deleterious SIFT: ${Boolean(siftDeleterious)}</li>
+        <li>Deleterious Polyphen: ${Boolean(polyphenDeleterious)}</li>
         <li>Number of Patients: ${nPatients}</li>
         <li>Number of Tissues: ${nTissues}</li>
       </ul>`;
