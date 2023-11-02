@@ -1,12 +1,8 @@
 import { sendErrorNotification } from '@/notifications';
 
-import { AxiosError } from 'axios';
-
 export const processErrorMessage = (error) => {
-  let message = 'Unknown Error';
-  if (error instanceof AxiosError) {
-    message = error.message;
-  }
+  const message = error.message ? error.message : 'Unknown Error';
+
   sendErrorNotification({
     title: 'Cannot retrieve data',
     message,
