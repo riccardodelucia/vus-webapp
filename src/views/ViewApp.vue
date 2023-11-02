@@ -15,7 +15,7 @@
         >
           Show Top Variants
         </router-link>
-        <button v-if="showBackButton" @click="router.go(-1)">
+        <button v-if="showBackButton" @click="navigateBack">
           &#8592; Back
         </button>
       </div>
@@ -49,11 +49,18 @@ export default {
       return route.fullPath !== '/app';
     });
 
+    const navigateBack = () => {
+      if (route.name === 'variants') router.push({ name: 'search' });
+      if (route.name.startsWith('cell-lines'))
+        router.push({ name: 'variants' });
+    };
+
     return {
       gene,
       onSubmit,
       router,
       showBackButton,
+      navigateBack,
     };
   },
 };
