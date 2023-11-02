@@ -43,7 +43,7 @@ export function sendErrorNotification({
   );
 }
 
-export function removeNotification({ id }) {
+export function removeNotification(id) {
   notifications.value = notifications.value.filter(
     (notification) => notification.id !== id
   );

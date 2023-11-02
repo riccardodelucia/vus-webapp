@@ -1,28 +1,30 @@
 <template>
-  <h2>Gene: {{ geneId.toUpperCase() }}</h2>
-  <div class="grid variants-grid">
-    <ChartDetails
-      v-if="data"
-      class="details"
-      :legend-sizes="legendSizes"
-      :polyphen-color="polyphenColor"
-      :heatmap-color="heatmapColor"
-      :sift-color="siftColor"
-    >
-    </ChartDetails>
-    <div v-if="data" class="chart">
-      <VariantsHeatmap
-        :data="data"
-        :aggregated-data="aggregatedData"
-        :annotations="annotations"
-        :gene-id="geneId"
-        :variant-id="variantId"
-        :color="heatmapColor"
-        :sift-color="siftColor"
+  <template v-if="data">
+    <h2>Gene: {{ geneId.toUpperCase() }}</h2>
+    <div class="grid variants-grid">
+      <ChartDetails
+        v-if="data"
+        class="details"
+        :legend-sizes="legendSizes"
         :polyphen-color="polyphenColor"
-      ></VariantsHeatmap>
-    </div>
-  </div>
+        :heatmap-color="heatmapColor"
+        :sift-color="siftColor"
+      >
+      </ChartDetails>
+      <div v-if="data" class="chart">
+        <VariantsHeatmap
+          :data="data"
+          :aggregated-data="aggregatedData"
+          :annotations="annotations"
+          :gene-id="geneId"
+          :variant-id="variantId"
+          :color="heatmapColor"
+          :sift-color="siftColor"
+          :polyphen-color="polyphenColor"
+        ></VariantsHeatmap>
+      </div></div
+  ></template>
+  <p v-else>Error: please try again</p>
 </template>
 
 <script>
@@ -71,17 +73,23 @@ export default {
 
     watchEffect(async () => {
       try {
-        const variantsData = await service.getVariantsData(props.geneId);
-        const aggregatedVariantsData = await service.getVariantsAggregatedData(
-          props.geneId
-        );
-        const annotationsData = await service.getVariantsAnnotations(
+        const { data: variantsData } = await service.getVariantsData(
           props.geneId
         );
 
-        data.value = variantsData.data;
-        aggregatedData.value = aggregatedVariantsData.data;
-        annotations.value = annotationsData.data;
+        if (variantsData.length === 0) {
+          throw new Error(`No data for gene ${props.geneId}`);
+        }
+
+        const { data: aggregatedVariantsData } =
+          await service.getVariantsAggregatedData(props.geneId);
+        const { data: annotationsData } = await service.getVariantsAnnotations(
+          props.geneId
+        );
+
+        data.value = variantsData;
+        aggregatedData.value = aggregatedVariantsData;
+        annotations.value = annotationsData;
 
         const interpolator = (t) => {
           if (t === -Infinity) {

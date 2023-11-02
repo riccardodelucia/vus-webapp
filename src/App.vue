@@ -3,8 +3,8 @@
     <router-view />
     <div class="notifications-container ht-layout-stack">
       <ht-toast
-        v-for="({ type, title, message, id }, idx) in notifications"
-        :key="idx"
+        v-for="{ type, title, message, id } in notifications"
+        :key="`toast-${id}`"
         :type="type"
         :title="title"
         :toast-id="id"
