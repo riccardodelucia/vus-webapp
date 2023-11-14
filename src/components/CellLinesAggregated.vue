@@ -117,6 +117,9 @@ export default {
     const width = 1100;
     const height = 700;
 
+    const cssWidth = `${width}px`;
+    const cssHeight = `${height}px`;
+
     const margins = {
       top: 30,
       bottom: 100,
@@ -158,9 +161,18 @@ export default {
       currentTab,
       cellLinesData,
       onUpdate,
+      cssWidth,
+      cssHeight,
     };
   },
 };
 </script>
 
-<style lang="postcss" scoped></style>
+<style lang="scss" scoped>
+.center-grid {
+  display: grid;
+  place-items: center;
+  width: v-bind('cssWidth');
+  height: v-bind('cssHeight');
+}
+</style>
