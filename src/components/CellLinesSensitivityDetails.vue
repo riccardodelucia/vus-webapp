@@ -3,14 +3,13 @@
     <div>
       <ul class="ht-reset">
         <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
-        <li><b>Rank Ratio:</b> {{ Number(details.rankRatio.toFixed(2)) }}</li>
+        <li><b>Rank Ratio:</b> {{ rankRatio }}</li>
         <li><b>All DAMs</b></li>
         <li>
           <b>Drug: </b> {{ drug?.drugName }}, GDSC {{ drug?.gdscVersion }} (is
           SAM: {{ Boolean(drug?.sam) }})
         </li>
       </ul>
-
       <ht-select
         :model-value="drug"
         class="ht-formgroup"
@@ -35,7 +34,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export default {
   name: 'CellLinesSensitivityDetails',
@@ -57,7 +56,12 @@ export default {
       drug.value = value;
       emit('update:model-value', value);
     };
-    return { drug, onUpdate };
+    const rankRatio = computed(() => {
+      const value = Number(props.details.rankRatio.toFixed(2));
+      if (value === 0) return 'Undefined';
+      return value;
+    });
+    return { drug, onUpdate, rankRatio };
   },
 };
 </script>

@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+
 export default {
   name: 'CellLinesEssentialityDetails',
   props: {
@@ -38,12 +40,13 @@ export default {
       required: true,
     },
   },
-  computed: {
-    rankRatio() {
-      const value = Number(this.details.rankRatio.toFixed(2));
+  setup(props) {
+    const rankRatio = computed(() => {
+      const value = Number(props.details.rankRatio.toFixed(2));
       if (value === 0) return 'Undefined';
       return value;
-    },
+    });
+    return { rankRatio };
   },
 };
 </script>
