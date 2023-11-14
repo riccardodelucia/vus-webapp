@@ -30,10 +30,6 @@ export default {
 </script>
 
 <style lang="postcss">
-main {
-  overflow: scroll;
-}
-
 .legend-title {
   font-size: var(--font-size-3);
 }
