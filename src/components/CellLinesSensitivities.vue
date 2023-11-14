@@ -35,9 +35,6 @@
 <script>
 import CellLinesChart from '@/components/CellLinesChart.vue';
 import { ref, watchEffect } from 'vue';
-import service from '@/services';
-
-import { sendErrorNotification } from '@/notifications.js';
 
 import { extent } from 'd3';
 
@@ -48,34 +45,17 @@ export default {
   components: { CellLinesChart },
   props: {
     sizes: { type: Object, required: true },
-    drug: { type: Object, required: true },
-    geneId: { type: String, required: true },
-    tissueName: { type: String, required: true },
+    sensitivities: { type: Array, required: true },
   },
-  emits: ['rank-ratio'],
-  setup(props, { emit }) {
-    const sensitivities = ref(null);
-
+  setup(props) {
     const xDomain = ref(null);
     const yDomain = ref(null);
 
     watchEffect(async () => {
-      try {
-        const { data } = await service.getDrugsSensitivities({
-          ...props.drug,
-          drugId: props.geneId,
-          tissueName: props.tissueName,
-        });
-        sensitivities.value = data.sensitivities;
-        xDomain.value = data.sensitivities.map(
-          ({ cellLineName }) => cellLineName
-        );
-        yDomain.value = extent(data.sensitivities.map(({ ic50 }) => ic50));
-
-        emit('rank-ratio', data.rankRatio);
-      } catch (err) {
-        sendErrorNotification(err);
-      }
+      xDomain.value = props.sensitivities.map(
+        ({ cellLineName }) => cellLineName
+      );
+      yDomain.value = extent(props.sensitivities.map(({ ic50 }) => ic50));
     });
 
     const { showTooltip, hideTooltip } = useTooltip();
@@ -89,7 +69,6 @@ export default {
     };
 
     return {
-      sensitivities,
       onMouseOver,
       onMouseLeave,
       xDomain,

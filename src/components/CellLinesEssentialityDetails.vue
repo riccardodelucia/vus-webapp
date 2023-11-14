@@ -3,7 +3,7 @@
     <div>
       <ul class="ht-reset">
         <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
-        <li><b>Rank Ratio:</b> {{ Number(details.rankRatio.toFixed(2)) }}</li>
+        <li><b>Rank Ratio:</b> {{ rankRatio }}</li>
         <li v-if="details.variantId">
           <b>Variant:</b> {{ details.variantId }} (is DAM: {{ details.dam }})
         </li>
@@ -38,8 +38,12 @@ export default {
       required: true,
     },
   },
-  setup() {
-    return {};
+  computed: {
+    rankRatio() {
+      const value = Number(this.details.rankRatio.toFixed(2));
+      if (value === 0) return 'Undefined';
+      return value;
+    },
   },
 };
 </script>

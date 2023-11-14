@@ -7,9 +7,9 @@
       :details="essentialityDetails"
     ></CellLinesEssentialityDetails>
     <CellLinesSensitivityDetails
-      v-if="sensitivityDetails && currentTab.panel === 'sensitivity'"
+      v-if="currentTab.panel === 'sensitivity'"
       class="details"
-      :details="essentialityDetails"
+      :details="sensitivityDetails"
       :drugs="drugs"
       @update:model-value="onUpdate"
     ></CellLinesSensitivityDetails>
@@ -34,10 +34,7 @@
         <CellLinesSensitivities
           v-else
           :sizes="sizes"
-          :drug="selectedDrug"
-          :gene-id="geneId"
-          :tissue-name="tissueName"
-          @rank-ratio="onSensitivityRankRatio"
+          :sensitivities="sensitivities"
         >
         </CellLinesSensitivities>
       </template>
@@ -53,11 +50,13 @@ import CellLinesSensitivityDetails from '@/components/CellLinesSensitivityDetail
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
-import { ref, onBeforeMount } from 'vue';
+import { ref, reactive, onBeforeMount } from 'vue';
 
 import service from '@/services';
 
 import { processErrorMessage } from '@/utils/errors.js';
+
+import { sendErrorNotification } from '@/notifications.js';
 
 export default {
   name: 'CellLinesAggregated',
@@ -73,11 +72,20 @@ export default {
   },
   setup(props) {
     const cellLinesData = ref(null);
-    const rankRatio = ref(0);
     const drugs = ref(null);
     const selectedDrug = ref(null);
-    const essentialityDetails = ref(null);
-    const sensitivityDetails = ref(null);
+    const sensitivities = ref(null);
+
+    const essentialityDetails = reactive({
+      geneId: props.geneId,
+      rankRatio: 0,
+      tissueName: props.tissueName,
+    });
+
+    const sensitivityDetails = reactive({
+      rankRatio: 0,
+      tissueName: props.tissueName,
+    });
 
     const tabList = ref([{ label: 'Essentiality', panel: 'essentiality' }]);
     const currentTab = ref(tabList.value[0]);
@@ -93,7 +101,7 @@ export default {
         }
 
         cellLinesData.value = data.cellLinesData;
-        rankRatio.value = data.rankRatio;
+        essentialityDetails.rankRatio = data.rankRatio;
 
         const { data: drugsData } = await service.getDrugsTestedOnGene(props);
         if (drugsData.length > 0) {
@@ -103,19 +111,7 @@ export default {
           }));
 
           tabList.value.push({ label: 'Sensitivity', panel: 'sensitivity' });
-
-          sensitivityDetails.value = {
-            geneId: props.geneId,
-            rankRatio: 0,
-            tissueName: props.tissueName,
-          };
         }
-
-        essentialityDetails.value = {
-          geneId: props.geneId,
-          rankRatio: rankRatio.value,
-          tissueName: props.tissueName,
-        };
       } catch (error) {
         processErrorMessage(error);
       }
@@ -148,13 +144,25 @@ export default {
       } else currentTab.value = tabList.value[0];
     };
 
-    const onSensitivityRankRatio = (rankRatio) => {
-      sensitivityDetails.value.rankRatio = rankRatio;
-    };
-
-    const onUpdate = (value) => {
+    const onUpdate = async (value) => {
       selectedDrug.value = value;
       state.value = 'loading';
+      try {
+        const { data } = await service.getDrugsSensitivities({
+          ...selectedDrug.value,
+          drugId: props.geneId,
+          tissueName: props.tissueName,
+        });
+
+        sensitivities.value = data.sensitivities;
+
+        sensitivityDetails.rankRatio = data.rankRatio;
+
+        state.value = 'loaded';
+      } catch (err) {
+        state.value = 'error';
+        sendErrorNotification(err);
+      }
     };
 
     return {
@@ -163,7 +171,6 @@ export default {
       onTabSelected,
       drugs,
       selectedDrug,
-      onSensitivityRankRatio,
       essentialityDetails,
       sensitivityDetails,
       currentTab,
@@ -172,6 +179,7 @@ export default {
       cssWidth,
       cssHeight,
       state,
+      sensitivities,
     };
   },
 };
