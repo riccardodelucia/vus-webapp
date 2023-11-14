@@ -1,30 +1,44 @@
 <template>
-  <CellLinesDetailsLayout :details="details">
-    <template #ul>
-      <li>
-        <b>Drug: </b> {{ drug?.drugName }}, GDSC {{ drug?.gdscVersion }} (is
-        SAM: {{ Boolean(drug?.sam) }})
-      </li>
-    </template>
-    <template #default>
+  <div class="ht-layout-stack">
+    <div>
+      <ul class="ht-reset">
+        <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
+        <li><b>Rank Ratio:</b> {{ Number(details.rankRatio.toFixed(2)) }}</li>
+        <li><b>All DAMs</b></li>
+        <li>
+          <b>Drug: </b> {{ drug?.drugName }}, GDSC {{ drug?.gdscVersion }} (is
+          SAM: {{ Boolean(drug?.sam) }})
+        </li>
+      </ul>
+
       <ht-select
         :model-value="drug"
         class="ht-formgroup"
         :options="drugs"
         @update:model-value="onUpdate"
       ></ht-select>
-    </template>
-  </CellLinesDetailsLayout>
+    </div>
+    <div>
+      <p class="legend-title">Variants</p>
+      <ul class="ht-reset">
+        <li>
+          <span class="mutation-symbol mutation-symbol-present"></span>
+          <span>Present</span>
+        </li>
+        <li>
+          <span class="mutation-symbol mutation-symbol-absent"></span>
+          <span>Absent</span>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
-import CellLinesDetailsLayout from '@/layouts/CellLinesDetailsLayout.vue';
-
 import { ref } from 'vue';
 
 export default {
   name: 'CellLinesSensitivityDetails',
-  components: { CellLinesDetailsLayout },
   props: {
     details: {
       type: Object,
