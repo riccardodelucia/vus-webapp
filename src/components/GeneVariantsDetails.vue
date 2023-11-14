@@ -99,7 +99,7 @@
 
 <script>
 export default {
-  name: 'ChartDetails',
+  name: 'GeneVariantsDetails',
   props: {
     legendSizes: { type: Object, required: true },
     polyphenColor: { type: Function, required: true },

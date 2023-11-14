@@ -74,17 +74,17 @@ const processErrorMessage = (error) => {
 };
 
 export default {
-  name: 'CircularBarPlot',
+  name: 'TopVariantsCircularBarPlot',
   setup() {
     const router = useRouter();
 
     const { showTooltip, hideTooltip } = useTooltip({ allowHTML: true });
 
-    const width = 800;
+    const width = 850;
     const height = 1000;
 
-    const innerRadius = 250;
-    const labelSpace = 60; // used to leave space for labels on the radial barplots
+    const innerRadius = 220;
+    const labelSpace = 110; // used to leave space for labels on the radial barplots
     const outerRadius = Math.min(width, height) / 2 - labelSpace;
 
     const data = ref(null);
@@ -204,7 +204,7 @@ export default {
     // listeners
     const onClick = ({ variantId, geneId }) => {
       router.push({
-        name: 'variants',
+        name: 'gene-variants',
         params: { geneId, variantId },
       });
     };

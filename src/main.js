@@ -11,6 +11,8 @@ import App from './App.vue';
 
 import GStore from '@/store';
 
+import '@/assets/global.css';
+
 const app = createApp(App).use(HTVue).use(router).provide('GStore', GStore);
 app.component(VueFeather.name, VueFeather);
 

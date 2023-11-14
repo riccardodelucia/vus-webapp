@@ -2,7 +2,7 @@
   <template v-if="data">
     <h2>Gene: {{ geneId.toUpperCase() }}</h2>
     <div class="grid variants-grid">
-      <ChartDetails
+      <GeneVariantsDetails
         v-if="data"
         class="details"
         :legend-sizes="legendSizes"
@@ -10,9 +10,9 @@
         :heatmap-color="heatmapColor"
         :sift-color="siftColor"
       >
-      </ChartDetails>
+      </GeneVariantsDetails>
       <div v-if="data" class="chart">
-        <VariantsHeatmap
+        <GeneVariantsHeatmap
           :data="data"
           :aggregated-data="aggregatedData"
           :annotations="annotations"
@@ -21,15 +21,15 @@
           :color="heatmapColor"
           :sift-color="siftColor"
           :polyphen-color="polyphenColor"
-        ></VariantsHeatmap>
+        ></GeneVariantsHeatmap>
       </div></div
   ></template>
   <p v-else>Error: please try again</p>
 </template>
 
 <script>
-import VariantsHeatmap from '@/components/variants/VariantsHeatmap.vue';
-import ChartDetails from '@/components/variants/ChartDetails.vue';
+import GeneVariantsHeatmap from '@/components/GeneVariantsHeatmap.vue';
+import GeneVariantsDetails from '@/components/GeneVariantsDetails.vue';
 
 import { ref, watchEffect } from 'vue';
 
@@ -48,8 +48,8 @@ import {
 import service from '@/services';
 
 export default {
-  name: 'ShowVariants',
-  components: { ChartDetails, VariantsHeatmap },
+  name: 'GeneVariants',
+  components: { GeneVariantsDetails, GeneVariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
     variantId: { type: String, default: '' },

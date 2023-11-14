@@ -15,7 +15,7 @@
 import logo from '@/assets/logos/iorio-logo-white.svg';
 
 export default {
-  name: 'PrimaryHeader',
+  name: 'TheHeader',
 
   setup() {
     return {

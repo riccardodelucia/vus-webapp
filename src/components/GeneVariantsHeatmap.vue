@@ -137,7 +137,7 @@ import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue'
 import { useRouter } from 'vue-router';
 
 export default {
-  name: 'VariantsHeatmap',
+  name: 'GeneVariantsHeatmap',
   props: {
     variantId: { type: String, default: '' },
     geneId: { type: String, required: true },
@@ -238,7 +238,6 @@ export default {
         select(axisVariants.value)
           .selectAll('.tick text')
           .each(function (d) {
-            console.log(d);
             if (d === props.variantId) {
               select(this).style('color', 'red');
             }

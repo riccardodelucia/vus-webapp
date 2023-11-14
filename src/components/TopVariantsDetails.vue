@@ -32,7 +32,7 @@
 
 <script>
 export default {
-  name: 'ChartDetails',
+  name: 'TopVariantsDetails',
 };
 </script>
 
