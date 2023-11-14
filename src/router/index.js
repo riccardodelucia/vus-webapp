@@ -6,7 +6,7 @@ import TopVariants from '@/components/TopVariants.vue';
 
 import GeneVariants from '@/components/GeneVariants.vue';
 import CellLinesByVariant from '@/components/CellLinesByVariant.vue';
-import ShowCellLinesAggregated from '@/components/cell_lines/ShowCellLinesAggregated.vue';
+import CellLinesAggregated from '@/components/cell_lines/CellLinesAggregated.vue';
 
 const routes = [
   {
@@ -35,7 +35,7 @@ const routes = [
       {
         path: 'cell-lines-aggregated/:geneId/:tissueName',
         name: 'cell-lines-aggregated',
-        component: ShowCellLinesAggregated,
+        component: CellLinesAggregated,
         props: true,
       },
     ],

@@ -56,7 +56,7 @@ import service from '@/services';
 import { processErrorMessage } from '@/utils/errors.js';
 
 export default {
-  name: 'ShowCellLinesAggregated',
+  name: 'CellLinesAggregated',
   components: {
     CellLinesEssentialities,
     SensitivityProfiles,
