@@ -23,7 +23,7 @@ import CellLinesDetailsLayout from '@/layouts/CellLinesDetailsLayout.vue';
 import { ref } from 'vue';
 
 export default {
-  name: 'SensitivityDetails',
+  name: 'CellLinesSensitivitiesDetails',
   components: { CellLinesDetailsLayout },
   props: {
     details: {

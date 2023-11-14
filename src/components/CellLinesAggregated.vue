@@ -6,13 +6,13 @@
       class="details"
       :details="essentialityDetails"
     ></CellLinesEssentialityDetails>
-    <SensitivityDetails
+    <CellLinesSensitivitiesDetails
       v-if="sensitivityDetails && currentTab.panel === 'sensitivity'"
       class="details"
       :details="essentialityDetails"
       :drugs="drugs"
       @update:model-value="onUpdate"
-    ></SensitivityDetails>
+    ></CellLinesSensitivitiesDetails>
 
     <ht-tab
       v-if="cellLinesData"
@@ -45,7 +45,7 @@
 import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 import SensitivityProfiles from '@/components/cell_lines/SensitivityProfiles.vue';
 import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
-import SensitivityDetails from '@/components/cell_lines/SensitivityDetails.vue';
+import CellLinesSensitivitiesDetails from '@/components/cell_lines/CellLinesSensitivitiesDetails.vue';
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
@@ -61,7 +61,7 @@ export default {
     CellLinesEssentialities,
     SensitivityProfiles,
     CellLinesEssentialityDetails,
-    SensitivityDetails,
+    CellLinesSensitivitiesDetails,
   },
   props: {
     geneId: { type: String, required: true },
