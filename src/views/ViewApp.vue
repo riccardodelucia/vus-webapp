@@ -60,9 +60,9 @@ export default {
     });
 
     const navigateBack = () => {
-      if (route.name === 'variants') router.push({ name: 'search' });
+      if (route.name === 'gene-variants') router.push({ name: 'top-variants' });
       if (route.name.startsWith('cell-lines'))
-        router.push({ name: 'variants' });
+        router.push({ name: 'gene-variants' });
     };
 
     return {

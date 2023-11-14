@@ -4,7 +4,7 @@ import ViewHome from '@/views/ViewHome.vue';
 import ViewApp from '@/views/ViewApp.vue';
 import TopVariants from '@/components/TopVariants.vue';
 
-import ShowVariants from '@/components/variants/ShowVariants.vue';
+import GeneVariants from '@/components/variants/GeneVariants.vue';
 import ShowCellLinesByVariant from '@/components/cell_lines/ShowCellLinesByVariant.vue';
 import ShowCellLinesAggregated from '@/components/cell_lines/ShowCellLinesAggregated.vue';
 
@@ -22,9 +22,9 @@ const routes = [
       { path: '', name: 'top-variants', component: TopVariants },
       {
         path: ':geneId/:variantId?',
-        name: 'variants',
+        name: 'gene-variants',
         props: true,
-        component: ShowVariants,
+        component: GeneVariants,
       },
       {
         path: 'cell-lines-by-variant/:geneId/:variantId/:tissueName/:dam',

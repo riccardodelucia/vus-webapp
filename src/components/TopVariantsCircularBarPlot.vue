@@ -204,7 +204,7 @@ export default {
     // listeners
     const onClick = ({ variantId, geneId }) => {
       router.push({
-        name: 'variants',
+        name: 'gene-variants',
         params: { geneId, variantId },
       });
     };

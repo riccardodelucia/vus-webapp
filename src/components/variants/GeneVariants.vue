@@ -48,7 +48,7 @@ import {
 import service from '@/services';
 
 export default {
-  name: 'ShowVariants',
+  name: 'GeneVariants',
   components: { ChartDetails, VariantsHeatmap },
   props: {
     geneId: { type: String, required: true },
