@@ -19,7 +19,7 @@ const routes = [
     component: ViewApp,
     props: true,
     children: [
-      { path: '', name: 'search', component: TopVariants },
+      { path: '', name: 'top-variants', component: TopVariants },
       {
         path: ':geneId/:variantId?',
         name: 'variants',

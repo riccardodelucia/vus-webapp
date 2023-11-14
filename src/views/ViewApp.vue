@@ -14,7 +14,7 @@
           ></ht-search-bar>
           <router-link
             class="ht-button"
-            :to="{ name: 'search' }"
+            :to="{ name: 'top-variants' }"
             data-type="secondary"
           >
             Show Top Variants
