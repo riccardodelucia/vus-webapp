@@ -137,7 +137,7 @@ import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue'
 import { useRouter } from 'vue-router';
 
 export default {
-  name: 'VariantsHeatmap',
+  name: 'GeneVariantsHeatmap',
   props: {
     variantId: { type: String, default: '' },
     geneId: { type: String, required: true },

@@ -4,7 +4,7 @@ import ViewHome from '@/views/ViewHome.vue';
 import ViewApp from '@/views/ViewApp.vue';
 import TopVariants from '@/components/TopVariants.vue';
 
-import GeneVariants from '@/components/variants/GeneVariants.vue';
+import GeneVariants from '@/components/GeneVariants.vue';
 import ShowCellLinesByVariant from '@/components/cell_lines/ShowCellLinesByVariant.vue';
 import ShowCellLinesAggregated from '@/components/cell_lines/ShowCellLinesAggregated.vue';
 
