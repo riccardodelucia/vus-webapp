@@ -1,11 +1,11 @@
 <template>
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
   <div class="grid">
-    <EssentialityDetails
+    <CellLinesEssentialityDetails
       v-if="essentialityDetails && currentTab.panel === 'essentiality'"
       class="details"
       :details="essentialityDetails"
-    ></EssentialityDetails>
+    ></CellLinesEssentialityDetails>
     <SensitivityDetails
       v-if="sensitivityDetails && currentTab.panel === 'sensitivity'"
       class="details"
@@ -44,7 +44,7 @@
 <script>
 import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 import SensitivityProfiles from '@/components/cell_lines/SensitivityProfiles.vue';
-import EssentialityDetails from '@/components/cell_lines/EssentialityDetails.vue';
+import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import SensitivityDetails from '@/components/cell_lines/SensitivityDetails.vue';
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
@@ -60,7 +60,7 @@ export default {
   components: {
     CellLinesEssentialities,
     SensitivityProfiles,
-    EssentialityDetails,
+    CellLinesEssentialityDetails,
     SensitivityDetails,
   },
   props: {

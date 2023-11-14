@@ -7,12 +7,14 @@
         <li v-if="details.variantId">
           <b>Variant:</b> {{ details.variantId }} (is DAM: {{ details.dam }})
         </li>
-        <li v-else><b>All variants</b></li>
+        <li v-else><b>All DAMs</b></li>
       </ul>
       <slot></slot>
     </div>
     <div>
-      <p class="legend-title">Variant</p>
+      <p class="legend-title">
+        {{ details.variantId ? 'Variant' : 'Variants' }}
+      </p>
       <ul class="ht-reset">
         <li>
           <span class="mutation-symbol mutation-symbol-present"></span>
@@ -29,7 +31,7 @@
 
 <script>
 export default {
-  name: 'CellLinesByVariantDetails',
+  name: 'CellLinesEssentialityDetails',
   props: {
     details: {
       type: Object,

@@ -2,10 +2,10 @@
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
   <template v-if="cellLinesData">
     <div class="grid">
-      <CellLinesByVariantDetails
+      <CellLinesEssentialityDetails
         class="details"
         :details="details"
-      ></CellLinesByVariantDetails>
+      ></CellLinesEssentialityDetails>
       <CellLinesEssentialities
         class="chart"
         :cell-lines-data="cellLinesData"
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import CellLinesByVariantDetails from '@/components/CellLinesByVariantDetails.vue';
+import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
@@ -36,7 +36,7 @@ import { extent } from 'd3';
 export default {
   name: 'CellLinesByVariant',
   components: {
-    CellLinesByVariantDetails,
+    CellLinesEssentialityDetails,
     CellLinesEssentialities,
   },
   props: {
