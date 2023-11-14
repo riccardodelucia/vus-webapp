@@ -3,7 +3,7 @@
   <div v-else-if="state === 'error'" class="center-grid">
     Error: unable to retrieve data
   </div>
-  <CommonChart
+  <CellLinesChart
     v-else-if="state === 'ready'"
     v-slot="slotProps"
     :sizes="sizes"
@@ -34,11 +34,11 @@
         @mouseleave="onMouseLeave"
       />
     </g>
-  </CommonChart>
+  </CellLinesChart>
 </template>
 
 <script>
-import CommonChart from '@/components/cell_lines/CommonChart.vue';
+import CellLinesChart from '@/components/CellLinesChart.vue';
 import { ref, watchEffect } from 'vue';
 import service from '@/services';
 
@@ -50,7 +50,7 @@ import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 export default {
   name: 'CellLinesSensitivities',
-  components: { CommonChart },
+  components: { CellLinesChart },
   props: {
     sizes: { type: Object, required: true },
     drug: { type: Object, required: true },

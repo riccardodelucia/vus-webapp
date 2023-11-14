@@ -42,7 +42,7 @@ import { select, axisBottom, axisLeft, scalePoint, scaleLinear } from 'd3';
 
 import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 export default {
-  name: 'CommonChart',
+  name: 'CellLinesChart',
   props: {
     xAxisLabel: { type: String, default: 'x axis' },
     xDomain: { type: Array, required: true },

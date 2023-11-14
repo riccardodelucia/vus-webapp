@@ -1,5 +1,5 @@
 <template>
-  <CommonChart
+  <CellLinesChart
     v-slot="slotProps"
     :sizes="sizes"
     x-axis-label="Cell Lines"
@@ -29,11 +29,11 @@
         @mouseleave="onMouseLeave"
       />
     </g>
-  </CommonChart>
+  </CellLinesChart>
 </template>
 
 <script>
-import CommonChart from '@/components/cell_lines/CommonChart.vue';
+import CellLinesChart from '@/components/CellLinesChart.vue';
 
 import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
@@ -41,7 +41,7 @@ import { extent } from 'd3';
 
 export default {
   name: 'CellLinesEssentialities',
-  components: { CommonChart },
+  components: { CellLinesChart },
   props: {
     cellLinesData: { type: Array, required: true },
     sizes: { type: Object, required: true },
