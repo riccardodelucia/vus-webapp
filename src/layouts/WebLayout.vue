@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <PrimaryHeader></PrimaryHeader>
+    <TheHeader></TheHeader>
     <main>
       <slot></slot>
     </main>
@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import PrimaryHeader from '@/components/PrimaryHeader.vue';
+import TheHeader from '@/components/TheHeader.vue';
 
 export default {
   name: 'WebLayout',
-  components: { PrimaryHeader },
+  components: { TheHeader },
   setup() {
     return {};
   },
