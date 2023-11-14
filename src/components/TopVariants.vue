@@ -1,14 +1,14 @@
 <template>
   <div class="grid">
-    <ChartDetails class="details"></ChartDetails>
-    <CircularBarPlot class="chart"></CircularBarPlot>
+    <TopVariantsDetails class="details"></TopVariantsDetails>
+    <TopVariantsCircularBarPlot class="chart"></TopVariantsCircularBarPlot>
   </div>
 </template>
 
 <script>
-import ChartDetails from '@/components/search/ChartDetails.vue';
+import TopVariantsDetails from '@/components/TopVariantsDetails.vue';
 
-import CircularBarPlot from '@/components/search/CircularBarPlot.vue';
+import TopVariantsCircularBarPlot from '@/components/TopVariantsCircularBarPlot.vue';
 
 import { useRouter } from 'vue-router';
 
@@ -18,7 +18,7 @@ import placeholder from '@/assets/img/placeholder.png';
 
 export default {
   name: 'TopVariants',
-  components: { ChartDetails, CircularBarPlot },
+  components: { TopVariantsDetails, TopVariantsCircularBarPlot },
   setup() {
     const gene = ref('');
     const router = useRouter();

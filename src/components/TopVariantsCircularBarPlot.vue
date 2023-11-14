@@ -74,7 +74,7 @@ const processErrorMessage = (error) => {
 };
 
 export default {
-  name: 'CircularBarPlot',
+  name: 'TopVariantsCircularBarPlot',
   setup() {
     const router = useRouter();
 
