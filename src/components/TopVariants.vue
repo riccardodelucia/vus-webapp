@@ -17,7 +17,7 @@ import { ref } from 'vue';
 import placeholder from '@/assets/img/placeholder.png';
 
 export default {
-  name: 'SearchVariants',
+  name: 'TopVariants',
   components: { ChartDetails, CircularBarPlot },
   setup() {
     const gene = ref('');

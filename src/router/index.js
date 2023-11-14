@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import ViewHome from '@/views/ViewHome.vue';
 import ViewApp from '@/views/ViewApp.vue';
-import SearchVariants from '@/components/search/SearchVariants.vue';
+import TopVariants from '@/components/TopVariants.vue';
 
 import ShowVariants from '@/components/variants/ShowVariants.vue';
 import ShowCellLinesByVariant from '@/components/cell_lines/ShowCellLinesByVariant.vue';
@@ -19,7 +19,7 @@ const routes = [
     component: ViewApp,
     props: true,
     children: [
-      { path: '', name: 'search', component: SearchVariants },
+      { path: '', name: 'search', component: TopVariants },
       {
         path: ':geneId/:variantId?',
         name: 'variants',
