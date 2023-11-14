@@ -1,10 +1,5 @@
 <template>
-  <div v-if="state === 'loading'" class="center-grid">Loading...</div>
-  <div v-else-if="state === 'error'" class="center-grid">
-    Error: unable to retrieve data
-  </div>
   <CellLinesChart
-    v-else-if="state === 'ready'"
     v-slot="slotProps"
     :sizes="sizes"
     x-axis-label="Cell Lines"
@@ -61,16 +56,10 @@ export default {
   setup(props, { emit }) {
     const sensitivities = ref(null);
 
-    const state = ref('');
-
     const xDomain = ref(null);
     const yDomain = ref(null);
 
-    const cssWidth = `${props.sizes.width}px`;
-    const cssHeight = `${props.sizes.height}px`;
-
     watchEffect(async () => {
-      state.value = 'loading';
       try {
         const { data } = await service.getDrugsSensitivities({
           ...props.drug,
@@ -84,10 +73,7 @@ export default {
         yDomain.value = extent(data.sensitivities.map(({ ic50 }) => ic50));
 
         emit('rank-ratio', data.rankRatio);
-
-        state.value = 'ready';
       } catch (err) {
-        state.value = 'error';
         sendErrorNotification(err);
       }
     });
@@ -104,9 +90,6 @@ export default {
 
     return {
       sensitivities,
-      cssWidth,
-      cssHeight,
-      state,
       onMouseOver,
       onMouseLeave,
       xDomain,
@@ -115,12 +98,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.center-grid {
-  display: grid;
-  place-items: center;
-  width: v-bind('cssWidth');
-  height: v-bind('cssHeight');
-}
-</style>

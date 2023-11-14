@@ -27,7 +27,12 @@
         </CellLinesEssentialities>
       </template>
       <template v-if="selectedDrug" #sensitivity>
+        <div v-if="state === 'loading'" class="center-grid">Loading...</div>
+        <div v-else-if="state === 'error'" class="center-grid">
+          Error: unable to retrieve data
+        </div>
         <CellLinesSensitivities
+          v-else
           :sizes="sizes"
           :drug="selectedDrug"
           :gene-id="geneId"
@@ -76,6 +81,8 @@ export default {
 
     const tabList = ref([{ label: 'Essentiality', panel: 'essentiality' }]);
     const currentTab = ref(tabList.value[0]);
+
+    const state = ref('loading');
 
     onBeforeMount(async () => {
       try {
@@ -147,6 +154,7 @@ export default {
 
     const onUpdate = (value) => {
       selectedDrug.value = value;
+      state.value = 'loading';
     };
 
     return {
@@ -163,6 +171,7 @@ export default {
       onUpdate,
       cssWidth,
       cssHeight,
+      state,
     };
   },
 };
