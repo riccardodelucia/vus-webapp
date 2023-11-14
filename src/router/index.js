@@ -6,7 +6,7 @@ import TopVariants from '@/components/TopVariants.vue';
 
 import GeneVariants from '@/components/GeneVariants.vue';
 import CellLinesByVariant from '@/components/CellLinesByVariant.vue';
-import CellLinesAggregated from '@/components/cell_lines/CellLinesAggregated.vue';
+import CellLinesAggregated from '@/components/CellLinesAggregated.vue';
 
 const routes = [
   {
