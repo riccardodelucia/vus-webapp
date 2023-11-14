@@ -59,9 +59,13 @@ export default {
 
     const xDomain = props.cellLinesData.map(({ cellLineName }) => cellLineName);
 
-    const yDomain = extent(
+    const yExtent = extent(
       props.cellLinesData.map(({ essentiality }) => essentiality)
     );
+
+    const yMin = Math.min(-0.55, yExtent[0]);
+
+    const yDomain = [yMin, yExtent[1]];
 
     return { onMouseOver, onMouseLeave, xDomain, yDomain };
   },

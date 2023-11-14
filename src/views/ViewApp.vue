@@ -50,7 +50,7 @@ export default {
 
     function onSubmit() {
       router.push({
-        name: 'variants',
+        name: 'gene-variants',
         params: { geneId: gene.value },
       });
       gene.value = '';

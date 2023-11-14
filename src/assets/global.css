@@ -1,6 +1,6 @@
-/* main {
-  overflow: scroll;
-} */
+main {
+  overflow-x: scroll;
+}
 
 .legend-title {
   font-size: var(--font-size-3);

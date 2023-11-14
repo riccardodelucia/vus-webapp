@@ -80,11 +80,11 @@ export default {
 
     const { showTooltip, hideTooltip } = useTooltip({ allowHTML: true });
 
-    const width = 800;
+    const width = 850;
     const height = 1000;
 
-    const innerRadius = 250;
-    const labelSpace = 60; // used to leave space for labels on the radial barplots
+    const innerRadius = 220;
+    const labelSpace = 110; // used to leave space for labels on the radial barplots
     const outerRadius = Math.min(width, height) / 2 - labelSpace;
 
     const data = ref(null);
