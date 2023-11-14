@@ -1,42 +1,52 @@
 <template>
-  <AppLayout>
-    <div class="ht-container">
-      <h2>VUS Portal</h2>
-      <div class="controls">
-        <ht-search-bar
-          v-model="gene"
-          label="Search by gene"
-          @submit="onSubmit"
-        ></ht-search-bar>
-        <router-link
-          class="ht-button"
-          :to="{ name: 'search' }"
-          data-type="secondary"
-        >
-          Show Top Variants
-        </router-link>
-        <button v-if="showBackButton" @click="navigateBack">
-          &#8592; Back
-        </button>
+  <ht-layout-app :sidenav-object="sidenavObject">
+    <template #header>
+      <ht-theme-switcher></ht-theme-switcher>
+    </template>
+    <div class="app-content ht-container ht-card">
+      <div class="ht-container">
+        <h2>VUS Portal</h2>
+        <div class="controls">
+          <ht-search-bar
+            v-model="gene"
+            label="Search by gene"
+            @submit="onSubmit"
+          ></ht-search-bar>
+          <router-link
+            class="ht-button"
+            :to="{ name: 'search' }"
+            data-type="secondary"
+          >
+            Show Top Variants
+          </router-link>
+          <button v-if="showBackButton" @click="navigateBack">
+            &#8592; Back
+          </button>
+        </div>
+        <router-view></router-view>
       </div>
-
-      <router-view></router-view>
     </div>
-  </AppLayout>
+  </ht-layout-app>
 </template>
 
 <script>
 import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import AppLayout from '@/layouts/AppLayout.vue';
 
 export default {
   name: 'ViewApp',
-  components: { AppLayout },
   setup() {
     const gene = ref('');
     const router = useRouter();
     const route = useRoute();
+
+    const sidenavObject = {
+      title: 'VUS',
+      links: [
+        { id: 1, url: '/', label: 'Home', type: 'home' },
+        { id: 2, url: '/app', label: 'App', type: 'bar-chart-2' },
+      ],
+    };
 
     function onSubmit() {
       router.push({
@@ -61,6 +71,7 @@ export default {
       router,
       showBackButton,
       navigateBack,
+      sidenavObject,
     };
   },
 };
