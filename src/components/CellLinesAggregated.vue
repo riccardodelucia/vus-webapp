@@ -27,14 +27,14 @@
         </CellLinesEssentialities>
       </template>
       <template v-if="selectedDrug" #sensitivity>
-        <SensitivityProfiles
+        <CellLinesSensitivities
           :sizes="sizes"
           :drug="selectedDrug"
           :gene-id="geneId"
           :tissue-name="tissueName"
           @rank-ratio="onSensitivityRankRatio"
         >
-        </SensitivityProfiles>
+        </CellLinesSensitivities>
       </template>
     </ht-tab>
   </div>
@@ -42,7 +42,7 @@
 
 <script>
 import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
-import SensitivityProfiles from '@/components/cell_lines/SensitivityProfiles.vue';
+import CellLinesSensitivities from '@/components/CellLinesSensitivities.vue';
 import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import CellLinesSensitivityDetails from '@/components/CellLinesSensitivityDetails.vue';
 
@@ -58,7 +58,7 @@ export default {
   name: 'CellLinesAggregated',
   components: {
     CellLinesEssentialities,
-    SensitivityProfiles,
+    CellLinesSensitivities,
     CellLinesEssentialityDetails,
     CellLinesSensitivityDetails,
   },

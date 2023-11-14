@@ -49,7 +49,7 @@ import { extent } from 'd3';
 import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 export default {
-  name: 'SensitivityProfiles',
+  name: 'CellLinesSensitivities',
   components: { CommonChart },
   props: {
     sizes: { type: Object, required: true },
