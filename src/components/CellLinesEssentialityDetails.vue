@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { useRankRatio } from '../composables';
 
 export default {
   name: 'CellLinesEssentialityDetails',
@@ -41,11 +41,7 @@ export default {
     },
   },
   setup(props) {
-    const rankRatio = computed(() => {
-      const value = Number(props.details.rankRatio.toFixed(2));
-      if (value === 0) return 'Undefined';
-      return value;
-    });
+    const rankRatio = useRankRatio(props.details);
     return { rankRatio };
   },
 };

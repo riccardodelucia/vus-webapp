@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
+import { useRankRatio } from '../composables';
 
 export default {
   name: 'CellLinesSensitivityDetails',
@@ -56,11 +57,8 @@ export default {
       drug.value = value;
       emit('update:model-value', value);
     };
-    const rankRatio = computed(() => {
-      const value = Number(props.details.rankRatio.toFixed(2));
-      if (value === 0) return 'Undefined';
-      return value;
-    });
+    const rankRatio = useRankRatio(props.details);
+
     return { drug, onUpdate, rankRatio };
   },
 };
