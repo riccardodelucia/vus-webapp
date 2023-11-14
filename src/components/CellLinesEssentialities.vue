@@ -40,7 +40,7 @@ import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
 import { extent } from 'd3';
 
 export default {
-  name: 'EssentialityProfiles',
+  name: 'CellLinesEssentialities',
   components: { CommonChart },
   props: {
     cellLinesData: { type: Array, required: true },

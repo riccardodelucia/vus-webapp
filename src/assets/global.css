@@ -1,6 +1,6 @@
-main {
+/* main {
   overflow: scroll;
-}
+} */
 
 .legend-title {
   font-size: var(--font-size-3);
@@ -41,4 +41,20 @@ main {
 }
 .chart {
   grid-column: 2/3;
+}
+
+.mutation-symbol {
+  margin-right: var(--size-2);
+  border-radius: var(--radius-round);
+  display: inline-block;
+  width: 0.5rem;
+  aspect-ratio: 1;
+}
+
+.mutation-symbol-present {
+  background-color: red;
+}
+
+.mutation-symbol-absent {
+  background-color: blue;
 }

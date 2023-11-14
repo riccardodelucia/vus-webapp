@@ -21,8 +21,11 @@
       @tab-selected="onTabSelected"
     >
       <template #essentiality>
-        <EssentialityProfiles :sizes="sizes" :cell-lines-data="cellLinesData">
-        </EssentialityProfiles>
+        <CellLinesEssentialities
+          :sizes="sizes"
+          :cell-lines-data="cellLinesData"
+        >
+        </CellLinesEssentialities>
       </template>
       <template v-if="selectedDrug" #sensitivity>
         <SensitivityProfiles
@@ -39,7 +42,7 @@
 </template>
 
 <script>
-import EssentialityProfiles from '@/components/cell_lines/EssentialityProfiles.vue';
+import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 import SensitivityProfiles from '@/components/cell_lines/SensitivityProfiles.vue';
 import EssentialityDetails from '@/components/cell_lines/EssentialityDetails.vue';
 import SensitivityDetails from '@/components/cell_lines/SensitivityDetails.vue';
@@ -55,7 +58,7 @@ import { processErrorMessage } from '@/utils/errors.js';
 export default {
   name: 'ShowCellLinesAggregated',
   components: {
-    EssentialityProfiles,
+    CellLinesEssentialities,
     SensitivityProfiles,
     EssentialityDetails,
     SensitivityDetails,

@@ -1,27 +1,27 @@
 <template>
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
-  <div class="grid">
-    <EssentialityDetails
-      v-if="details"
-      class="details"
-      :details="details"
-    ></EssentialityDetails>
-    <EssentialityProfiles
-      v-if="cellLinesData"
-      class="chart"
-      :cell-lines-data="cellLinesData"
-      :sizes="sizes"
-      :tissue-name="tissueName"
-      :variant-id="variantId"
-      :dam="dam"
-    >
-    </EssentialityProfiles>
-  </div>
+  <template v-if="cellLinesData">
+    <div class="grid">
+      <CellLinesByVariantDetails
+        class="details"
+        :details="details"
+      ></CellLinesByVariantDetails>
+      <CellLinesEssentialities
+        class="chart"
+        :cell-lines-data="cellLinesData"
+        :sizes="sizes"
+        :tissue-name="tissueName"
+        :variant-id="variantId"
+        :dam="dam"
+      >
+      </CellLinesEssentialities>
+    </div>
+  </template>
 </template>
 
 <script>
-import EssentialityDetails from '@/components/cell_lines/EssentialityDetails.vue';
-import EssentialityProfiles from '@/components/cell_lines/EssentialityProfiles.vue';
+import CellLinesByVariantDetails from '@/components/CellLinesByVariantDetails.vue';
+import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 
 import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
@@ -34,10 +34,10 @@ import { processErrorMessage } from '@/utils/errors.js';
 import { extent } from 'd3';
 
 export default {
-  name: 'ShowCellLinesByVariant',
+  name: 'CellLinesByVariant',
   components: {
-    EssentialityDetails,
-    EssentialityProfiles,
+    CellLinesByVariantDetails,
+    CellLinesEssentialities,
   },
   props: {
     geneId: { type: String, required: true },
@@ -94,7 +94,6 @@ export default {
         );
 
         details.value = {
-          geneId: props.geneId,
           rankRatio: rankRatio.value,
           tissueName: props.tissueName,
           variantId: props.variantId,
