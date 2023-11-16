@@ -14,22 +14,26 @@
       <div class="break"></div>
 
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim officia,
-        quisquam quod recusandae amet sed natus cupiditate dolore, magni sequi
-        quas voluptate ducimus suscipit numquam, aperiam excepturi incidunt
-        voluptates placeat! <br />
-
+        <b>CaDe-VUS</b> is a cutting-edge, interactive web-based application
+        designed to facilitate the <b>visualization </b> of
+        <b>Cancer-Dependent Variants</b> of <b>Unknown Significance</b> obtained
+        by <b>CRISPR</b>-enhanced assessments across a <b>wide range</b> of
+        cancer <b>tissues</b> and <b>cell</b> lineages. <br />
         <br />
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim officia,
-        quisquam quod recusandae amet sed natus cupiditate dolore, magni sequi
-        quas voluptate ducimus suscipit numquam, aperiam excepturi incidunt
-        voluptates placeat! <br />
-
+        This sophisticated tool integrates <b>mutation</b>,
+        <b>dependency</b> and <b>drug sensitivity</b> data in cell line models
+        bearing VUS identified from large patients’ cohorts
+        <b>(COSMIC and IntOGen)</b>, thus providing a
+        <b>multiscale</b> characterization of <b>genomic variations</b> to act
+        as dependency associated <b>(DAMs)</b> or sensitivity associated
+        mutations <b>(SAMs)</b> . <br />
         <br />
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim officia,
-        quisquam quod recusandae amet sed natus cupiditate dolore, magni sequi
-        quas voluptate ducimus suscipit numquam, aperiam excepturi incidunt
-        voluptates placeat!
+        Ultimately, <b>CaDe-VUS</b> presents as a functional portal for bridging
+        the <b>unknown clinical significance</b> of underestimated genetic
+        features in the oncological domain with concrete established
+        <b>experimental proof</b> of essentiality and pharmacological
+        vulnerability towards indications for <b>therapeutic targets</b> and
+        <b>drug repositioning</b> opportunities. <br />
       </p>
 
       <div class="break"></div>
@@ -43,10 +47,22 @@
               <li>Selecting a <b>variant</b> from the chart</li>
             </ul>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi
-              odit modi ut consequatur corrupti eligendi quidem quam
-              consequuntur voluptate minima quaerat doloremque provident vitae
-              nostrum totam ipsum, pariatur praesentium aliquid?
+              DAMs found in at least one patient of the corresponding cancer
+              type where they were identified as dependency associated. Labels
+              indicating gene name and aminoacidic variation are coloured
+              according to previous indication of a gene being a driver.
+              <br />
+              <br />
+              Orange bars represent the number of patients of the corresponding
+              cancer type carrying the specific DAM: light and dark orange
+              indicate different clinical databases.
+              <br />
+              <br />
+              Purple bars represent the number of cancer types where the DAM was
+              both identified as dependency-associated (according to our
+              pipeline) and found in at least one patient. Red dots and
+              triangles label variants predicted as strongly impacting the gene
+              function according to two algorithms (SIFT or PolyPhen).
             </p>
           </div>
 
@@ -56,10 +72,11 @@
           <div class="ht-layout-stack">
             <h2>Step 2: Click on any squares of the heat-map</h2>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Voluptatem inventore amet, quibusdam quod impedit distinctio sit
-              aliquid incidunt eos laboriosam odit nostrum, perspiciatis maxime,
-              nemo at commodi cum sunt facilis!
+              Summary of variants for a given gene with DAM characterization,
+              deleterious effect prediction, representation across cancer types
+              and frequency in patient carrying the alteration, with the
+              possibility for direct insight on its essentiality across the
+              underlying cell lines.
             </p>
           </div>
 
@@ -75,10 +92,10 @@
               </li>
             </ul>
             <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cumque
-              mollitia minima cupiditate harum consectetur nesciunt laboriosam
-              nulla fugiat vitae culpa. Dolor, totam! Eligendi consequuntur iste
-              commodi quo. Minima, sint sed.
+              Projection of the sorted fitness of all cell lines within a given
+              cancer type known for their presence and absence of a studied VUS,
+              obtained by essentiality assessment using CRISPR and
+              pharmacological inhibition by drugs targeting this variation.
             </p>
           </div>
 
