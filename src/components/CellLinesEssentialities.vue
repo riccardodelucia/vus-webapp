@@ -26,7 +26,7 @@
         r="5"
         :fill="datum.mutation ? 'red' : 'blue'"
         @mouseover="onMouseOver($event, datum)"
-        @mouseleave="onMouseLeave"
+        @mouseleave="onMouseLeave(datum)"
       />
     </g>
   </CellLinesChart>
@@ -53,8 +53,8 @@ export default {
       if (mutation) showTooltip(event, mutation);
     };
 
-    const onMouseLeave = function () {
-      hideTooltip();
+    const onMouseLeave = function ({ mutation }) {
+      if (mutation) hideTooltip();
     };
 
     const xDomain = props.cellLinesData.map(({ cellLineName }) => cellLineName);

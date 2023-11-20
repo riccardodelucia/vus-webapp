@@ -1,7 +1,7 @@
 <template>
   <svg
     v-if="data"
-    class="ht-chart chart"
+    class="ht-chart"
     preserveAspectRatio="xMinYMin meet"
     :viewBox="[0, 0, width, height].join(' ')"
     :width="width"
