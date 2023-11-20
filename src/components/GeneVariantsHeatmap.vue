@@ -62,7 +62,6 @@
               :width="xScaleTissues.bandwidth()"
               :height="yScale.bandwidth()"
               :fill="color(datum.nPatients)"
-              pointer-events="none"
             ></rect>
             <circle
               v-if="datum.dam"
@@ -72,7 +71,6 @@
               stroke="dodgerblue"
               fill="dodgerblue"
               stroke-width="2px"
-              pointer-events="none"
             />
           </g>
           <g
@@ -103,7 +101,6 @@
               :width="xScaleTissues.bandwidth()"
               :height="yScale.bandwidth()"
               :fill="color(datum.nPatients)"
-              pointer-events="none"
             ></rect>
             <circle
               v-if="datum.dam > 0"
@@ -111,7 +108,6 @@
               :cy="yScale.bandwidth() / 2"
               r="5"
               fill="dodgerblue"
-              pointer-events="none"
             />
           </g>
 
