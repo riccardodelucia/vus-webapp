@@ -13,6 +13,9 @@ const instance = axios.create({
 instance.interceptors.response.use(interceptorCamelize);
 
 export default {
+  getGeneList() {
+    return instance.get('genes');
+  },
   getVariantsData(gene) {
     return instance.get(`variants-data/${gene}`);
   },
