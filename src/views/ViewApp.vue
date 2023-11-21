@@ -10,6 +10,7 @@
           <ht-search-bar
             v-model="gene"
             label="Search by gene"
+            :hints="geneList"
             @submit="onSubmit"
           ></ht-search-bar>
           <router-link
@@ -30,8 +31,10 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+
+import service from '@/services';
 
 export default {
   name: 'ViewApp',
@@ -39,6 +42,7 @@ export default {
     const gene = ref('');
     const router = useRouter();
     const route = useRoute();
+    const geneList = ref([]);
 
     const sidenavObject = {
       title: 'VUS',
@@ -65,8 +69,19 @@ export default {
         router.push({ name: 'gene-variants' });
     };
 
+    onMounted(async () => {
+      const { data } = await service.getGeneList();
+
+      if (!data) {
+        throw new Error(`Unable to retrieve data`);
+      }
+
+      geneList.value = data.map(({ geneId }) => geneId);
+    });
+
     return {
       gene,
+      geneList,
       onSubmit,
       router,
       showBackButton,
