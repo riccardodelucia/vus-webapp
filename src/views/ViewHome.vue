@@ -14,11 +14,12 @@
       <div class="break"></div>
 
       <p>
-        <b>CaDe-VUS</b> is a cutting-edge, interactive web-based application
+        <b>CRISPR-VUS</b> is a cutting-edge, interactive web-based application
         designed to facilitate the <b>visualization </b> of
-        <b>Cancer-Dependent Variants</b> of <b>Unknown Significance</b> obtained
-        by <b>CRISPR</b>-enhanced assessments across a <b>wide range</b> of
-        cancer <b>tissues</b> and <b>cell</b> lineages. <br />
+        <b>CRISPR enhanced identification</b> of
+        <b>Unknown Significance</b> obtained by <b>CRISPR</b>-enhanced
+        assessments across a <b>wide range</b> of cancer <b>tissues</b> and
+        <b>cell</b> lineages. <br />
         <br />
         This sophisticated tool integrates <b>mutation</b>,
         <b>dependency</b> and <b>drug sensitivity</b> data in cell line models
@@ -28,9 +29,9 @@
         as dependency associated <b>(DAMs)</b> or sensitivity associated
         mutations <b>(SAMs)</b> . <br />
         <br />
-        Ultimately, <b>CaDe-VUS</b> presents as a functional portal for bridging
-        the <b>unknown clinical significance</b> of underestimated genetic
-        features in the oncological domain with concrete established
+        Ultimately, <b>CRISPR-VUS </b> presents as a functional portal for
+        bridging the <b>unknown clinical significance</b> of underestimated
+        genetic features in the oncological domain with concrete established
         <b>experimental proof</b> of essentiality and pharmacological
         vulnerability towards indications for <b>therapeutic targets</b> and
         <b>drug repositioning</b> opportunities. <br />
