@@ -1,11 +1,11 @@
 <template>
-  <CommonChart
+  <CellLinesChart
     v-slot="slotProps"
     :sizes="sizes"
     x-axis-label="Cell Lines"
     :x-domain="xDomain"
     :y-domain="yDomain"
-    y-axis-label="log(FC)"
+    y-axis-label="log(IC50)"
   >
     <g>
       <line
@@ -19,51 +19,61 @@
         stroke-opacity="0.5"
       />
       <circle
-        v-for="(datum, idx) in cellLinesData"
+        v-for="(datum, idx) in sensitivities"
         :key="idx"
         :cx="slotProps.xScale(datum.cellLineName)"
-        :cy="slotProps.yScale(datum.essentiality)"
+        :cy="slotProps.yScale(datum.ic50)"
         r="5"
         :fill="datum.mutation ? 'red' : 'blue'"
         @mouseover="onMouseOver($event, datum)"
-        @mouseleave="onMouseLeave"
+        @mouseleave="onMouseLeave(datum)"
       />
     </g>
-  </CommonChart>
+  </CellLinesChart>
 </template>
 
 <script>
-import CommonChart from '@/components/cell_lines/CommonChart.vue';
-
-import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
+import CellLinesChart from '@/components/CellLinesChart.vue';
+import { ref, watchEffect } from 'vue';
 
 import { extent } from 'd3';
 
+import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
+
 export default {
-  name: 'EssentialityProfiles',
-  components: { CommonChart },
+  name: 'CellLinesSensitivities',
+  components: { CellLinesChart },
   props: {
-    cellLinesData: { type: Array, required: true },
     sizes: { type: Object, required: true },
+    sensitivities: { type: Array, required: true },
   },
   setup(props) {
+    const xDomain = ref(null);
+    const yDomain = ref(null);
+
+    watchEffect(async () => {
+      xDomain.value = props.sensitivities.map(
+        ({ cellLineName }) => cellLineName
+      );
+      yDomain.value = extent(props.sensitivities.map(({ ic50 }) => ic50));
+    });
+
     const { showTooltip, hideTooltip } = useTooltip();
 
     const onMouseOver = function (event, { mutation }) {
       if (mutation) showTooltip(event, mutation);
     };
 
-    const onMouseLeave = function () {
-      hideTooltip();
+    const onMouseLeave = function ({ mutation }) {
+      if (mutation) hideTooltip();
     };
 
-    const xDomain = props.cellLinesData.map(({ cellLineName }) => cellLineName);
-
-    const yDomain = extent(
-      props.cellLinesData.map(({ essentiality }) => essentiality)
-    );
-
-    return { onMouseOver, onMouseLeave, xDomain, yDomain };
+    return {
+      onMouseOver,
+      onMouseLeave,
+      xDomain,
+      yDomain,
+    };
   },
 };
 </script>
