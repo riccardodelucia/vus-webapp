@@ -3,43 +3,39 @@
     <TheHeader></TheHeader>
     <main>
       <div class="ht-wrapper">
-        <div class="parent-grid">
-          <div class="center-container">
-            <img class="logo" src="@/assets/img/VUS-logo.png" />
-          </div>
+        <section class="hero">
+          <img class="logo" src="@/assets/img/VUS-logo.png" />
           <nav>
             <router-link :to="{ name: 'top-variants' }" class="ht-button"
               >Start Application</router-link
             >
           </nav>
-        </div>
-        <div class="break"></div>
-
-        <p>
-          <b>CRISPR-VUS</b> is a cutting-edge, interactive web-based application
-          designed to facilitate the <b>visualization </b> of
-          <b>CRISPR enhanced identification</b> of
-          <b>Unknown Significance</b> obtained by <b>CRISPR</b>-enhanced
-          assessments across a <b>wide range</b> of cancer <b>tissues</b> and
-          <b>cell</b> lineages. <br />
-          <br />
-          This sophisticated tool integrates <b>mutation</b>,
-          <b>dependency</b> and <b>drug sensitivity</b> data in cell line models
-          bearing VUS identified from large patients’ cohorts
-          <b>(COSMIC and IntOGen)</b>, thus providing a
-          <b>multiscale</b> characterization of <b>genomic variations</b> to act
-          as dependency associated <b>(DAMs)</b> or sensitivity associated
-          mutations <b>(SAMs)</b> . <br />
-          <br />
-          Ultimately, <b>CRISPR-VUS </b> presents as a functional portal for
-          bridging the <b>unknown clinical significance</b> of underestimated
-          genetic features in the oncological domain with concrete established
-          <b>experimental proof</b> of essentiality and pharmacological
-          vulnerability towards indications for <b>therapeutic targets</b> and
-          <b>drug repositioning</b> opportunities. <br />
-        </p>
-
-        <div class="break"></div>
+        </section>
+        <section class="intro">
+          <p>
+            <b>CRISPR-VUS</b> is a cutting-edge, interactive web-based
+            application designed to facilitate the <b>visualization </b> of
+            <b>CRISPR enhanced identification</b> of
+            <b>Unknown Significance</b> obtained by <b>CRISPR</b>-enhanced
+            assessments across a <b>wide range</b> of cancer <b>tissues</b> and
+            <b>cell</b> lineages. <br />
+            <br />
+            This sophisticated tool integrates <b>mutation</b>,
+            <b>dependency</b> and <b>drug sensitivity</b> data in cell line
+            models bearing VUS identified from large patients’ cohorts
+            <b>(COSMIC and IntOGen)</b>, thus providing a
+            <b>multiscale</b> characterization of <b>genomic variations</b> to
+            act as dependency associated <b>(DAMs)</b> or sensitivity associated
+            mutations <b>(SAMs)</b> . <br />
+            <br />
+            Ultimately, <b>CRISPR-VUS </b> presents as a functional portal for
+            bridging the <b>unknown clinical significance</b> of underestimated
+            genetic features in the oncological domain with concrete established
+            <b>experimental proof</b> of essentiality and pharmacological
+            vulnerability towards indications for <b>therapeutic targets</b> and
+            <b>drug repositioning</b> opportunities. <br />
+          </p>
+        </section>
 
         <div class="section-wrapper">
           <section class="section-grid-1">
@@ -134,34 +130,32 @@ export default {
   margin-bottom: 5%;
 }
 
-.parent-grid {
+.hero {
   display: grid;
+  justify-items: center;
+  padding: var(--size-8);
+  grid-row-gap: var(--size-6);
 
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, auto);
-
-  grid-template-areas:
-    'a1 a2 a3 a4 a5'
-    'b1 logo logo logo b5'
-    'c1 c2 button c4 c5';
-
-  .center-container {
-    width: 100%;
-    grid-area: logo;
-
-    align-self: center;
-    justify-self: center;
-
-    margin-top: 10%;
+  img {
+    max-width: 40rem;
   }
 
-  nav {
-    margin-top: 10%;
-    margin-bottom: 10%;
-    grid-area: button;
-    align-self: start;
-    justify-self: center;
+  @media (max-width: 55em) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 100%;
+    }
   }
+}
+
+.intro {
+  padding: var(--size-6);
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 section {
@@ -198,6 +192,18 @@ section {
     max-width: 70ch;
     grid-area: info;
   }
+
+  @media (max-width: 55em) {
+    border: 1px solid black;
+    padding: 2rem;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+
+    grid-template-areas:
+      'info'
+      'image';
+  }
 }
 
 .section-grid-2 {
@@ -223,6 +229,18 @@ section {
   p {
     max-width: 70ch;
     grid-area: info;
+  }
+
+  @media (max-width: 55em) {
+    border: 1px solid black;
+    padding: 2rem;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+
+    grid-template-areas:
+      'info'
+      'image';
   }
 }
 
