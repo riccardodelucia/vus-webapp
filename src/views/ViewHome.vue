@@ -194,7 +194,7 @@ section {
   }
 
   @media (max-width: 55em) {
-    border: 1px solid black;
+    box-shadow: var(--shadow-3);
     padding: 2rem;
 
     grid-template-columns: 1fr;
@@ -232,7 +232,7 @@ section {
   }
 
   @media (max-width: 55em) {
-    border: 1px solid black;
+    box-shadow: var(--shadow-3);
     padding: 2rem;
 
     grid-template-columns: 1fr;
