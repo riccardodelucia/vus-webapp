@@ -4,41 +4,47 @@
     <main>
       <div class="ht-wrapper">
         <section class="hero">
-          <img class="logo" src="@/assets/img/VUS-logo.png" />
+          <img
+            class="logo"
+            src="@/assets/img/VUS-logo.png"
+            alt="Logo of the CRISPR-VUS applictaion; which is a DNA strand within a circle"
+          />
           <nav>
             <router-link :to="{ name: 'top-variants' }" class="ht-button"
               >Start Application</router-link
             >
           </nav>
         </section>
-        <section class="intro">
+        <section class="intro ht-layout-stack">
           <p>
             <b>CRISPR-VUS</b> is a cutting-edge, interactive web-based
             application designed to facilitate the <b>visualization </b> of
             <b>CRISPR enhanced identification</b> of
             <b>Unknown Significance</b> obtained by <b>CRISPR</b>-enhanced
             assessments across a <b>wide range</b> of cancer <b>tissues</b> and
-            <b>cell</b> lineages. <br />
-            <br />
+            <b>cell</b> lineages.
+          </p>
+          <p>
             This sophisticated tool integrates <b>mutation</b>,
             <b>dependency</b> and <b>drug sensitivity</b> data in cell line
             models bearing VUS identified from large patients’ cohorts
             <b>(COSMIC and IntOGen)</b>, thus providing a
             <b>multiscale</b> characterization of <b>genomic variations</b> to
             act as dependency associated <b>(DAMs)</b> or sensitivity associated
-            mutations <b>(SAMs)</b> . <br />
-            <br />
+            mutations <b>(SAMs)</b> .
+          </p>
+          <p>
             Ultimately, <b>CRISPR-VUS </b> presents as a functional portal for
             bridging the <b>unknown clinical significance</b> of underestimated
             genetic features in the oncological domain with concrete established
             <b>experimental proof</b> of essentiality and pharmacological
             vulnerability towards indications for <b>therapeutic targets</b> and
-            <b>drug repositioning</b> opportunities. <br />
+            <b>drug repositioning</b> opportunities.
           </p>
         </section>
 
         <div class="section-wrapper">
-          <section class="section-grid-1">
+          <section class="section-grid section-grid-1">
             <div class="ht-layout-stack">
               <h1>Step 1: Start by typing in a gene or selecting a variant</h1>
               <ul>
@@ -50,13 +56,13 @@
                 type where they were identified as dependency associated. Labels
                 indicating gene name and aminoacidic variation are coloured
                 according to previous indication of a gene being a driver.
-                <br />
-                <br />
+              </p>
+              <p>
                 Orange bars represent the number of patients of the
                 corresponding cancer type carrying the specific DAM: light and
                 dark orange indicate different clinical databases.
-                <br />
-                <br />
+              </p>
+              <p>
                 Purple bars represent the number of cancer types where the DAM
                 was both identified as dependency-associated (according to our
                 pipeline) and found in at least one patient. Red dots and
@@ -64,10 +70,12 @@
                 gene function according to two algorithms (SIFT or PolyPhen).
               </p>
             </div>
-
-            <img src="@/assets/img/section-1.png" alt="login form" />
+            <img
+              src="@/assets/img/section-1.png"
+              alt="Image of the first page of the application showing the search bar and the interactive circle chart"
+            />
           </section>
-          <section class="section-grid-2">
+          <section class="section-grid section-grid-2">
             <div class="ht-layout-stack">
               <h2>Step 2: Click on any squares of the heat-map</h2>
               <p>
@@ -78,10 +86,12 @@
                 underlying cell lines.
               </p>
             </div>
-
-            <img src="@/assets/img/section-2.png" alt="login form" />
+            <img
+              src="@/assets/img/section-2.png"
+              alt="Image showing a heat map of the patient data and gene variants"
+            />
           </section>
-          <section class="section-grid-1">
+          <section class="section-grid section-grid-1">
             <div class="ht-layout-stack">
               <h2>Step 3: LFC graph</h2>
               <ul>
@@ -99,7 +109,10 @@
               </p>
             </div>
 
-            <img src="@/assets/img/section-3.png" alt="login form" />
+            <img
+              src="@/assets/img/section-3.png"
+              alt="Image showing the LogFc graphs of the sensitivity and essentiallity of the variant on different cell lines"
+            />
           </section>
         </div>
       </div>
@@ -121,12 +134,6 @@ export default {
 </script>
 
 <style lang="postcss">
-.break {
-  border-top: 1px solid var(--ht-color-gray-1);
-  margin-top: 5%;
-  margin-bottom: 5%;
-}
-
 .hero {
   display: grid;
   justify-items: center;
@@ -151,8 +158,8 @@ export default {
 
 .intro {
   padding: var(--size-6);
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 section {
@@ -165,7 +172,7 @@ section {
   margin-top: 10%;
 }
 
-.section-grid-1 {
+.section-grid {
   display: grid;
 
   grid-template-columns: repeat(2, 1fr);
@@ -177,67 +184,50 @@ section {
 
   place-items: center;
 
-  grid-template-areas: 'image info';
-  grid-template-columns: 1fr 1fr;
-
   img {
     box-shadow: var(--shadow-3);
     grid-area: image;
   }
 
-  p {
+  p,
+  h1,
+  ul {
     max-width: 70ch;
     grid-area: info;
   }
 
-  @media (max-width: 55em) {
-    box-shadow: var(--shadow-3);
-    padding: 2rem;
+  &.section-grid-1 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'image info';
 
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
+    @media (max-width: 55em) {
+      box-shadow: var(--shadow-3);
+      padding: 2rem;
 
-    grid-template-areas:
-      'info'
-      'image';
-  }
-}
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
 
-.section-grid-2 {
-  display: grid;
-
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 20px;
-
-  gap: var(--size-8);
-
-  place-items: center;
-
-  grid-template-areas: 'info image';
-  grid-template-columns: 1fr 1fr;
-
-  img {
-    box-shadow: var(--shadow-3);
-    grid-area: image;
+      grid-template-areas:
+        'info'
+        'image';
+    }
   }
 
-  p {
-    max-width: 70ch;
-    grid-area: info;
-  }
+  &.section-grid-2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'info image';
 
-  @media (max-width: 55em) {
-    box-shadow: var(--shadow-3);
-    padding: 2rem;
+    @media (max-width: 55em) {
+      box-shadow: var(--shadow-3);
+      padding: 2rem;
 
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
 
-    grid-template-areas:
-      'info'
-      'image';
+      grid-template-areas:
+        'info'
+        'image';
+    }
   }
 }
 
@@ -255,15 +245,6 @@ section {
 
   h2 {
     font-size: var(--font-size-6);
-  }
-}
-
-.footer-link {
-  text-decoration: none;
-  color: white;
-
-  &:hover {
-    text-decoration: underline;
   }
 }
 </style>
