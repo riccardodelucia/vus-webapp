@@ -7,7 +7,7 @@
           <img
             class="logo"
             src="@/assets/img/VUS-logo.png"
-            alt="Logo of the CRISPR-VUS applictaion; which is a DNA strand within a circle"
+            alt="Logo of the CRISPR-VUS application"
           />
           <nav>
             <router-link :to="{ name: 'top-variants' }" class="ht-button"
@@ -46,7 +46,7 @@
         <div class="section-wrapper">
           <section class="section-grid section-grid-1">
             <div class="ht-layout-stack">
-              <h1>Step 1: Start by typing in a gene or selecting a variant</h1>
+              <h2>Step 1: Start by typing in a gene or selecting a variant</h2>
               <ul>
                 <li>Inputting the targeted <b>gene</b></li>
                 <li>Selecting a <b>variant</b> from the chart</li>
@@ -88,7 +88,7 @@
             </div>
             <img
               src="@/assets/img/section-2.png"
-              alt="Image showing a heat map of the patient data and gene variants"
+              alt="Image showing a heat map of patients data and gene variants"
             />
           </section>
           <section class="section-grid section-grid-1">
@@ -111,7 +111,7 @@
 
             <img
               src="@/assets/img/section-3.png"
-              alt="Image showing the LogFc graphs of the sensitivity and essentiallity of the variant on different cell lines"
+              alt="Image showing sensitivity and essentiality charts on cell lines"
             />
           </section>
         </div>
@@ -190,7 +190,6 @@ section {
   }
 
   p,
-  h1,
   ul {
     max-width: 70ch;
     grid-area: info;
