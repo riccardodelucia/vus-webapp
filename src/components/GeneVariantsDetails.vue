@@ -43,6 +43,13 @@
             ></span>
             <span>Benign</span>
           </li>
+          <li>
+            <span
+              class="legend-symbol square-symbol"
+              style="background-color: #eee"
+            ></span>
+            <span>Not Annotated</span>
+          </li>
         </ul>
       </div>
       <div class="legend">
@@ -84,6 +91,13 @@
             ></span>
             <span>tolerated</span>
           </li>
+          <li>
+            <span
+              class="legend-symbol square-symbol"
+              style="background-color: #eee"
+            ></span>
+            <span>Not Annotated</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -92,7 +106,7 @@
       :width="legendSizes.width"
       :height="legendSizes.height"
       :color="heatmapColor"
-      title="log(#patients)"
+      title="#patients"
     ></ht-chart-legend-color>
   </div>
 </template>

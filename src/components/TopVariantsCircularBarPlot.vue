@@ -43,8 +43,8 @@
             transform="rotate(180) translate(-10, -4) "
           ></polygon>
         </g>
-        <path class="bar-orange" :d="drawOuterBarPlot(datum)"></path>
-        <path class="bar-purple" :d="drawInnerBarPlot(datum)"></path>
+        <path class="bar orange" :d="drawOuterBarPlot(datum)"></path>
+        <path class="bar purple" :d="drawInnerBarPlot(datum)"></path>
       </g>
     </g>
   </svg>
@@ -257,16 +257,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.bar-orange {
-  fill: orange;
-  opacity: 0.5;
-  cursor: pointer;
-}
 
-.bar-purple {
-  fill: rebeccapurple;
+
+.bar{
+  cursor:pointer;
   opacity: 0.5;
-  cursor: pointer;
 }
 
 .combined-bar:hover > path {

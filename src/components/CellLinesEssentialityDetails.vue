@@ -13,7 +13,7 @@
     </div>
     <div>
       <p class="legend-title">
-        {{ details.variantId ? 'Variant' : 'Variants' }}
+        {{ details.variantId ? 'Variant Status' : 'Variants Status' }}
       </p>
       <ul class="ht-reset">
         <li>

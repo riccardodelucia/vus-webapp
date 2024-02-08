@@ -5,19 +5,9 @@
     x-axis-label="Cell Lines"
     :x-domain="xDomain"
     :y-domain="yDomain"
-    y-axis-label="log(IC50)"
+    y-axis-label="Drug log(IC50)"
   >
     <g>
-      <line
-        :x1="0"
-        :y1="slotProps.yScale(-0.5)"
-        :x2="sizes.innerWidth"
-        :y2="slotProps.yScale(-0.5)"
-        stroke="black"
-        stroke-width="2"
-        stroke-dasharray="4 4"
-        stroke-opacity="0.5"
-      />
       <circle
         v-for="(datum, idx) in sensitivities"
         :key="idx"

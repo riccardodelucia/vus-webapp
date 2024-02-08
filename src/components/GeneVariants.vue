@@ -112,7 +112,7 @@ export default {
     const polyphenColor = scaleOrdinal()
       .domain(polyphen)
       .range(schemeSpectral[3])
-      .unknown('transparent');
+      .unknown('#eee');
 
     const sift = [
       'deleterious',
@@ -123,7 +123,7 @@ export default {
     const siftColor = scaleOrdinal()
       .domain(sift)
       .range(schemeRdBu[4])
-      .unknown('transparent');
+      .unknown('#eee');
 
     const damColor = scaleOrdinal()
       .domain(['is DAM'])
