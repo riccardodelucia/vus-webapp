@@ -53,7 +53,7 @@
             :transform="`translate(${xScaleTissues(
               datum.tissueName
             )},  ${yScale(datum.variantId)})`"
-            class="heatmap-patients"
+            :class="{ 'heatmap-patients': datum.dam }"
             @click="onClick(datum)"
           >
             <rect
@@ -91,7 +91,7 @@
           <g
             v-for="(datum, idx) in aggregatedData"
             :key="idx"
-            class="heatmap-patients"
+            :class="{ 'heatmap-patients': datum.dam }"
             :transform="`translate(${xScaleTissues(datum.tissueName)},  0)`"
             @click="onClickAggregated(datum)"
           >
@@ -243,25 +243,27 @@ export default {
     });
 
     const onClick = function ({ tissueName, variantId, dam }) {
-      router.push({
-        name: 'cell-lines-by-variant',
-        params: {
-          tissueName,
-          variantId,
-          geneId: props.geneId,
-          dam: Boolean(dam),
-        },
-      });
+      dam &&
+        router.push({
+          name: 'cell-lines-by-variant',
+          params: {
+            tissueName,
+            variantId,
+            geneId: props.geneId,
+            dam: Boolean(dam),
+          },
+        });
     };
 
-    const onClickAggregated = function ({ tissueName }) {
-      router.push({
-        name: 'cell-lines-aggregated',
-        params: {
-          tissueName,
-          geneId: props.geneId,
-        },
-      });
+    const onClickAggregated = function ({ tissueName, dam }) {
+      dam &&
+        router.push({
+          name: 'cell-lines-aggregated',
+          params: {
+            tissueName,
+            geneId: props.geneId,
+          },
+        });
     };
 
     return {
