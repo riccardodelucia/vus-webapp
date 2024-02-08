@@ -37,3 +37,15 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+:deep(.orange) {
+  fill: orange;
+  background-color: orange;
+}
+
+:deep(.purple) {
+  fill: rebeccapurple;
+  background-color: rebeccapurple;
+}
+</style>

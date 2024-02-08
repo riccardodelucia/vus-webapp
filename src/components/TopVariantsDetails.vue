@@ -5,6 +5,14 @@
       <li style="color: DeepPink">Driver variant</li>
       <li>Non-Driver variant</li>
       <li>
+        <span class="legend-symbol square-symbol orange"></span>
+        <span>Number of Patients</span>
+      </li>
+      <li>
+        <span class="legend-symbol square-symbol purple"></span>
+        <span>Number of Tissues</span>
+      </li>
+      <li>
         <svg
           preserveAspectRatio="xMinYMin meet"
           viewBox="0, 0, 10, 10"
