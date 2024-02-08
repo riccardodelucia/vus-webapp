@@ -92,7 +92,7 @@
       :width="legendSizes.width"
       :height="legendSizes.height"
       :color="heatmapColor"
-      title="log(#patients)"
+      title="#patients"
     ></ht-chart-legend-color>
   </div>
 </template>
