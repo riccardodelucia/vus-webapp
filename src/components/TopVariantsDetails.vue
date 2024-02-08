@@ -2,8 +2,8 @@
   <div class="legend">
     <p class="legend-title">Legend</p>
     <ul class="ht-reset">
-      <li style="color: DeepPink">Driver variant</li>
-      <li>Non-Driver variant</li>
+      <li style="color: DeepPink">Established Driver variant</li>
+      <li>Variant of Unknown Significance</li>
       <li>
         <span class="legend-symbol square-symbol orange"></span>
         <span>Number of Patients</span>
