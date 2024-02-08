@@ -32,7 +32,7 @@
         >
           <polygon points="5,0 0,8 10,8" fill="DeepPink"></polygon>
         </svg>
-        <span>Deleterious Polyphen</span>
+        <span>Damaging Polyphen</span>
       </li>
     </ul>
   </div>
