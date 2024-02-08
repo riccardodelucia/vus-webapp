@@ -5,7 +5,7 @@
     </template>
     <div class="app-content ht-container ht-card">
       <div class="ht-container">
-        <h2>VUS Portal</h2>
+        <h2>CRISPR VUS Portal</h2>
         <div class="controls">
           <ht-search-bar
             v-model="gene"
@@ -45,7 +45,7 @@ export default {
     const geneList = ref([]);
 
     const sidenavObject = {
-      title: 'VUS',
+      title: 'CRISPR VUS',
       links: [
         { id: 1, url: '/', label: 'Home', type: 'home' },
         { id: 2, url: '/app', label: 'App', type: 'bar-chart-2' },
