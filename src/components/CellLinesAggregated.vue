@@ -87,7 +87,9 @@ export default {
       tissueName: props.tissueName,
     });
 
-    const tabList = ref([{ label: 'Essentiality', panel: 'essentiality' }]);
+    const tabList = ref([
+      { label: 'Gene Essentiality', panel: 'essentiality' },
+    ]);
     const currentTab = ref(tabList.value[0]);
 
     const state = ref('loading');
@@ -110,7 +112,10 @@ export default {
             label: `${item.drugName}, GDSC v${item.gdscVersion}`,
           }));
 
-          tabList.value.push({ label: 'Sensitivity', panel: 'sensitivity' });
+          tabList.value.push({
+            label: 'Drug Sensitivity',
+            panel: 'sensitivity',
+          });
         }
       } catch (error) {
         processErrorMessage(error);
