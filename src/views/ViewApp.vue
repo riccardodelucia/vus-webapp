@@ -3,6 +3,18 @@
     <template #header>
       <ht-theme-switcher></ht-theme-switcher>
     </template>
+    <template #sidenav-list>
+      <li class="sidenav-link">
+        <RouterLink active-class="active" to="/">
+          <VueFeather type="home"></VueFeather><span>Home</span>
+        </RouterLink>
+      </li>
+      <li class="sidenav-link">
+        <RouterLink active-class="active" to="/app">
+          <VueFeather type="bar-chart-2"></VueFeather><span>App</span>
+        </RouterLink>
+      </li>
+    </template>
     <div class="app-content ht-container ht-card">
       <div class="ht-container">
         <h2>CRISPR VUS Portal</h2>
@@ -104,5 +116,35 @@ export default {
 
 h2 {
   font-size: var(--font-size-5);
+}
+
+.sidenav-link {
+  margin-bottom: var(--size-1);
+}
+
+.sidenav-link > a {
+  display: flex;
+  align-items: center;
+  padding: var(--size-2);
+  gap: var(--size-3);
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+
+  &.active {
+    background-color: var(--ht-color-secondary);
+  }
+
+  &:not(.active):hover {
+    background-color: var(--ht-color-secondary);
+  }
+
+  &:not(.active):hover span {
+    transform: translateX(0.5em);
+  }
+
+  & > span {
+    transition: transform 0.3s ease-in-out;
+  }
 }
 </style>
