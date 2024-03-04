@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import ViewHome from '@/views/ViewHome.vue';
 import ViewApp from '@/views/ViewApp.vue';
+import View404NotFound from '@/views/View404NotFound.vue';
+
 import TopVariants from '@/components/TopVariants.vue';
 
 import GeneVariants from '@/components/GeneVariants.vue';
@@ -39,6 +41,11 @@ const routes = [
         props: true,
       },
     ],
+  },
+  {
+    path: '/:catchAll(.*)',
+    name: '404',
+    component: View404NotFound,
   },
 ];
 
