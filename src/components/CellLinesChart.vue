@@ -36,11 +36,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 import { select, axisBottom, axisLeft, scalePoint, scaleLinear } from 'd3';
 
-import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 export default {
   name: 'CellLinesChart',
   props: {
@@ -61,26 +60,36 @@ export default {
       .padding(0.5)
       .round(true);
 
-    makeReactiveAxis(() => {
-      select(xAxis.value)
-        .call(axisBottom(xScale))
-        .selectAll('.tick text')
-        .attr('transform', 'translate(-12, 8) rotate(-60) ')
-        .style('text-anchor', 'end')
-        .style('font-size', '12px');
-    });
+    watchEffect(
+      () => {
+        select(xAxis.value)
+          .call(axisBottom(xScale))
+          .selectAll('.tick text')
+          .attr('transform', 'translate(-12, 8) rotate(-60) ')
+          .style('text-anchor', 'end')
+          .style('font-size', '12px');
+      },
+      {
+        flush: 'post',
+      }
+    );
 
     const yScale = scaleLinear()
       .domain(props.yDomain)
       .range([props.sizes.innerHeight, 0])
       .nice();
 
-    makeReactiveAxis(() => {
-      select(yAxis.value)
-        .call(axisLeft(yScale))
-        .selectAll('.tick text')
-        .style('font-size', '12px');
-    });
+    watchEffect(
+      () => {
+        select(yAxis.value)
+          .call(axisLeft(yScale))
+          .selectAll('.tick text')
+          .style('font-size', '12px');
+      },
+      {
+        flush: 'post',
+      }
+    );
 
     return {
       xAxis,

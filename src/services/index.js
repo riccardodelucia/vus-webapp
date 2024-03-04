@@ -1,5 +1,5 @@
 import getEnv from '../utils/env.js';
-import { interceptorCamelize } from '@computational-biology-sw-web-dev-unit/ht-vue';
+import { interceptorCamelize } from '../utils';
 
 const urlBackend = getEnv('VITE_URL_BACKEND');
 

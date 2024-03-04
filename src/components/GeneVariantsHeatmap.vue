@@ -128,7 +128,6 @@
 <script>
 import { axisTop, axisRight, select, scaleBand } from 'd3';
 import { ref, watchEffect } from 'vue';
-import { makeReactiveAxis } from '@computational-biology-sw-web-dev-unit/ht-vue';
 
 import { useRouter } from 'vue-router';
 
@@ -216,30 +215,40 @@ export default {
         heatmapWidth +
         margins.right;
 
-      makeReactiveAxis(() => {
-        select(axisTissues.value)
-          .call(axisTop(xScaleTissues.value).tickSize(0))
-          .selectAll('.tick text')
-          .attr('transform', 'translate(2,0) rotate(-30) ')
-          .style('text-anchor', 'start')
-          .style('font-size', '15px');
-        select(axisTissues.value).select('.domain').remove();
-      });
+      watchEffect(
+        () => {
+          select(axisTissues.value)
+            .call(axisTop(xScaleTissues.value).tickSize(0))
+            .selectAll('.tick text')
+            .attr('transform', 'translate(2,0) rotate(-30) ')
+            .style('text-anchor', 'start')
+            .style('font-size', '15px');
+          select(axisTissues.value).select('.domain').remove();
+        },
+        {
+          flush: 'post',
+        }
+      );
 
-      makeReactiveAxis(() => {
-        select(axisVariants.value)
-          .call(axisRight(yScale.value).tickSize(0))
-          .selectAll('.tick text')
-          .style('font-size', '15px');
-        select(axisVariants.value)
-          .selectAll('.tick text')
-          .each(function (d) {
-            if (d === props.variantId) {
-              select(this).style('color', 'red');
-            }
-          });
-        select(axisVariants.value).select('.domain').remove();
-      });
+      watchEffect(
+        () => {
+          select(axisVariants.value)
+            .call(axisRight(yScale.value).tickSize(0))
+            .selectAll('.tick text')
+            .style('font-size', '15px');
+          select(axisVariants.value)
+            .selectAll('.tick text')
+            .each(function (d) {
+              if (d === props.variantId) {
+                select(this).style('color', 'red');
+              }
+            });
+          select(axisVariants.value).select('.domain').remove();
+        },
+        {
+          flush: 'post',
+        }
+      );
     });
 
     const onClick = function ({ tissueName, variantId, dam }) {
