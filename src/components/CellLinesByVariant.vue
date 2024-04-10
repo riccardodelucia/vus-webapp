@@ -23,8 +23,6 @@
 import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 
-import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
-
 import { onBeforeMount, ref } from 'vue';
 
 import service from '@/services';
@@ -32,6 +30,8 @@ import service from '@/services';
 import { processErrorMessage } from '@/utils/errors.js';
 
 import { extent } from 'd3';
+
+import { getInnerChartSizes } from '../utils';
 
 export default {
   name: 'CellLinesByVariant',

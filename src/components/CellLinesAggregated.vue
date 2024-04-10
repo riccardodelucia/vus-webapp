@@ -48,7 +48,7 @@ import CellLinesSensitivities from '@/components/CellLinesSensitivities.vue';
 import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import CellLinesSensitivityDetails from '@/components/CellLinesSensitivityDetails.vue';
 
-import { getInnerChartSizes } from '@computational-biology-sw-web-dev-unit/ht-vue';
+import { getInnerChartSizes } from '../utils';
 
 import { ref, reactive, onBeforeMount } from 'vue';
 
