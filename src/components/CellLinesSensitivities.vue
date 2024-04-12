@@ -5,7 +5,7 @@
     x-axis-label="Cell Lines"
     :x-domain="xDomain"
     :y-domain="yDomain"
-    y-axis-label="Drug log(IC50)"
+    y-axis-label="Drug ln(IC50)"
   >
     <g>
       <circle

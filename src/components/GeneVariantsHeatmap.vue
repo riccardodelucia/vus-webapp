@@ -117,7 +117,7 @@
             })`"
             class="ht-chart-title bold"
           >
-            Aggregated DAM
+            All DAMs
           </text>
         </g>
       </g>
