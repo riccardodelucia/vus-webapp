@@ -1,8 +1,8 @@
 import { createApp } from 'vue';
 import router from './router';
 
-import { HTVue } from '@computational-biology-sw-web-dev-unit/ht-vue';
-import '@computational-biology-sw-web-dev-unit/ht-vue/style.css';
+import { HTVue } from '@nf-daha-iu3/ht-vue';
+import '@nf-daha-iu3/ht-vue/style.css';
 
 import VueFeather from 'vue-feather';
 

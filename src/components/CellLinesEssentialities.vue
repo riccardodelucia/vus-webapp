@@ -35,7 +35,7 @@
 <script>
 import CellLinesChart from '@/components/CellLinesChart.vue';
 
-import { useTooltip } from '@computational-biology-sw-web-dev-unit/ht-vue';
+import { useTooltip } from '@nf-daha-iu3/ht-vue';
 
 import { extent } from 'd3';
 
