@@ -7,7 +7,7 @@
         class="details"
         :legend-sizes="legendSizes"
         :polyphen-color="polyphenColor"
-        :heatmap-color="heatmapColor"
+        :heatmap-color="legendHeatmapColor"
         :sift-color="siftColor"
       >
       </GeneVariantsDetails>
@@ -59,6 +59,7 @@ export default {
     const aggregatedData = ref(null);
     const annotations = ref(null);
     const heatmapColor = ref(null);
+    const legendHeatmapColor = ref(null);
 
     const legendSizes = {
       width: 150,
@@ -91,17 +92,24 @@ export default {
         aggregatedData.value = aggregatedVariantsData;
         annotations.value = annotationsData;
 
-        const interpolator = (t) => {
-          if (t === -Infinity) {
-            return color('#eee');
-          } else {
-            return interpolateOranges(t);
-          }
+        const makeColorScale = () => {
+          const logScale = scaleSequentialLog(interpolateOranges).domain([
+            1, 1000,
+          ]);
+
+          return {
+            colorScale: (n) => {
+              if (n === 0) return '#eee';
+              return logScale(n);
+            },
+            legendColorScale: logScale,
+          };
         };
 
-        heatmapColor.value = scaleSequentialLog(interpolator).domain(
-          extent(data.value.map(({ nPatients }) => nPatients + 1))
-        );
+        const { colorScale, legendColorScale } = makeColorScale();
+
+        heatmapColor.value = colorScale;
+        legendHeatmapColor.value = legendColorScale;
       } catch (error) {
         processErrorMessage(error);
       }
@@ -139,6 +147,7 @@ export default {
       data,
       aggregatedData,
       annotations,
+      legendHeatmapColor,
     };
   },
 };
