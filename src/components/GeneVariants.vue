@@ -58,7 +58,6 @@ export default {
     const data = ref(null);
     const aggregatedData = ref(null);
     const annotations = ref(null);
-    const heatmapColor = ref(null);
 
     const legendSizes = {
       width: 150,
@@ -71,15 +70,16 @@ export default {
       },
     };
 
+    const maxNPatients = 1000;
+
     const logScaleColorHeatmap = scaleSequentialLog(interpolateOranges).domain([
-      1, 1000,
+      1,
+      maxNPatients,
     ]);
-    const colorScale = (n) => {
+    const heatmapColor = (n) => {
       if (n === 0) return '#eee';
       return logScaleColorHeatmap(n);
     };
-
-    heatmapColor.value = colorScale;
 
     watchEffect(async () => {
       try {
