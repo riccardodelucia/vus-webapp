@@ -72,6 +72,8 @@ export default {
       },
     };
 
+    const logScale = scaleSequentialLog(interpolateOranges).domain([1, 1000]);
+
     watchEffect(async () => {
       try {
         const { data: variantsData } = await service.getVariantsData(
@@ -93,10 +95,6 @@ export default {
         annotations.value = annotationsData;
 
         const makeColorScale = () => {
-          const logScale = scaleSequentialLog(interpolateOranges).domain([
-            1, 1000,
-          ]);
-
           return {
             colorScale: (n) => {
               if (n === 0) return '#eee';
