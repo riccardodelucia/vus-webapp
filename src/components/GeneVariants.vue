@@ -7,7 +7,7 @@
         class="details"
         :legend-sizes="legendSizes"
         :polyphen-color="polyphenColor"
-        :heatmap-color="heatmapColor"
+        :heatmap-color="logScaleColorHeatmap"
         :sift-color="siftColor"
       >
       </GeneVariantsDetails>
@@ -41,8 +41,6 @@ import {
   schemeSpectral,
   schemeRdBu,
   interpolateOranges,
-  color,
-  extent,
 } from 'd3';
 
 import service from '@/services';
@@ -58,7 +56,6 @@ export default {
     const data = ref(null);
     const aggregatedData = ref(null);
     const annotations = ref(null);
-    const heatmapColor = ref(null);
 
     const legendSizes = {
       width: 150,
@@ -69,6 +66,17 @@ export default {
         top: 30,
         bottom: 10,
       },
+    };
+
+    const maxNPatients = 1000;
+
+    const logScaleColorHeatmap = scaleSequentialLog(interpolateOranges).domain([
+      1,
+      maxNPatients,
+    ]);
+    const heatmapColor = (n) => {
+      if (n === 0) return '#eee';
+      return logScaleColorHeatmap(n);
     };
 
     watchEffect(async () => {
@@ -90,18 +98,6 @@ export default {
         data.value = variantsData;
         aggregatedData.value = aggregatedVariantsData;
         annotations.value = annotationsData;
-
-        const interpolator = (t) => {
-          if (t === -Infinity) {
-            return color('#eee');
-          } else {
-            return interpolateOranges(t);
-          }
-        };
-
-        heatmapColor.value = scaleSequentialLog(interpolator).domain(
-          extent(data.value.map(({ nPatients }) => nPatients + 1))
-        );
       } catch (error) {
         processErrorMessage(error);
       }
@@ -139,6 +135,7 @@ export default {
       data,
       aggregatedData,
       annotations,
+      logScaleColorHeatmap,
     };
   },
 };

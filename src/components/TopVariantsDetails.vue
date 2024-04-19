@@ -10,7 +10,7 @@
       </li>
       <li>
         <span class="legend-symbol square-symbol purple"></span>
-        <span>Number of Tissues</span>
+        <span>Number of patients' tissues showing the variant</span>
       </li>
       <li>
         <svg

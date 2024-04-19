@@ -15,8 +15,6 @@ import { useRouter } from 'vue-router';
 
 import { ref } from 'vue';
 
-import placeholder from '@/assets/img/placeholder.png';
-
 export default {
   name: 'TopVariants',
   components: { TopVariantsDetails, TopVariantsCircularBarPlot },
@@ -33,7 +31,6 @@ export default {
     return {
       gene,
       onSubmit,
-      placeholder,
     };
   },
 };

@@ -35,6 +35,8 @@
           v-else
           :sizes="sizes"
           :sensitivities="sensitivities"
+          :drug-conc-min="drugConcMin"
+          :drug-conc-max="drugConcMax"
         >
         </CellLinesSensitivities>
       </template>
@@ -75,6 +77,8 @@ export default {
     const drugs = ref(null);
     const selectedDrug = ref(null);
     const sensitivities = ref(null);
+    const drugConcMin = ref(0);
+    const drugConcMax = ref(0);
 
     const essentialityDetails = reactive({
       geneId: props.geneId,
@@ -93,6 +97,27 @@ export default {
     const currentTab = ref(tabList.value[0]);
 
     const state = ref('loading');
+
+    const width = 1100;
+    const height = 700;
+
+    const cssWidth = `${width}px`;
+    const cssHeight = `${height}px`;
+
+    const margins = {
+      top: 30,
+      bottom: 100,
+      left: 60,
+      right: 20,
+    };
+
+    const { innerWidth, innerHeight } = getInnerChartSizes(
+      width,
+      height,
+      margins
+    );
+
+    const sizes = { width, height, margins, innerWidth, innerHeight };
 
     onBeforeMount(async () => {
       try {
@@ -122,27 +147,6 @@ export default {
       }
     });
 
-    const width = 1100;
-    const height = 700;
-
-    const cssWidth = `${width}px`;
-    const cssHeight = `${height}px`;
-
-    const margins = {
-      top: 30,
-      bottom: 100,
-      left: 60,
-      right: 20,
-    };
-
-    const { innerWidth, innerHeight } = getInnerChartSizes(
-      width,
-      height,
-      margins
-    );
-
-    const sizes = { width, height, margins, innerWidth, innerHeight };
-
     const onTabSelected = function (idx) {
       if (tabList.value[idx].panel === 'sensitivity') {
         currentTab.value = tabList.value[1];
@@ -160,8 +164,12 @@ export default {
         });
 
         sensitivities.value = data.sensitivities;
+        drugConcMin.value = data.sensitivities[0].concMin;
+        drugConcMax.value = data.sensitivities[0].concMax;
 
         sensitivityDetails.rankRatio = data.rankRatio;
+        sensitivityDetails.concMin = drugConcMin.value;
+        sensitivityDetails.concMax = drugConcMax.value;
 
         state.value = 'loaded';
       } catch (err) {
@@ -185,6 +193,8 @@ export default {
       cssHeight,
       state,
       sensitivities,
+      drugConcMin,
+      drugConcMax,
     };
   },
 };

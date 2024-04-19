@@ -17,57 +17,69 @@
         </section>
         <section class="intro ht-layout-stack">
           <p>
-            <b>CRISPR-VUS</b> is a cutting-edge, interactive web-based
-            application designed to facilitate the <b>visualization </b> of
-            <b>CRISPR enhanced identification</b> of
-            <b>Unknown Significance</b> obtained by <b>CRISPR</b>-enhanced
-            assessments across a <b>wide range</b> of cancer <b>tissues</b> and
-            <b>cell</b> lineages.
+            <b>CRISPR VUS</b> is a cutting-edge, interactive web-based
+            application designed to facilitate the <b>visualization</b> of
+            <b>cancer-dependent Variants of Unknown Significance</b> obtained by
+            <b>CRISPR-enhanced assessments</b> across a wide range of cancer
+            tissues and cell lineages.
           </p>
           <p>
-            This sophisticated tool integrates <b>mutation</b>,
-            <b>dependency</b> and <b>drug sensitivity</b> data in cell line
-            models bearing VUS identified from large patients’ cohorts
-            <b>(COSMIC and IntOGen)</b>, thus providing a
-            <b>multiscale</b> characterization of <b>genomic variations</b> to
-            act as dependency associated <b>(DAMs)</b> or sensitivity associated
-            mutations <b>(SAMs)</b> .
+            This tool integrates <b>mutation</b>, <b>dependency</b> and
+            <b>drug sensitivity</b> data in cell line models bearing VUS and
+            represented in large patients’ cohorts <b>(COSMIC and IntOGen)</b>,
+            thus providing a
+            <b>multiscale characterization of cancer genomic variations</b>,
+            such as mutations, to act as dependency associated <b>(DAMs)</b> or
+            sensitivity associated mutations <b>(SAMs)</b>.
           </p>
           <p>
-            Ultimately, <b>CRISPR-VUS </b> presents as a functional portal for
-            bridging the <b>unknown clinical significance</b> of underestimated
-            genetic features in the oncological domain with concrete established
-            <b>experimental proof</b> of essentiality and pharmacological
-            vulnerability towards indications for <b>therapeutic targets</b> and
+            Ultimately, <b>CRISPR VUS</b> presents as a functional portal for
+            bridging the <b>unknown clinical significance</b> of genetic
+            features currently underestimated in the oncological domain, with
+            established <b>experimental proof</b> of essentiality and
+            pharmacological vulnerability towards indications for
+            <b>therapeutic targeting</b> and
             <b>drug repositioning</b> opportunities.
           </p>
         </section>
 
         <section class="section-grid">
           <div class="ht-layout-stack">
-            <h2>Step 1: Start by typing in a gene or selecting a variant</h2>
-            <ul>
-              <li>Inputting the targeted <b>gene</b></li>
-              <li>Selecting a <b>variant</b> from the chart</li>
-            </ul>
+            <h2>Step 1</h2>
             <p>
-              DAMs found in at least one patient of the corresponding cancer
-              type where they were identified as dependency associated. Labels
-              indicating gene name and aminoacidic variation are coloured
-              according to previous indication of a gene being a driver.
+              Click on the <b>Start Application</b> button here above, which
+              leads you to the first application page. The page visualizes a
+              circular bar plot interactive chart, which aims at showing the
+              most frequently observed DAMs, sorted by potential clinical impact
+              by number of patients. Hovering on a bar, it turns full color, and
+              a related tooltip appears, completing the information obtained
+              from the chart.
             </p>
             <p>
               Orange bars represent the number of patients of the corresponding
-              cancer type carrying the specific DAM: light and dark orange
-              indicate different clinical databases.
-            </p>
-            <p>
+              cancer type carrying the specific DAM (according to
+              <i>COSMIC</i> and <i>IntOGen</i>) and are sorted by frequency.
               Purple bars represent the number of cancer types where the DAM was
               both identified as dependency-associated (according to our
-              pipeline) and found in at least one patient. Red dots and
-              triangles label variants predicted as strongly impacting the gene
-              function according to two algorithms (SIFT or PolyPhen).
+              pipeline) and found in at least one patient.
             </p>
+            <p>
+              From this chart, you can access gene-specific variants information
+              on a dedicated chart (Step 2). This can be accomplished by,
+              either:
+            </p>
+            <ul>
+              <li>
+                Inputting the desired gene in the <b>search bar</b> and pressing
+                the associated <em>magnifying glass icon</em>, or pressing
+                <em>Enter</em>. Take advantage of the gene hints appaearing as
+                you type-in.
+              </li>
+              <li>
+                Clicking on any bar from the chart, which triggers the related
+                gene variants information chart
+              </li>
+            </ul>
           </div>
           <img
             src="@/assets/img/section-1.png"
@@ -76,14 +88,33 @@
         </section>
         <section class="section-grid section-grid-alt">
           <div class="ht-layout-stack">
-            <h2>Step 2: Click on any squares of the heat-map</h2>
+            <h2>Step 2</h2>
             <p>
-              Summary of variants for a given gene with DAM characterization,
-              deleterious effect prediction, representation across cancer types
-              and frequency in patient carrying the alteration, with the
-              possibility for direct insight on its essentiality across the
-              underlying cell lines.
+              This chart shows a summary of variants for a given gene with DAM
+              characterization, gene function mutation effect
+              prediction,representation across cancer types and frequency in
+              patients carrying the alteration. Variant specific information
+              about SIFT and Polyphen values can be observed from the companion
+              heatmap chart on the left. A bottom
+              <b>Aggregated DAM</b> row combines info for all DAMs observed for
+              a specific tissue, summing up the total numebr of patients per
+              each variant.
             </p>
+            <p>
+              Blu-dotted tiles are associated to identified DAMs and can be
+              clicked, accessing a third graph showing cell-lines related
+              information (Step 3).
+            </p>
+            <p>
+              Use the <b>Back button</b> or the
+              <b>Show Top Variants Button</b> to get back to the circular
+              barplot chart.
+            </p>
+            <small>
+              Note: when this chart is navigated from a variant of the previous
+              described circular barplot, the corresponding source variant is
+              highlighted in red on the chart
+            </small>
           </div>
           <img
             src="@/assets/img/section-2.png"
@@ -92,18 +123,32 @@
         </section>
         <section class="section-grid">
           <div class="ht-layout-stack">
-            <h2>Step 3: LFC graph</h2>
+            <h2>Step 3</h2>
+            <p>
+              This section provides gene-related cell-lines information. When
+              the chart is accessed from a specific combination of tissue and
+              variant, only <i>essentiality</i> information is provided. When
+              the source is a tile from the <b>Aggregated DAMs</b> row,
+              <i>sensitivity</i> data for relevant drugs is added, if any. When
+              this happens, you'll be shown with a tabbed chart, where you can
+              click to switch between essentiality and sensitivity charts.
+            </p>
             <ul>
-              <li>Use drop down to access other <b>drugs</b></li>
               <li>
-                Selecting between <b>essentiallity</b> or <b>sensitivity</b>
+                <b>All tabs: </b> hover on red dots to show the name of the
+                variant observed in the corresponding cell-line.
+              </li>
+              <li>
+                <b>Sensitivity chart: </b> a selector is provided on the details
+                section to select among available drugs, which effect on
+                cell-lines is then plotted. The drug concentration is shown as a
+                light-grey area on the chart.
               </li>
             </ul>
             <p>
-              Projection of the sorted fitness of all cell lines within a given
-              cancer type known for their presence and absence of a studied VUS,
-              obtained by essentiality assessment using CRISPR and
-              pharmacological inhibition by drugs targeting this variation.
+              Use the <b>Back button</b> to get back to the variants heatmap
+              chart. Use the <b>Show Top Variants Button</b> to get back to the
+              circular barplot chart.
             </p>
           </div>
 
