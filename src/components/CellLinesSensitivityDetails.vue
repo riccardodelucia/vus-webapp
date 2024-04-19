@@ -30,12 +30,19 @@
         </li>
       </ul>
     </div>
+    <div>
+      <p class="legend-title">Screening Concentration</p>
+      <ul class="ht-reset">
+        <li><b>Min: </b>{{ concMin }} uM</li>
+        <li><b>Max: </b>{{ concMax }} uM</li>
+        <li>* shown within the light-grey rectangle</li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRankRatio } from '../composables';
+import { ref, computed } from 'vue';
 
 export default {
   name: 'CellLinesSensitivityDetails',
@@ -57,9 +64,18 @@ export default {
       drug.value = value;
       emit('update:model-value', value);
     };
-    const rankRatio = useRankRatio(props.details);
 
-    return { drug, onUpdate, rankRatio };
+    const rankRatio = computed(() => {
+      const ratio = Number(props.details.rankRatio.toFixed(2));
+      if (ratio === 0) return 'undefined';
+      return ratio;
+    });
+
+    const concMin = computed(() => props.details.concMin);
+
+    const concMax = computed(() => props.details.concMax);
+
+    return { drug, onUpdate, rankRatio, concMax, concMin };
   },
 };
 </script>
