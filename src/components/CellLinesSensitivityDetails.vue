@@ -35,7 +35,7 @@
       <ul class="ht-reset">
         <li><b>Min: </b>{{ concMin }} uM</li>
         <li><b>Max: </b>{{ concMax }} uM</li>
-        <li>* shown within the light-grey rectangle</li>
+        <li>* shown within the light-grey area</li>
       </ul>
     </div>
   </div>
