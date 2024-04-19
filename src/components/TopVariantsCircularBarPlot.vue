@@ -211,25 +211,15 @@ export default {
 
     const onMouseOver = function (
       event,
-      {
-        variantId,
-        nPatients,
-        nTissues,
-        geneId,
-        isDriver,
-        siftDeleterious,
-        polyphenDeleterious,
-      }
+      { variantId, nPatients, nTissues, geneId, isDriver }
     ) {
       const htmlString = `
       <ul style="list-style: none; margin: 0">
         <li>Variant: ${variantId}</li>
         <li>Gene: ${geneId}</li>
         <li>Driver: ${Boolean(isDriver)}</li>
-        <li>Deleterious SIFT: ${Boolean(siftDeleterious)}</li>
-        <li>Deleterious Polyphen: ${Boolean(polyphenDeleterious)}</li>
-        <li>Number of Patients: ${nPatients}</li>
-        <li>Number of Tissues: ${nTissues}</li>
+        <li># Patients (orange bar): ${nPatients}</li>
+        <li># Tissues (purple bar): ${nTissues}</li>
       </ul>`;
 
       showTooltip(event, htmlString);
@@ -257,10 +247,8 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
-
-.bar{
-  cursor:pointer;
+.bar {
+  cursor: pointer;
   opacity: 0.5;
 }
 
