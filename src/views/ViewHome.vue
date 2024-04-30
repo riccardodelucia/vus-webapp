@@ -19,15 +19,18 @@
           <p>
             <b>CRISPR VUS</b> is a cutting-edge, interactive web-based
             application designed to facilitate the <b>visualization</b> of
-            <b>cancer-dependent Variants of Unknown Significance</b> obtained by
-            <b>CRISPR-enhanced assessments</b> across a wide range of cancer
-            tissues and cell lineages.
+            <b
+              >cancer-dependent mutational Variants of Unknown Significance
+              (VUS)</b
+            >
+            obtained by <b>CRISPR-enhanced assessments</b> across a wide range
+            of cancer tissues and cell lineages.
           </p>
           <p>
             This tool integrates <b>mutation</b>, <b>dependency</b> and
-            <b>drug sensitivity</b> data in cell line models bearing VUS and
-            represented in large patients’ cohorts <b>(COSMIC and IntOGen)</b>,
-            thus providing a
+            <b>drug sensitivity</b> data in cell line models bearing VUS, many
+            of which represented in large patients’ cohorts
+            <b>(COSMIC and IntOGen)</b>, thus providing a
             <b>multiscale characterization of cancer genomic variations</b>,
             such as mutations, to act as dependency associated <b>(DAMs)</b> or
             sensitivity associated mutations <b>(SAMs)</b>.
@@ -50,18 +53,22 @@
               Click on the <b>Start Application</b> button here above, which
               leads you to the first application page. The page visualizes a
               circular bar plot interactive chart, which aims at showing the
-              most frequently observed DAMs, sorted by potential clinical impact
-              by number of patients. Hovering on a bar, it turns full color, and
-              a related tooltip appears, completing the information obtained
-              from the chart.
+              most frequently DAMs observed in patient, sorted by potential
+              clinical impact. Labels describing gene name and aminoacidic
+              variation are coloured according to previous knowledge of a gene
+              being a driver, while dots and triangles mark variants predicted
+              as strongly impacting the gene function according to two
+              algorithms (SIFT or PolyPhen).
             </p>
             <p>
               Orange bars represent the number of patients of the corresponding
-              cancer type carrying the specific DAM (according to
-              <i>COSMIC</i> and <i>IntOGen</i>) and are sorted by frequency.
-              Purple bars represent the number of cancer types where the DAM was
-              both identified as dependency-associated (according to our
-              pipeline) and found in at least one patient.
+              cancer type carrying the specific DAM, as found in
+              <i>COSMIC</i> and <i>IntOGen</i>, and are sorted by patients
+              frequency. Purple bars represent the number of cancer types where
+              the DAM was identified in cell lines, according to out pipeline,
+              and found in at least one patient. Hovering on a bar, it turns
+              full color, and a related tooltip appears, completing the
+              information obtained from the chart.
             </p>
             <p>
               From this chart, you can access gene-specific variants information
@@ -91,17 +98,17 @@
             <h2>Step 2</h2>
             <p>
               This chart shows a summary of variants for a given gene with DAM
-              characterization, gene function mutation effect
+              characterization, gene mutation functional effect
               prediction,representation across cancer types and frequency in
               patients carrying the alteration. Variant specific information
               about SIFT and Polyphen values can be observed from the companion
               heatmap chart on the left. A bottom
               <b>Aggregated DAM</b> row combines info for all DAMs observed for
-              a specific tissue, summing up the total numebr of patients per
+              a specific tissue, summing up the total number of patients per
               each variant.
             </p>
             <p>
-              Blu-dotted tiles are associated to identified DAMs and can be
+              Blue-dotted tiles are associated to identified DAMs and can be
               clicked, accessing a third graph showing cell-lines related
               information (Step 3).
             </p>
@@ -125,13 +132,17 @@
           <div class="ht-layout-stack">
             <h2>Step 3</h2>
             <p>
-              This section provides gene-related cell-lines information. When
-              the chart is accessed from a specific combination of tissue and
-              variant, only <i>essentiality</i> information is provided. When
-              the source is a tile from the <b>Aggregated DAMs</b> row,
-              <i>sensitivity</i> data for relevant drugs is added, if any. When
-              this happens, you'll be shown with a tabbed chart, where you can
-              click to switch between essentiality and sensitivity charts.
+              This section provides gene-related cell-lines information. Two
+              types of visualizations are shown.
+              <i>Essentiality</i> information is always provided, projecting the
+              sorted fitness of all cell lines within a given cancer type known
+              for their presence or absence of a studied VUS, as obtained by
+              essentiality assessment using CRISPR. <i>Sensitivity</i> data is
+              optionally added when the chart is accessed from a specific
+              combination of tissue and variant from step 2 if related
+              information is available from the study. When both essentiality
+              and sensitivity charts are present, you'll be shown with a tabbed
+              chart, where you can click to switch between them.
             </p>
             <ul>
               <li>
@@ -140,8 +151,9 @@
               </li>
               <li>
                 <b>Sensitivity chart: </b> a selector is provided on the details
-                section to select among available drugs, which effect on
-                cell-lines is then plotted. The drug concentration is shown as a
+                section to enable visualization of any available drug tested
+                against the corresponding cancer type cell lines, showing the
+                drug concentration range experimentally validated as a
                 light-grey area on the chart.
               </li>
             </ul>
@@ -192,11 +204,6 @@ export default {
   padding: var(--size-6);
   border-top: 1px solid var(--ht-color-gray-1);
   border-bottom: 1px solid var(--ht-color-gray-1);
-
-  /* p {
-    max-width: 70ch;
-    margin: auto;
-  } */
 }
 
 section {
