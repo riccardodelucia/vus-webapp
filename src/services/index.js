@@ -1,7 +1,6 @@
-import getEnv from '../utils/env.js';
 import { interceptorCamelize } from '../utils';
 
-const urlBackend = getEnv('VITE_URL_BACKEND');
+const urlBackend = import.meta.env.VITE_URL_BACKEND;
 
 import axios from 'axios';
 
