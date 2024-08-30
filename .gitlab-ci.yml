@@ -32,11 +32,11 @@ include:
   - component: $CICD_COMPONENTS_PROJECT/deploy_to_static_webserver@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       folder_name: $WEBSERVER_FOLDER_NAME
-      environment: staging
-    rules:
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        when: always
-      - when: never
+      #environment: staging
+    # rules:
+    #   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    #     when: always
+    #   - when: never
 
   - component: $CICD_COMPONENTS_PROJECT/deploy_to_static_webserver@$CICD_COMPONENTS_COMMIT_REF
     inputs:
