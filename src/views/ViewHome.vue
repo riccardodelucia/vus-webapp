@@ -3,6 +3,7 @@
     <TheHeader></TheHeader>
     <main>
       <div class="ht-wrapper">
+        <p>URL: {{ urlBackend }}</p>
         <section class="hero">
           <img
             class="logo"
@@ -184,6 +185,10 @@ import TheHeader from '@/components/TheHeader.vue';
 
 export default {
   components: { TheHeader },
+  setup() {
+    const urlBackend = import.meta.env.VITE_URL_BACKEND;
+    return { urlBackend };
+  },
 };
 </script>
 
