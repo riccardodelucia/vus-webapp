@@ -200,7 +200,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .center-grid {
   display: grid;
   place-items: center;
