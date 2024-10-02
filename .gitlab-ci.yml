@@ -30,9 +30,8 @@ include:
     inputs:
       stage: setup env
       environment: staging
-      inputs:
-        input_file: deploy.env
-        output_file: production.env
+      input_file: deploy.env
+      output_file: production.env
     rules:
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         when: always
@@ -43,9 +42,8 @@ include:
     inputs:
       stage: setup env
       environment: production
-      inputs:
-        input_file: deploy.env
-        output_file: production.env
+      input_file: deploy.env
+      output_file: production.env
     rules:
       - if: $CI_COMMIT_BRANCH == 'production'
         when: always
