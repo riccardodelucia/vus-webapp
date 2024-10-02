@@ -7,13 +7,13 @@ stages:
 variables:
   WEBSERVER_FOLDER_NAME: vus_portal
 
-.only staging:
+.only_staging:
     rules:
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         when: always
       - when: never
 
-.only production:
+.only_production:
     rules:
       - if: $CI_COMMIT_BRANCH == 'production'
         when: always
@@ -34,7 +34,7 @@ include:
         input_file: deploy.env
         output_file: production.env
       rules:
-        - !reference [.only staging, rules]
+        - !reference [.only_staging, rules]
 
   - component: $CICD_COMPONENTS_PROJECT/build_file_for_environment@$CICD_COMPONENTS_COMMIT_REF
     inputs:
@@ -44,21 +44,21 @@ include:
         input_file: deploy.env
         output_file: production.env
       rules:
-        - !reference [.only production, rules]
+        - !reference [.only_production, rules]
 
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       stage: build
       environment: staging
     rules:
-      - !reference [.only staging, rules]
+      - !reference [.only_staging, rules]
 
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       stage: build
       environment: production
     rules:
-      - !reference [.only production, rules]
+      - !reference [.only_production, rules]
   
   - component: $CICD_COMPONENTS_PROJECT/deploy_to_static_webserver@$CICD_COMPONENTS_COMMIT_REF
     inputs:
@@ -66,7 +66,7 @@ include:
       folder_name: $WEBSERVER_FOLDER_NAME
       environment: staging
     rules:
-      - !reference [.only staging, rules]
+      - !reference [.only_staging, rules]
 
   - component: $CICD_COMPONENTS_PROJECT/deploy_to_static_webserver@$CICD_COMPONENTS_COMMIT_REF
     inputs:
@@ -74,4 +74,4 @@ include:
       folder_name: $WEBSERVER_FOLDER_NAME
       environment: production
     rules:
-      - !reference [.only production, rules]
+      - !reference [.only_production, rules]
