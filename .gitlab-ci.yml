@@ -30,7 +30,7 @@ include:
     inputs:
       stage: build
     rules:
-      - if: $CI_COMMIT_REF_PROTECTED == false
+      - if: $CI_COMMIT_REF_PROTECTED == "false"
         when: always
       - when: never
 
