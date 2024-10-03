@@ -22,36 +22,15 @@ variables:
 
 ####################################################################################################
 include:
-  - component: $CICD_COMPONENTS_PROJECT/lint_eslint@$CICD_COMPONENTS_COMMIT_REF
-    inputs:
-      stage: test
-
-  - component: $CICD_COMPONENTS_PROJECT/build_file_for_environment@$CICD_COMPONENTS_COMMIT_REF
-    inputs:
-      stage: setup env
-      environment: staging
-      input_file: deploy.env
-      output_file: production.env
-    rules:
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        when: always
-      - when: never
-
-
-  - component: $CICD_COMPONENTS_PROJECT/build_file_for_environment@$CICD_COMPONENTS_COMMIT_REF
-    inputs:
-      stage: setup env
-      environment: production
-      input_file: deploy.env
-      output_file: production.env
-    rules:
-      - if: $CI_COMMIT_BRANCH == 'production'
-        when: always
-      - when: never
+  #- component: $CICD_COMPONENTS_PROJECT/lint_eslint@$CICD_COMPONENTS_COMMIT_REF
+    #inputs:
+      #stage: test
 
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       stage: build
+      input_env_file: deploy.env
+      output_env_file: production.env
     rules:
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         when: always
