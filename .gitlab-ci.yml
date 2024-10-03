@@ -26,7 +26,6 @@ include:
     inputs:
       stage: test
 
-
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       stage: build
