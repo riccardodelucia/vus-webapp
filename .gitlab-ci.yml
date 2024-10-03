@@ -31,10 +31,10 @@ include:
       stage: build
       input_env_file: deploy.env
       output_env_file: production.env
-    rules:
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        when: always
-      - when: never
+    #rules:
+      #- if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        #when: always
+      #- when: never
 
 
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
