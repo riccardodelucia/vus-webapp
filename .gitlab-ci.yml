@@ -28,10 +28,7 @@ include:
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       stage: build
-    rules:
-      - if: $CI_COMMIT_REF_PROTECTED == "false"
-        when: always
-      - when: never
+
 
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
