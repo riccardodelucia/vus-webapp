@@ -1,6 +1,5 @@
 stages:
   - test
-  - setup env
   - build
   - deploy
 
@@ -22,9 +21,9 @@ variables:
 
 ####################################################################################################
 include:
-  #- component: $CICD_COMPONENTS_PROJECT/lint_eslint@$CICD_COMPONENTS_COMMIT_REF
-    #inputs:
-      #stage: test
+  - component: $CICD_COMPONENTS_PROJECT/lint_eslint@$CICD_COMPONENTS_COMMIT_REF
+    inputs:
+      stage: test
 
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
@@ -40,6 +39,8 @@ include:
   - component: $CICD_COMPONENTS_PROJECT/build_vite@$CICD_COMPONENTS_COMMIT_REF
     inputs:
       stage: build
+      input_env_file: deploy.env
+      output_env_file: production.env
     rules:
       - if: $CI_COMMIT_BRANCH == 'production'
         when: always
