@@ -1,31 +1,47 @@
-<script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <router-view />
+    <div class="notifications-container ht-layout-stack">
+      <ht-toast
+        v-for="{ type, title, message, id } in notifications"
+        :key="`toast-${id}`"
+        :type="type"
+        :title="title"
+        :toast-id="id"
+        @close-notification="onCloseNotification"
+      >
+        <p>{{ message }}</p>
+      </ht-toast>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+<script>
+import { notifications, removeNotification } from './notifications';
+
+export default {
+  data() {
+    return { notifications };
+  },
+  methods: {
+    onCloseNotification(notification) {
+      removeNotification(notification);
+    },
+  },
+};
+</script>
+
+<style lang="postcss" scoped>
+.notifications-container {
+  padding: var(--size-2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  width: 25%;
+
+  @media only screen and (max-width: 700px) {
+    width: 100%;
+  }
 }
 </style>

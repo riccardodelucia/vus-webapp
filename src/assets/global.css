@@ -1,0 +1,61 @@
+main {
+  overflow-x: scroll;
+}
+
+.legend-title {
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-4);
+}
+
+.legend li > * {
+  margin-right: var(--size-3);
+}
+
+.legend-symbol {
+  display: inline-block;
+  width: 0.8rem;
+  aspect-ratio: 1;
+}
+
+.round-symbol {
+  border-radius: var(--radius-round);
+}
+
+.app-content {
+  margin: var(--size-4) var(--size-5);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  gap: var(--size-4);
+  margin-top: var(--size-4);
+  overflow: scroll;
+
+  & > * {
+    min-width: 0;
+  }
+}
+
+.details {
+  grid-column: 1/2;
+}
+.chart {
+  grid-column: 2/3;
+}
+
+.mutation-symbol {
+  margin-right: var(--size-2);
+  border-radius: var(--radius-round);
+  display: inline-block;
+  width: 0.5rem;
+  aspect-ratio: 1;
+}
+
+.mutation-symbol-present {
+  background-color: red;
+}
+
+.mutation-symbol-absent {
+  background-color: blue;
+}
