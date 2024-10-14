@@ -6,19 +6,6 @@ stages:
 variables:
   WEBSERVER_FOLDER_NAME: vus_portal
 
-.only_staging:
-    rules:
-      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        when: always
-      - when: never
-
-.only_production:
-    rules:
-      - if: $CI_COMMIT_BRANCH == 'production'
-        when: always
-      - when: never
-
-
 ####################################################################################################
 include:
   - component: $CICD_COMPONENTS_PROJECT/lint_eslint@$CICD_COMPONENTS_COMMIT_REF
