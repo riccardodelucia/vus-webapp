@@ -8,12 +8,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  title: 'Message Page',
-  name: 'View404NotFound',
-};
-</script>
+<script setup></script>
 
 <style lang="postcss" scoped>
 .message-page {

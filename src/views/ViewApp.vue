@@ -1,20 +1,5 @@
 <template>
-  <ht-layout-app :sidenav-object="sidenavObject">
-    <template #header>
-      <ht-theme-switcher></ht-theme-switcher>
-    </template>
-    <template #sidenav-list>
-      <li class="sidenav-link">
-        <RouterLink active-class="active" to="/">
-          <VueFeather type="home"></VueFeather><span>Home</span>
-        </RouterLink>
-      </li>
-      <li class="sidenav-link">
-        <RouterLink active-class="active" to="/app">
-          <VueFeather type="bar-chart-2"></VueFeather><span>App</span>
-        </RouterLink>
-      </li>
-    </template>
+  <LayoutApp>
     <div class="app-content ht-container ht-card">
       <div class="ht-container">
         <h2>CRISPR VUS Portal</h2>
@@ -39,69 +24,48 @@
         <router-view></router-view>
       </div>
     </div>
-  </ht-layout-app>
+  </LayoutApp>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import service from '@/services';
 
-export default {
-  name: 'ViewApp',
-  setup() {
-    const gene = ref('');
-    const router = useRouter();
-    const route = useRoute();
-    const geneList = ref([]);
+import LayoutApp from '@/layouts/LayoutApp.vue';
 
-    const sidenavObject = {
-      title: 'CRISPR VUS',
-      links: [
-        { id: 1, url: '/', label: 'Home', type: 'home' },
-        { id: 2, url: '/app', label: 'App', type: 'bar-chart-2' },
-      ],
-    };
+const gene = ref('');
+const router = useRouter();
+const route = useRoute();
+const geneList = ref([]);
 
-    function onSubmit() {
-      router.push({
-        name: 'gene-variants',
-        params: { geneId: gene.value },
-      });
-      gene.value = '';
-    }
-    const showBackButton = computed(() => {
-      return route.fullPath !== '/app';
-    });
+function onSubmit() {
+  router.push({
+    name: 'gene-variants',
+    params: { geneId: gene.value },
+  });
+  gene.value = '';
+}
+const showBackButton = computed(() => {
+  return route.fullPath !== '/app';
+});
 
-    const navigateBack = () => {
-      if (route.name === 'gene-variants') router.push({ name: 'top-variants' });
-      if (route.name.startsWith('cell-lines'))
-        router.push({ name: 'gene-variants' });
-    };
-
-    onMounted(async () => {
-      const { data } = await service.getGeneList();
-
-      if (!data) {
-        throw new Error(`Unable to retrieve data`);
-      }
-
-      geneList.value = data.map(({ geneId }) => geneId);
-    });
-
-    return {
-      gene,
-      geneList,
-      onSubmit,
-      router,
-      showBackButton,
-      navigateBack,
-      sidenavObject,
-    };
-  },
+const navigateBack = () => {
+  if (route.name === 'gene-variants') router.push({ name: 'top-variants' });
+  if (route.name.startsWith('cell-lines'))
+    router.push({ name: 'gene-variants' });
 };
+
+onMounted(async () => {
+  const { data } = await service.getGeneList();
+
+  if (!data) {
+    throw new Error(`Unable to retrieve data`);
+  }
+
+  geneList.value = data.map(({ geneId }) => geneId);
+});
 </script>
 
 <style lang="postcss" scoped>
