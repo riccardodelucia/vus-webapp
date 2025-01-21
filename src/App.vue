@@ -16,18 +16,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { notifications, removeNotification } from './notifications';
 
-export default {
-  data() {
-    return { notifications };
-  },
-  methods: {
-    onCloseNotification(notification) {
-      removeNotification(notification);
-    },
-  },
+const onCloseNotification = (notification) => {
+  removeNotification(notification);
 };
 </script>
 

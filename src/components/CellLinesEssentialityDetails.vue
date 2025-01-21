@@ -29,10 +29,19 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useRankRatio } from '../composables';
 
-export default {
+const props = defineProps({
+  details: {
+    type: Object,
+    required: true,
+  },
+});
+
+const rankRatio = useRankRatio(props.details);
+
+/* export default {
   name: 'CellLinesEssentialityDetails',
   props: {
     details: {
@@ -44,5 +53,5 @@ export default {
     const rankRatio = useRankRatio(props.details);
     return { rankRatio };
   },
-};
+}; */
 </script>

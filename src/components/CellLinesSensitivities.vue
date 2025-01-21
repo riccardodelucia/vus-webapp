@@ -29,7 +29,7 @@
   </CellLinesChart>
 </template>
 
-<script>
+<script setup>
 import CellLinesChart from '@/components/CellLinesChart.vue';
 import { ref, watchEffect } from 'vue';
 
@@ -37,7 +37,41 @@ import { extent } from 'd3';
 
 import { useTooltip } from '@nf-data-iu3/ht-vue';
 
-export default {
+const props = defineProps({
+  sizes: { type: Object, required: true },
+  sensitivities: { type: Array, required: true },
+  drugConcMin: { type: Number, required: true },
+  drugConcMax: { type: Number, required: true },
+});
+
+const xDomain = ref(null);
+const yDomain = ref(null);
+const concMin = ref(null);
+const concMax = ref(null);
+
+watchEffect(async () => {
+  xDomain.value = props.sensitivities.map(({ cellLineName }) => cellLineName);
+
+  concMin.value = Math.log(props.drugConcMin);
+  concMax.value = Math.log(props.drugConcMax);
+  yDomain.value = extent([
+    concMin.value,
+    concMax.value,
+    ...props.sensitivities.map(({ ic50 }) => ic50),
+  ]);
+});
+
+const { showTooltip, hideTooltip } = useTooltip();
+
+const onMouseOver = function (event, { mutation }) {
+  if (mutation) showTooltip(event, mutation);
+};
+
+const onMouseLeave = function ({ mutation }) {
+  if (mutation) hideTooltip();
+};
+
+/* export default {
   name: 'CellLinesSensitivities',
   components: { CellLinesChart },
   props: {
@@ -85,5 +119,5 @@ export default {
       concMax,
     };
   },
-};
+}; */
 </script>

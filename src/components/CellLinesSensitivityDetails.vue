@@ -41,41 +41,36 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from 'vue';
 
-export default {
-  name: 'CellLinesSensitivityDetails',
-  props: {
-    details: {
-      type: Object,
-      required: true,
-    },
-    drugs: {
-      type: Array,
-      required: true,
-    },
+const props = defineProps({
+  details: {
+    type: Object,
+    required: true,
   },
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const drug = ref(props.drugs[0]);
-    emit('update:model-value', drug.value); // this component is delegated to setup for the first time the selected drug for its parent
-    const onUpdate = (value) => {
-      drug.value = value;
-      emit('update:model-value', value);
-    };
-
-    const rankRatio = computed(() => {
-      const ratio = Number(props.details.rankRatio.toFixed(2));
-      if (ratio === 0) return 'undefined';
-      return ratio;
-    });
-
-    const concMin = computed(() => props.details.concMin);
-
-    const concMax = computed(() => props.details.concMax);
-
-    return { drug, onUpdate, rankRatio, concMax, concMin };
+  drugs: {
+    type: Array,
+    required: true,
   },
+});
+
+const emit = defineEmits(['update:model-value']);
+
+const drug = ref(props.drugs[0]);
+emit('update:model-value', drug.value); // this component is delegated to setup for the first time the selected drug for its parent
+const onUpdate = (value) => {
+  drug.value = value;
+  emit('update:model-value', value);
 };
+
+const rankRatio = computed(() => {
+  const ratio = Number(props.details.rankRatio.toFixed(2));
+  if (ratio === 0) return 'undefined';
+  return ratio;
+});
+
+const concMin = computed(() => props.details.concMin);
+
+const concMax = computed(() => props.details.concMax);
 </script>
