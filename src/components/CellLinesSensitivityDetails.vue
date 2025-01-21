@@ -10,6 +10,7 @@
           SAM: {{ Boolean(drug?.sam) }})
         </li>
       </ul>
+      {{ drug }}
       <ht-select
         :model-value="drug"
         class="ht-formgroup"

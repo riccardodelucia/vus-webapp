@@ -8,11 +8,9 @@ import VueFeather from 'vue-feather';
 
 import App from './App.vue';
 
-import GStore from '@/store';
-
 import '@/assets/global.css';
 
-const app = createApp(App).use(HTVue).use(router).provide('GStore', GStore);
+const app = createApp(App).use(HTVue).use(router);
 app.component(VueFeather.name, VueFeather);
 
 app.mount('#app');

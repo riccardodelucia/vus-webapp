@@ -8,7 +8,7 @@
             v-model="gene"
             label="Search by gene"
             :hints="geneList"
-            @submit="onSubmit"
+            @search="onSearch"
           ></ht-search-bar>
           <router-link
             class="ht-button"
@@ -40,7 +40,7 @@ const router = useRouter();
 const route = useRoute();
 const geneList = ref([]);
 
-function onSubmit() {
+function onSearch() {
   router.push({
     name: 'gene-variants',
     params: { geneId: gene.value },
