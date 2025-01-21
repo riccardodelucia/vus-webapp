@@ -40,18 +40,4 @@ const props = defineProps({
 });
 
 const rankRatio = useRankRatio(props.details);
-
-/* export default {
-  name: 'CellLinesEssentialityDetails',
-  props: {
-    details: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
-    const rankRatio = useRankRatio(props.details);
-    return { rankRatio };
-  },
-}; */
 </script>
