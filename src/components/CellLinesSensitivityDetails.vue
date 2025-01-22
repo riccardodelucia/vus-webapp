@@ -12,6 +12,7 @@
       <ht-select
         v-model="selectedDrug"
         class="ht-formgroup"
+        label="Select drug: "
         :options="drugs"
         :option-labels="drugLabels"
         :show-disabled-option="false"
