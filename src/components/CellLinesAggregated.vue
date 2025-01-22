@@ -51,7 +51,7 @@ import CellLinesSensitivities from '@/components/CellLinesSensitivities.vue';
 import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import CellLinesSensitivityDetails from '@/components/CellLinesSensitivityDetails.vue';
 
-import { getInnerChartSizes } from '../utils';
+import { getInnerChartSizes } from '@nf-data-iu3/ht-vue';
 
 import { ref, reactive, watchEffect } from 'vue';
 

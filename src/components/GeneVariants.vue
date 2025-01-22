@@ -33,7 +33,7 @@ import GeneVariantsDetails from '@/components/GeneVariantsDetails.vue';
 
 import { ref, watchEffect } from 'vue';
 
-import { processErrorMessage } from '@/utils/errors.js';
+import { parseErrorMesssage } from '@nf-data-iu3/ht-vue';
 
 import {
   scaleOrdinal,
@@ -94,7 +94,7 @@ watchEffect(async () => {
     aggregatedData.value = aggregatedVariantsData;
     annotations.value = annotationsData;
   } catch (error) {
-    processErrorMessage(error);
+    parseErrorMesssage(error);
   }
 });
 

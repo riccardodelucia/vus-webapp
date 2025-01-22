@@ -61,17 +61,7 @@ import { onBeforeMount, ref } from 'vue';
 
 import service from '@/services';
 
-import { sendErrorNotification } from '@nf-data-iu3/ht-vue';
-
-import { AxiosError } from 'axios';
-
-const processErrorMessage = (error) => {
-  let message = 'Unknown Error';
-  if (error instanceof AxiosError) {
-    message = error.message;
-  }
-  return message;
-};
+import { sendErrorNotification, parseErrorMesssage } from '@nf-data-iu3/ht-vue';
 
 const router = useRouter();
 
@@ -121,7 +111,7 @@ onBeforeMount(async () => {
       .range([innerRadius, 70])
       .domain([0, yDomainInner[1]]);
   } catch (error) {
-    const message = processErrorMessage(error);
+    const message = parseErrorMesssage(error);
     sendErrorNotification({
       title: 'Cannot retrieve data',
       message,

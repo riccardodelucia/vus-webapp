@@ -27,11 +27,9 @@ import { onBeforeMount, ref } from 'vue';
 
 import service from '@/services';
 
-import { processErrorMessage } from '@/utils/errors.js';
+import { parseErrorMesssage, getInnerChartSizes } from '@nf-data-iu3/ht-vue';
 
 import { extent } from 'd3';
-
-import { getInnerChartSizes } from '../utils';
 
 const props = defineProps({
   geneId: { type: String, required: true },
@@ -88,7 +86,7 @@ onBeforeMount(async () => {
       dam: props.dam,
     };
   } catch (error) {
-    processErrorMessage(error);
+    parseErrorMesssage(error);
   }
 });
 </script>
