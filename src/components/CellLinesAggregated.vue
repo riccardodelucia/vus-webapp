@@ -2,22 +2,23 @@
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
   <div class="grid">
     <CellLinesEssentialityDetails
-      v-if="essentialityDetails && currentTab.panel === 'essentiality'"
+      v-if="essentialityDetails && currentTab === 'essentiality'"
       class="details"
       :details="essentialityDetails"
     ></CellLinesEssentialityDetails>
     <CellLinesSensitivityDetails
-      v-if="currentTab.panel === 'sensitivity'"
+      v-if="currentTab === 'sensitivity'"
       class="details"
       :details="sensitivityDetails"
       :drugs="drugs"
-      @update:model-value="onUpdate"
+      v-model="selectedDrug"
     ></CellLinesSensitivityDetails>
     <ht-tab
       v-if="cellLinesData"
       class="chart"
-      :tab-list="tabList"
-      @tab-selected="onTabSelected"
+      :tabs="tabs"
+      :tabLabels="tabLabels"
+      v-model="currentTab"
     >
       <template #essentiality>
         <CellLinesEssentialities
@@ -52,13 +53,9 @@ import CellLinesSensitivityDetails from '@/components/CellLinesSensitivityDetail
 
 import { getInnerChartSizes } from '../utils';
 
-import { ref, reactive, onBeforeMount } from 'vue';
+import { ref, reactive, watchEffect } from 'vue';
 
 import service from '@/services';
-
-import { processErrorMessage } from '@/utils/errors.js';
-
-import { sendErrorNotification } from '@/notifications.js';
 
 const props = defineProps({
   geneId: { type: String, required: true },
@@ -83,8 +80,10 @@ const sensitivityDetails = reactive({
   tissueName: props.tissueName,
 });
 
-const tabList = ref([{ label: 'Gene Essentiality', panel: 'essentiality' }]);
-const currentTab = ref(tabList.value[0]);
+const tabs = ref(['essentiality']);
+const tabLabels = ref(['Gene Essentiality']);
+
+const currentTab = ref(tabs.value[0]);
 
 const state = ref('loading');
 
@@ -97,7 +96,7 @@ const cssHeight = `${height}px`;
 const margins = {
   top: 30,
   bottom: 100,
-  left: 60,
+  left: 80,
   right: 20,
 };
 
@@ -105,44 +104,34 @@ const { innerWidth, innerHeight } = getInnerChartSizes(width, height, margins);
 
 const sizes = { width, height, margins, innerWidth, innerHeight };
 
-onBeforeMount(async () => {
-  try {
-    const { data } = await service.getCellLinesDataAggregated(props);
+watchEffect(async () => {
+  const { data } = await service.getCellLinesDataAggregated(props);
 
-    if (!data) {
-      throw new Error(`Unable to retrieve data`);
-    }
+  if (!data) {
+    throw new Error(`Unable to retrieve data`);
+  }
 
-    cellLinesData.value = data.cellLinesData;
-    essentialityDetails.rankRatio = data.rankRatio;
+  cellLinesData.value = data.cellLinesData;
+  essentialityDetails.rankRatio = data.rankRatio;
 
-    const { data: drugsData } = await service.getDrugsTestedOnGene(props);
-    if (drugsData.length > 0) {
-      drugs.value = drugsData.map((item) => ({
-        ...item,
-        label: `${item.drugName}, GDSC v${item.gdscVersion}`,
-      }));
+  const { data: drugsData } = await service.getDrugsTestedOnGene(props);
+  if (drugsData.length > 0) {
+    drugs.value = drugsData.map((item) => ({
+      ...item,
+      label: `${item.drugName}, GDSC v${item.gdscVersion}`,
+    }));
 
-      tabList.value.push({
-        label: 'Drug Sensitivity',
-        panel: 'sensitivity',
-      });
-    }
-  } catch (error) {
-    processErrorMessage(error);
+    selectedDrug.value = drugs.value[0];
+
+    // create drug tab for the current gene and tissue
+    tabs.value.push('sensitivity');
+    tabLabels.value.push('Drug Sensitivity');
   }
 });
 
-const onTabSelected = function (idx) {
-  if (tabList.value[idx].panel === 'sensitivity') {
-    currentTab.value = tabList.value[1];
-  } else currentTab.value = tabList.value[0];
-};
-
-const onUpdate = async (value) => {
-  selectedDrug.value = value;
-  state.value = 'loading';
-  try {
+watchEffect(async () => {
+  if (selectedDrug.value) {
+    state.value = 'loading';
     const { data } = await service.getDrugsSensitivities({
       ...selectedDrug.value,
       drugId: props.geneId,
@@ -158,11 +147,8 @@ const onUpdate = async (value) => {
     sensitivityDetails.concMax = drugConcMax.value;
 
     state.value = 'loaded';
-  } catch (err) {
-    state.value = 'error';
-    sendErrorNotification(err);
   }
-};
+});
 </script>
 
 <style scoped>

@@ -14,7 +14,7 @@
         :y="0"
         style="font-weight: bold"
         text-anchor="middle"
-        :transform="`translate(20,${sizes.innerHeight / 2}) rotate(-90)`"
+        :transform="`translate(-50,${sizes.innerHeight / 2}) rotate(-90)`"
       >
         {{ yAxisLabel }}
       </text>

@@ -5,17 +5,16 @@
         <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
         <li><b>Rank Ratio:</b> {{ rankRatio }}</li>
         <li><b>All DAMs</b></li>
-        <li>
-          <b>Drug: </b> {{ drug?.drugName }}, GDSC {{ drug?.gdscVersion }} (is
-          SAM: {{ Boolean(drug?.sam) }})
-        </li>
+        <li><b>Drug: </b>{{ selectedDrug?.drugName }}</li>
+        <li><b>GDSC version: </b>{{ selectedDrug?.gdscVersion }}</li>
+        <li><b>is SAM: </b>{{ Boolean(selectedDrug?.sam) }}</li>
       </ul>
-      {{ drug }}
       <ht-select
-        :model-value="drug"
+        v-model="selectedDrug"
         class="ht-formgroup"
         :options="drugs"
-        @update:model-value="onUpdate"
+        :option-labels="drugLabels"
+        :show-disabled-option="false"
       ></ht-select>
     </div>
     <div>
@@ -43,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   details: {
@@ -56,14 +55,8 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:model-value']);
-
-const drug = ref(props.drugs[0]);
-emit('update:model-value', drug.value); // this component is delegated to setup for the first time the selected drug for its parent
-const onUpdate = (value) => {
-  drug.value = value;
-  emit('update:model-value', value);
-};
+const selectedDrug = defineModel({ type: Object });
+const drugLabels = computed(() => props.drugs.map(({ drugName }) => drugName));
 
 const rankRatio = computed(() => {
   const ratio = Number(props.details.rankRatio.toFixed(2));
