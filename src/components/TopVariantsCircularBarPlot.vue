@@ -61,7 +61,7 @@ import { onBeforeMount, ref } from 'vue';
 
 import service from '@/services';
 
-import { sendErrorNotification } from '@/notifications';
+import { sendErrorNotification } from '@nf-data-iu3/ht-vue';
 
 import { AxiosError } from 'axios';
 

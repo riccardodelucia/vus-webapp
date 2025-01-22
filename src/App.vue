@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { notifications, removeNotification } from './notifications';
+import { notifications, removeNotification } from '@nf-data-iu3/ht-vue';
 
 const onCloseNotification = (notification) => {
   removeNotification(notification);
