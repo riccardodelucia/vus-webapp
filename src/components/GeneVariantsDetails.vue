@@ -101,28 +101,23 @@
         </ul>
       </div>
     </div>
-    <ChartLegendColor
+    <ht-chart-legend-color
       :margins="legendSizes.margins"
       :width="legendSizes.width"
       :height="legendSizes.height"
       :color="heatmapColor"
       title="#patients"
-    ></ChartLegendColor>
+    ></ht-chart-legend-color>
   </div>
 </template>
 
-<script>
-import ChartLegendColor from './ChartLegendColor.vue';
-export default {
-  name: 'GeneVariantsDetails',
-  components: { ChartLegendColor },
-  props: {
-    legendSizes: { type: Object, required: true },
-    polyphenColor: { type: Function, required: true },
-    siftColor: { type: Function, required: true },
-    heatmapColor: { type: Function, required: true },
-  },
-};
+<script setup>
+defineProps({
+  legendSizes: { type: Object, required: true },
+  polyphenColor: { type: Function, required: true },
+  siftColor: { type: Function, required: true },
+  heatmapColor: { type: Function, required: true },
+});
 </script>
 
 <style lang="postcss" scoped>

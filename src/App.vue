@@ -16,19 +16,14 @@
   </div>
 </template>
 
-<script>
-import { notifications, removeNotification } from './notifications';
+<script setup>
+import { useNotifications, removeNotification } from '@nf-data-iu3/ht-vue';
 
-export default {
-  data() {
-    return { notifications };
-  },
-  methods: {
-    onCloseNotification(notification) {
-      removeNotification(notification);
-    },
-  },
+const onCloseNotification = (notification) => {
+  removeNotification(notification);
 };
+
+const notifications = useNotifications();
 </script>
 
 <style lang="postcss" scoped>

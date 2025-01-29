@@ -2,13 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import ViewHome from '@/views/ViewHome.vue';
 import ViewApp from '@/views/ViewApp.vue';
-import View404NotFound from '@/views/View404NotFound.vue';
 
 import TopVariants from '@/components/TopVariants.vue';
 
 import GeneVariants from '@/components/GeneVariants.vue';
 import CellLinesByVariant from '@/components/CellLinesByVariant.vue';
 import CellLinesAggregated from '@/components/CellLinesAggregated.vue';
+
+import { HTView404NotFound } from '@nf-data-iu3/ht-vue';
 
 const routes = [
   {
@@ -45,7 +46,8 @@ const routes = [
   {
     path: '/:catchAll(.*)',
     name: '404',
-    component: View404NotFound,
+    component: HTView404NotFound,
+    props: { name: 'home' },
   },
 ];
 
