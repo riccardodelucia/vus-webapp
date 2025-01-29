@@ -125,173 +125,152 @@
   </svg>
 </template>
 
-<script>
+<script setup>
 import { axisTop, axisRight, select, scaleBand } from 'd3';
 import { ref, watchEffect } from 'vue';
 
 import { useRouter } from 'vue-router';
 
-export default {
-  name: 'GeneVariantsHeatmap',
-  props: {
-    variantId: { type: String, default: '' },
-    geneId: { type: String, required: true },
-    color: {
-      type: Function,
-      required: true,
-    },
-    polyphenColor: {
-      type: Function,
-      required: true,
-    },
-    siftColor: {
-      type: Function,
-      required: true,
-    },
-    data: { type: Array, required: true },
-    aggregatedData: { type: Array, required: true },
-    annotations: { type: Array, required: true },
+const props = defineProps({
+  variantId: { type: String, default: '' },
+  geneId: { type: String, required: true },
+  color: {
+    type: Function,
+    required: true,
   },
-  setup(props) {
-    const padding = 0.05;
+  polyphenColor: {
+    type: Function,
+    required: true,
+  },
+  siftColor: {
+    type: Function,
+    required: true,
+  },
+  data: { type: Array, required: true },
+  aggregatedData: { type: Array, required: true },
+  annotations: { type: Array, required: true },
+});
 
-    const margins = { left: 0, right: 180, top: 140, bottom: 0 };
+const padding = 0.05;
 
-    const horizontalGap = 10;
-    const verticalGap = 10;
-    const heatmapTileHeight = 30;
-    const heatmapWidth = 900;
+const margins = { left: 0, right: 180, top: 140, bottom: 0 };
 
-    const variants = ref(null);
-    const tissues = ref(null);
-    const heatmapHeight = ref(0);
-    const height = ref(0);
-    const width = ref(0);
+const horizontalGap = 10;
+const verticalGap = 10;
+const heatmapTileHeight = 30;
+const heatmapWidth = 900;
 
-    const annotationWidth = ref(0);
+const variants = ref(null);
+const tissues = ref(null);
+const heatmapHeight = ref(0);
+const height = ref(0);
+const width = ref(0);
 
-    const axisTissues = ref(null);
-    const axisVariants = ref(null);
-    const yScale = ref(null);
-    const xScaleTissues = ref(null);
+const annotationWidth = ref(0);
 
-    const router = useRouter();
+const axisTissues = ref(null);
+const axisVariants = ref(null);
+const yScale = ref(null);
+const xScaleTissues = ref(null);
 
-    watchEffect(async () => {
-      variants.value = Array.from(
-        new Set(props.data.map(({ variantId }) => variantId))
-      );
-      tissues.value = Array.from(
-        new Set(props.data.map(({ tissueName }) => tissueName))
-      );
+const router = useRouter();
 
-      heatmapHeight.value = heatmapTileHeight * variants.value.length;
-      height.value =
-        margins.top +
-        heatmapHeight.value +
-        margins.bottom +
-        verticalGap +
-        heatmapTileHeight;
+watchEffect(async () => {
+  variants.value = Array.from(
+    new Set(props.data.map(({ variantId }) => variantId))
+  );
+  tissues.value = Array.from(
+    new Set(props.data.map(({ tissueName }) => tissueName))
+  );
 
-      // Make Scales
-      yScale.value = scaleBand()
-        .range([0, heatmapHeight.value])
-        .domain(variants.value)
-        .padding(padding);
+  heatmapHeight.value = heatmapTileHeight * variants.value.length;
+  height.value =
+    margins.top +
+    heatmapHeight.value +
+    margins.bottom +
+    verticalGap +
+    heatmapTileHeight;
 
-      xScaleTissues.value = scaleBand()
-        .range([0, heatmapWidth])
-        .domain(tissues.value)
-        .padding(padding);
+  // Make Scales
+  yScale.value = scaleBand()
+    .range([0, heatmapHeight.value])
+    .domain(variants.value)
+    .padding(padding);
 
-      // use same tile width on annotations
-      annotationWidth.value = xScaleTissues.value.bandwidth();
+  xScaleTissues.value = scaleBand()
+    .range([0, heatmapWidth])
+    .domain(tissues.value)
+    .padding(padding);
 
-      // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
-      width.value =
-        margins.left +
-        2 * annotationWidth.value +
-        horizontalGap +
-        heatmapWidth +
-        margins.right;
+  // use same tile width on annotations
+  annotationWidth.value = xScaleTissues.value.bandwidth();
 
-      watchEffect(
-        () => {
-          select(axisTissues.value)
-            .call(axisTop(xScaleTissues.value).tickSize(0))
-            .selectAll('.tick text')
-            .attr('transform', 'translate(2,0) rotate(-30) ')
-            .style('text-anchor', 'start')
-            .style('font-size', '15px');
-          select(axisTissues.value).select('.domain').remove();
-        },
-        {
-          flush: 'post',
-        }
-      );
+  // knowing annotationsWidth, which depends on xScaleTissues, which depends on heatmapWidth, we can finally compute the final svg width
+  width.value =
+    margins.left +
+    2 * annotationWidth.value +
+    horizontalGap +
+    heatmapWidth +
+    margins.right;
 
-      watchEffect(
-        () => {
-          select(axisVariants.value)
-            .call(axisRight(yScale.value).tickSize(0))
-            .selectAll('.tick text')
-            .style('font-size', '15px');
-          select(axisVariants.value)
-            .selectAll('.tick text')
-            .each(function (d) {
-              if (d === props.variantId) {
-                select(this).style('color', 'red');
-              }
-            });
-          select(axisVariants.value).select('.domain').remove();
-        },
-        {
-          flush: 'post',
-        }
-      );
+  watchEffect(
+    () => {
+      select(axisTissues.value)
+        .call(axisTop(xScaleTissues.value).tickSize(0))
+        .selectAll('.tick text')
+        .attr('transform', 'translate(2,0) rotate(-30) ')
+        .style('text-anchor', 'start')
+        .style('font-size', '15px');
+      select(axisTissues.value).select('.domain').remove();
+    },
+    {
+      flush: 'post',
+    }
+  );
+
+  watchEffect(
+    () => {
+      select(axisVariants.value)
+        .call(axisRight(yScale.value).tickSize(0))
+        .selectAll('.tick text')
+        .style('font-size', '15px');
+      select(axisVariants.value)
+        .selectAll('.tick text')
+        .each(function (d) {
+          if (d === props.variantId) {
+            select(this).style('color', 'red');
+          }
+        });
+      select(axisVariants.value).select('.domain').remove();
+    },
+    {
+      flush: 'post',
+    }
+  );
+});
+
+const onClick = function ({ tissueName, variantId, dam }) {
+  dam &&
+    router.push({
+      name: 'cell-lines-by-variant',
+      params: {
+        tissueName,
+        variantId,
+        geneId: props.geneId,
+        dam: Boolean(dam),
+      },
     });
+};
 
-    const onClick = function ({ tissueName, variantId, dam }) {
-      dam &&
-        router.push({
-          name: 'cell-lines-by-variant',
-          params: {
-            tissueName,
-            variantId,
-            geneId: props.geneId,
-            dam: Boolean(dam),
-          },
-        });
-    };
-
-    const onClickAggregated = function ({ tissueName, dam }) {
-      dam &&
-        router.push({
-          name: 'cell-lines-aggregated',
-          params: {
-            tissueName,
-            geneId: props.geneId,
-          },
-        });
-    };
-
-    return {
-      width,
-      annotationWidth,
-      horizontalGap,
-      verticalGap,
-      heatmapWidth,
-      heatmapHeight,
-      height,
-      margins,
-      axisVariants,
-      axisTissues,
-      xScaleTissues,
-      yScale,
-      onClick,
-      onClickAggregated,
-    };
-  },
+const onClickAggregated = function ({ tissueName, dam }) {
+  dam &&
+    router.push({
+      name: 'cell-lines-aggregated',
+      params: {
+        tissueName,
+        geneId: props.geneId,
+      },
+    });
 };
 </script>
 

@@ -32,42 +32,35 @@
   </CellLinesChart>
 </template>
 
-<script>
+<script setup>
 import CellLinesChart from '@/components/CellLinesChart.vue';
 
 import { useTooltip } from '@nf-data-iu3/ht-vue';
 
 import { extent } from 'd3';
 
-export default {
-  name: 'CellLinesEssentialities',
-  components: { CellLinesChart },
-  props: {
-    cellLinesData: { type: Array, required: true },
-    sizes: { type: Object, required: true },
-  },
-  setup(props) {
-    const { showTooltip, hideTooltip } = useTooltip();
+const props = defineProps({
+  cellLinesData: { type: Array, required: true },
+  sizes: { type: Object, required: true },
+});
 
-    const onMouseOver = function (event, { mutation }) {
-      if (mutation) showTooltip(event, mutation);
-    };
+const { showTooltip, hideTooltip } = useTooltip();
 
-    const onMouseLeave = function ({ mutation }) {
-      if (mutation) hideTooltip();
-    };
-
-    const xDomain = props.cellLinesData.map(({ cellLineName }) => cellLineName);
-
-    const yExtent = extent(
-      props.cellLinesData.map(({ essentiality }) => essentiality)
-    );
-
-    const yMin = Math.min(-0.55, yExtent[0]);
-
-    const yDomain = [yMin, yExtent[1]];
-
-    return { onMouseOver, onMouseLeave, xDomain, yDomain };
-  },
+const onMouseOver = function (event, { mutation }) {
+  if (mutation) showTooltip(event, mutation);
 };
+
+const onMouseLeave = function ({ mutation }) {
+  if (mutation) hideTooltip();
+};
+
+const xDomain = props.cellLinesData.map(({ cellLineName }) => cellLineName);
+
+const yExtent = extent(
+  props.cellLinesData.map(({ essentiality }) => essentiality)
+);
+
+const yMin = Math.min(-0.55, yExtent[0]);
+
+const yDomain = [yMin, yExtent[1]];
 </script>

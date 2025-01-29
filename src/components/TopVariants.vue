@@ -6,34 +6,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import TopVariantsDetails from '@/components/TopVariantsDetails.vue';
 
 import TopVariantsCircularBarPlot from '@/components/TopVariantsCircularBarPlot.vue';
-
-import { useRouter } from 'vue-router';
-
-import { ref } from 'vue';
-
-export default {
-  name: 'TopVariants',
-  components: { TopVariantsDetails, TopVariantsCircularBarPlot },
-  setup() {
-    const gene = ref('');
-    const router = useRouter();
-    function onSubmit() {
-      router.push({
-        name: 'variants',
-        params: { geneId: gene.value },
-      });
-    }
-
-    return {
-      gene,
-      onSubmit,
-    };
-  },
-};
 </script>
 
 <style lang="postcss" scoped>

@@ -5,16 +5,17 @@
         <li><b>Cancer Type:</b> {{ details.tissueName }}</li>
         <li><b>Rank Ratio:</b> {{ rankRatio }}</li>
         <li><b>All DAMs</b></li>
-        <li>
-          <b>Drug: </b> {{ drug?.drugName }}, GDSC {{ drug?.gdscVersion }} (is
-          SAM: {{ Boolean(drug?.sam) }})
-        </li>
+        <li><b>Drug: </b>{{ selectedDrug?.drugName }}</li>
+        <li><b>GDSC version: </b>{{ selectedDrug?.gdscVersion }}</li>
+        <li><b>is SAM: </b>{{ Boolean(selectedDrug?.sam) }}</li>
       </ul>
       <ht-select
-        :model-value="drug"
+        v-model="selectedDrug"
         class="ht-formgroup"
+        label="Select drug: "
         :options="drugs"
-        @update:model-value="onUpdate"
+        :option-labels="drugLabels"
+        :show-disabled-option="false"
       ></ht-select>
     </div>
     <div>
@@ -41,41 +42,30 @@
   </div>
 </template>
 
-<script>
-import { ref, computed } from 'vue';
+<script setup>
+import { computed } from 'vue';
 
-export default {
-  name: 'CellLinesSensitivityDetails',
-  props: {
-    details: {
-      type: Object,
-      required: true,
-    },
-    drugs: {
-      type: Array,
-      required: true,
-    },
+const props = defineProps({
+  details: {
+    type: Object,
+    required: true,
   },
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const drug = ref(props.drugs[0]);
-    emit('update:model-value', drug.value); // this component is delegated to setup for the first time the selected drug for its parent
-    const onUpdate = (value) => {
-      drug.value = value;
-      emit('update:model-value', value);
-    };
-
-    const rankRatio = computed(() => {
-      const ratio = Number(props.details.rankRatio.toFixed(2));
-      if (ratio === 0) return 'undefined';
-      return ratio;
-    });
-
-    const concMin = computed(() => props.details.concMin);
-
-    const concMax = computed(() => props.details.concMax);
-
-    return { drug, onUpdate, rankRatio, concMax, concMin };
+  drugs: {
+    type: Array,
+    required: true,
   },
-};
+});
+
+const selectedDrug = defineModel({ type: Object });
+const drugLabels = computed(() => props.drugs.map(({ drugName }) => drugName));
+
+const rankRatio = computed(() => {
+  const ratio = Number(props.details.rankRatio.toFixed(2));
+  if (ratio === 0) return 'undefined';
+  return ratio;
+});
+
+const concMin = computed(() => props.details.concMin);
+
+const concMax = computed(() => props.details.concMax);
 </script>

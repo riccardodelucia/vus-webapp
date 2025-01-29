@@ -2,22 +2,23 @@
   <h2>Gene: {{ geneId.toUpperCase() }}</h2>
   <div class="grid">
     <CellLinesEssentialityDetails
-      v-if="essentialityDetails && currentTab.panel === 'essentiality'"
+      v-if="essentialityDetails && currentTab === 'essentiality'"
       class="details"
       :details="essentialityDetails"
     ></CellLinesEssentialityDetails>
     <CellLinesSensitivityDetails
-      v-if="currentTab.panel === 'sensitivity'"
+      v-if="currentTab === 'sensitivity'"
       class="details"
       :details="sensitivityDetails"
       :drugs="drugs"
-      @update:model-value="onUpdate"
+      v-model="selectedDrug"
     ></CellLinesSensitivityDetails>
     <ht-tab
       v-if="cellLinesData"
       class="chart"
-      :tab-list="tabList"
-      @tab-selected="onTabSelected"
+      :tabs="tabs"
+      :tabLabels="tabLabels"
+      v-model="currentTab"
     >
       <template #essentiality>
         <CellLinesEssentialities
@@ -44,160 +45,110 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import CellLinesEssentialities from '@/components/CellLinesEssentialities.vue';
 import CellLinesSensitivities from '@/components/CellLinesSensitivities.vue';
 import CellLinesEssentialityDetails from '@/components/CellLinesEssentialityDetails.vue';
 import CellLinesSensitivityDetails from '@/components/CellLinesSensitivityDetails.vue';
 
-import { getInnerChartSizes } from '../utils';
+import { getInnerChartSizes } from '@nf-data-iu3/ht-vue';
 
-import { ref, reactive, onBeforeMount } from 'vue';
+import { ref, reactive, watchEffect } from 'vue';
 
 import service from '@/services';
 
-import { processErrorMessage } from '@/utils/errors.js';
+const props = defineProps({
+  geneId: { type: String, required: true },
+  tissueName: { type: String, required: true },
+});
 
-import { sendErrorNotification } from '@/notifications.js';
+const cellLinesData = ref(null);
+const drugs = ref(null);
+const selectedDrug = ref(null);
+const sensitivities = ref(null);
+const drugConcMin = ref(0);
+const drugConcMax = ref(0);
 
-export default {
-  name: 'CellLinesAggregated',
-  components: {
-    CellLinesEssentialities,
-    CellLinesSensitivities,
-    CellLinesEssentialityDetails,
-    CellLinesSensitivityDetails,
-  },
-  props: {
-    geneId: { type: String, required: true },
-    tissueName: { type: String, required: true },
-  },
-  setup(props) {
-    const cellLinesData = ref(null);
-    const drugs = ref(null);
-    const selectedDrug = ref(null);
-    const sensitivities = ref(null);
-    const drugConcMin = ref(0);
-    const drugConcMax = ref(0);
+const essentialityDetails = reactive({
+  geneId: props.geneId,
+  rankRatio: 0,
+  tissueName: props.tissueName,
+});
 
-    const essentialityDetails = reactive({
-      geneId: props.geneId,
-      rankRatio: 0,
-      tissueName: props.tissueName,
-    });
+const sensitivityDetails = reactive({
+  rankRatio: 0,
+  tissueName: props.tissueName,
+});
 
-    const sensitivityDetails = reactive({
-      rankRatio: 0,
-      tissueName: props.tissueName,
-    });
+const tabs = ref(['essentiality']);
+const tabLabels = ref(['Gene Essentiality']);
 
-    const tabList = ref([
-      { label: 'Gene Essentiality', panel: 'essentiality' },
-    ]);
-    const currentTab = ref(tabList.value[0]);
+const currentTab = ref(tabs.value[0]);
 
-    const state = ref('loading');
+const state = ref('loading');
 
-    const width = 1100;
-    const height = 700;
+const width = 1100;
+const height = 700;
 
-    const cssWidth = `${width}px`;
-    const cssHeight = `${height}px`;
+const cssWidth = `${width}px`;
+const cssHeight = `${height}px`;
 
-    const margins = {
-      top: 30,
-      bottom: 100,
-      left: 60,
-      right: 20,
-    };
-
-    const { innerWidth, innerHeight } = getInnerChartSizes(
-      width,
-      height,
-      margins
-    );
-
-    const sizes = { width, height, margins, innerWidth, innerHeight };
-
-    onBeforeMount(async () => {
-      try {
-        const { data } = await service.getCellLinesDataAggregated(props);
-
-        if (!data) {
-          throw new Error(`Unable to retrieve data`);
-        }
-
-        cellLinesData.value = data.cellLinesData;
-        essentialityDetails.rankRatio = data.rankRatio;
-
-        const { data: drugsData } = await service.getDrugsTestedOnGene(props);
-        if (drugsData.length > 0) {
-          drugs.value = drugsData.map((item) => ({
-            ...item,
-            label: `${item.drugName}, GDSC v${item.gdscVersion}`,
-          }));
-
-          tabList.value.push({
-            label: 'Drug Sensitivity',
-            panel: 'sensitivity',
-          });
-        }
-      } catch (error) {
-        processErrorMessage(error);
-      }
-    });
-
-    const onTabSelected = function (idx) {
-      if (tabList.value[idx].panel === 'sensitivity') {
-        currentTab.value = tabList.value[1];
-      } else currentTab.value = tabList.value[0];
-    };
-
-    const onUpdate = async (value) => {
-      selectedDrug.value = value;
-      state.value = 'loading';
-      try {
-        const { data } = await service.getDrugsSensitivities({
-          ...selectedDrug.value,
-          drugId: props.geneId,
-          tissueName: props.tissueName,
-        });
-
-        sensitivities.value = data.sensitivities;
-        drugConcMin.value = data.sensitivities[0].concMin;
-        drugConcMax.value = data.sensitivities[0].concMax;
-
-        sensitivityDetails.rankRatio = data.rankRatio;
-        sensitivityDetails.concMin = drugConcMin.value;
-        sensitivityDetails.concMax = drugConcMax.value;
-
-        state.value = 'loaded';
-      } catch (err) {
-        state.value = 'error';
-        sendErrorNotification(err);
-      }
-    };
-
-    return {
-      sizes,
-      tabList,
-      onTabSelected,
-      drugs,
-      selectedDrug,
-      essentialityDetails,
-      sensitivityDetails,
-      currentTab,
-      cellLinesData,
-      onUpdate,
-      cssWidth,
-      cssHeight,
-      state,
-      sensitivities,
-      drugConcMin,
-      drugConcMax,
-    };
-  },
+const margins = {
+  top: 30,
+  bottom: 100,
+  left: 80,
+  right: 20,
 };
+
+const { innerWidth, innerHeight } = getInnerChartSizes(width, height, margins);
+
+const sizes = { width, height, margins, innerWidth, innerHeight };
+
+watchEffect(async () => {
+  const { data } = await service.getCellLinesDataAggregated(props);
+
+  if (!data) {
+    throw new Error(`Unable to retrieve data`);
+  }
+
+  cellLinesData.value = data.cellLinesData;
+  essentialityDetails.rankRatio = data.rankRatio;
+
+  const { data: drugsData } = await service.getDrugsTestedOnGene(props);
+  if (drugsData.length > 0) {
+    drugs.value = drugsData.map((item) => ({
+      ...item,
+      label: `${item.drugName}, GDSC v${item.gdscVersion}`,
+    }));
+
+    selectedDrug.value = drugs.value[0];
+
+    // create drug tab for the current gene and tissue
+    tabs.value.push('sensitivity');
+    tabLabels.value.push('Drug Sensitivity');
+  }
+});
+
+watchEffect(async () => {
+  if (selectedDrug.value) {
+    state.value = 'loading';
+    const { data } = await service.getDrugsSensitivities({
+      ...selectedDrug.value,
+      drugId: props.geneId,
+      tissueName: props.tissueName,
+    });
+
+    sensitivities.value = data.sensitivities;
+    drugConcMin.value = data.sensitivities[0].concMin;
+    drugConcMax.value = data.sensitivities[0].concMax;
+
+    sensitivityDetails.rankRatio = data.rankRatio;
+    sensitivityDetails.concMin = drugConcMin.value;
+    sensitivityDetails.concMax = drugConcMax.value;
+
+    state.value = 'loaded';
+  }
+});
 </script>
 
 <style scoped>
