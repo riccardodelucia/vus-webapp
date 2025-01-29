@@ -1,4 +1,4 @@
-import { interceptorCamelize } from '../utils';
+import { interceptorCamelize } from '@nf-data-iu3/ht-vue';
 
 const urlBackend = import.meta.env.VITE_URL_BACKEND;
 

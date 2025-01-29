@@ -38,10 +38,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'TopVariantsDetails',
-};
-</script>
+<script setup></script>
 
 <style lang="postcss" scoped></style>

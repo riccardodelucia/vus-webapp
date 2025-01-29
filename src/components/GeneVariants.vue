@@ -27,13 +27,13 @@
   <p v-else>Error: please try again</p>
 </template>
 
-<script>
+<script setup>
 import GeneVariantsHeatmap from '@/components/GeneVariantsHeatmap.vue';
 import GeneVariantsDetails from '@/components/GeneVariantsDetails.vue';
 
 import { ref, watchEffect } from 'vue';
 
-import { processErrorMessage } from '@/utils/errors.js';
+import { parseErrorMesssage } from '@nf-data-iu3/ht-vue';
 
 import {
   scaleOrdinal,
@@ -45,100 +45,76 @@ import {
 
 import service from '@/services';
 
-export default {
-  name: 'GeneVariants',
-  components: { GeneVariantsDetails, GeneVariantsHeatmap },
-  props: {
-    geneId: { type: String, required: true },
-    variantId: { type: String, default: '' },
-  },
-  setup(props) {
-    const data = ref(null);
-    const aggregatedData = ref(null);
-    const annotations = ref(null);
+const props = defineProps({
+  geneId: { type: String, required: true },
+  variantId: { type: String, default: '' },
+});
 
-    const legendSizes = {
-      width: 150,
-      height: 300,
-      margins: {
-        left: 10,
-        right: 120,
-        top: 30,
-        bottom: 10,
-      },
-    };
+const data = ref(null);
+const aggregatedData = ref(null);
+const annotations = ref(null);
 
-    const maxNPatients = 1000;
-
-    const logScaleColorHeatmap = scaleSequentialLog(interpolateOranges).domain([
-      1,
-      maxNPatients,
-    ]);
-    const heatmapColor = (n) => {
-      if (n === 0) return '#eee';
-      return logScaleColorHeatmap(n);
-    };
-
-    watchEffect(async () => {
-      try {
-        const { data: variantsData } = await service.getVariantsData(
-          props.geneId
-        );
-
-        if (variantsData.length === 0) {
-          throw new Error(`No data for gene ${props.geneId}`);
-        }
-
-        const { data: aggregatedVariantsData } =
-          await service.getVariantsAggregatedData(props.geneId);
-        const { data: annotationsData } = await service.getVariantsAnnotations(
-          props.geneId
-        );
-
-        data.value = variantsData;
-        aggregatedData.value = aggregatedVariantsData;
-        annotations.value = annotationsData;
-      } catch (error) {
-        processErrorMessage(error);
-      }
-    });
-
-    // sift and polyphen labels are hardcoded to avoid cases where the current variant doesn't have info for all of the possible sift and polyphen values
-    const polyphen = ['probably_damaging', 'possibly_damaging', 'benign'];
-    const polyphenColor = scaleOrdinal()
-      .domain(polyphen)
-      .range(schemeSpectral[3])
-      .unknown('#eee');
-
-    const sift = [
-      'deleterious',
-      'deleterious_low_confidence',
-      'tolerated_low_confidence',
-      'tolerated',
-    ];
-    const siftColor = scaleOrdinal()
-      .domain(sift)
-      .range(schemeRdBu[4])
-      .unknown('#eee');
-
-    const damColor = scaleOrdinal()
-      .domain(['is DAM'])
-      .range(['dodgerblue'])
-      .unknown('transparent');
-
-    return {
-      legendSizes,
-      polyphenColor,
-      siftColor,
-      damColor,
-      heatmapColor,
-      data,
-      aggregatedData,
-      annotations,
-      logScaleColorHeatmap,
-    };
+const legendSizes = {
+  width: 150,
+  height: 300,
+  margins: {
+    left: 10,
+    right: 120,
+    top: 30,
+    bottom: 10,
   },
 };
+
+const maxNPatients = 1000;
+
+const logScaleColorHeatmap = scaleSequentialLog(interpolateOranges).domain([
+  1,
+  maxNPatients,
+]);
+const heatmapColor = (n) => {
+  if (n === 0) return '#eee';
+  return logScaleColorHeatmap(n);
+};
+
+watchEffect(async () => {
+  try {
+    const { data: variantsData } = await service.getVariantsData(props.geneId);
+
+    if (variantsData.length === 0) {
+      throw new Error(`No data for gene ${props.geneId}`);
+    }
+
+    const { data: aggregatedVariantsData } =
+      await service.getVariantsAggregatedData(props.geneId);
+    const { data: annotationsData } = await service.getVariantsAnnotations(
+      props.geneId
+    );
+
+    data.value = variantsData;
+    aggregatedData.value = aggregatedVariantsData;
+    annotations.value = annotationsData;
+  } catch (error) {
+    parseErrorMesssage(error);
+  }
+});
+
+// sift and polyphen labels are hardcoded to avoid cases where the current variant doesn't have info for all of the possible sift and polyphen values
+const polyphen = ['probably_damaging', 'possibly_damaging', 'benign'];
+const polyphenColor = scaleOrdinal()
+  .domain(polyphen)
+  .range(schemeSpectral[3])
+  .unknown('#eee');
+
+const sift = [
+  'deleterious',
+  'deleterious_low_confidence',
+  'tolerated_low_confidence',
+  'tolerated',
+];
+const siftColor = scaleOrdinal()
+  .domain(sift)
+  .range(schemeRdBu[4])
+  .unknown('#eee');
 </script>
 
 <style lang="postcss" scoped>

@@ -29,7 +29,7 @@
   </CellLinesChart>
 </template>
 
-<script>
+<script setup>
 import CellLinesChart from '@/components/CellLinesChart.vue';
 import { ref, watchEffect } from 'vue';
 
@@ -37,53 +37,37 @@ import { extent } from 'd3';
 
 import { useTooltip } from '@nf-data-iu3/ht-vue';
 
-export default {
-  name: 'CellLinesSensitivities',
-  components: { CellLinesChart },
-  props: {
-    sizes: { type: Object, required: true },
-    sensitivities: { type: Array, required: true },
-    drugConcMin: { type: Number, required: true },
-    drugConcMax: { type: Number, required: true },
-  },
-  setup(props) {
-    const xDomain = ref(null);
-    const yDomain = ref(null);
-    const concMin = ref(null);
-    const concMax = ref(null);
+const props = defineProps({
+  sizes: { type: Object, required: true },
+  sensitivities: { type: Array, required: true },
+  drugConcMin: { type: Number, required: true },
+  drugConcMax: { type: Number, required: true },
+});
 
-    watchEffect(async () => {
-      xDomain.value = props.sensitivities.map(
-        ({ cellLineName }) => cellLineName
-      );
+const xDomain = ref(null);
+const yDomain = ref(null);
+const concMin = ref(null);
+const concMax = ref(null);
 
-      concMin.value = Math.log(props.drugConcMin);
-      concMax.value = Math.log(props.drugConcMax);
-      yDomain.value = extent([
-        concMin.value,
-        concMax.value,
-        ...props.sensitivities.map(({ ic50 }) => ic50),
-      ]);
-    });
+watchEffect(async () => {
+  xDomain.value = props.sensitivities.map(({ cellLineName }) => cellLineName);
 
-    const { showTooltip, hideTooltip } = useTooltip();
+  concMin.value = Math.log(props.drugConcMin);
+  concMax.value = Math.log(props.drugConcMax);
+  yDomain.value = extent([
+    concMin.value,
+    concMax.value,
+    ...props.sensitivities.map(({ ic50 }) => ic50),
+  ]);
+});
 
-    const onMouseOver = function (event, { mutation }) {
-      if (mutation) showTooltip(event, mutation);
-    };
+const { showTooltip, hideTooltip } = useTooltip();
 
-    const onMouseLeave = function ({ mutation }) {
-      if (mutation) hideTooltip();
-    };
+const onMouseOver = function (event, { mutation }) {
+  if (mutation) showTooltip(event, mutation);
+};
 
-    return {
-      onMouseOver,
-      onMouseLeave,
-      xDomain,
-      yDomain,
-      concMin,
-      concMax,
-    };
-  },
+const onMouseLeave = function ({ mutation }) {
+  if (mutation) hideTooltip();
 };
 </script>
